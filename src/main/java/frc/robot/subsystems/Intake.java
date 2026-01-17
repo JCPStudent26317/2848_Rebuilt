@@ -31,11 +31,11 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.runOnce(() -> setMotorOutput(1.0));
+        return Commands.runOnce(() -> setMotorOutput(kIntakeMotorSpeed));
     }
 
     public Command outtake() {
-        return Commands.runOnce(() -> setMotorOutput(-1.0));
+        return Commands.runOnce(() -> setMotorOutput(kIntakeMotorSpeed * -1));
     }
 
     public Command stop() {

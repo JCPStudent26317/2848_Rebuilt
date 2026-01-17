@@ -7,8 +7,6 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,11 +26,19 @@ public final class Constants {
 
   public static class IntakeConstants {
     public static final int kIntakeMotorID = 0;
+    public static final double kIntakeMotorSpeed = 1.0;
+  }
+
+  public static class HopperConstants {
+    public static final int kBeltMotorID = 0;
+    public static final double kBeltMotorSpeed = 1.0;    
+    public static final int kRollerMotorID = 0;
+    public static final double kRollerMotorSpeed = 1.0;    
   }
 
   public static class TransitionConstants {
-    public static final int kBeltMotorID = 0;
-    public static final int kRollerMotorID = 0;
+    public static final int kTransitionMotorID = 0;
+    public static final double kTransitionMotorSpeed = 1.0;
   }
 
   //** Just copied from 2025 project.*/

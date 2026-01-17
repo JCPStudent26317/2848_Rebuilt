@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import static frc.robot.Constants.TransitionConstants.*;
+import static frc.robot.Constants.HopperConstants.*;
 
 public class Hopper extends SubsystemBase {
     private final TalonFX beltMotor = new TalonFX(kBeltMotorID);
@@ -34,21 +34,21 @@ public class Hopper extends SubsystemBase {
         });
     }    
 
-    public void setMotorsOutput(double output) {
-        beltOut.Output = output;
-        rollerOut.Output = output;
+    public void setMotorsOutput(double beltOutput, double rollerOutput) {
+        beltOut.Output = beltOutput;
+        rollerOut.Output = rollerOutput;
     }
 
     public Command forward() {
-        return Commands.runOnce(() -> setMotorsOutput(1.0));
+        return Commands.runOnce(() -> setMotorsOutput(kBeltMotorSpeed, kRollerMotorSpeed));
     }
 
     public Command backward() {
-        return Commands.runOnce(() -> setMotorsOutput(-1.0));
+        return Commands.runOnce(() -> setMotorsOutput(kBeltMotorSpeed * -1, kRollerMotorSpeed * -1));
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> setMotorsOutput(0.0));
+        return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0));
     }
 
 }
