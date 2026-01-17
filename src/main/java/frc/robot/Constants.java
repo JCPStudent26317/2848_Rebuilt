@@ -23,6 +23,13 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static class ShooterConstants {
+    public static final int kFlywheelMotorID = 10;
+    public static final int kHoodMotorID = 11;
+    public static final int kTurretMotorID = 12;
+
+  }
+
   //**Just copied from 2025 project.*/
   public static class VisionConstants {
     public static class CropWindowSettings{
