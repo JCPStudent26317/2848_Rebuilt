@@ -78,7 +78,6 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
