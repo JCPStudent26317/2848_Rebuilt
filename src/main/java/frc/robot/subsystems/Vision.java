@@ -28,6 +28,7 @@ import lombok.Setter;
 
 /**
  * Vision subsystem for handling LimeLight interfacing
+ * Some of the getters are missing, so ive commented everything out for now
  */
 public class Vision extends SubsystemBase {
 
