@@ -30,6 +30,11 @@ public final class Constants {
     public static final int kIntakeMotorID = 0;
   }
 
+  public static class TransitionConstants {
+    public static final int kBeltMotorID = 0;
+    public static final int kRollerMotorID = 0;
+  }
+
   //** Just copied from 2025 project.*/
   public static class VisionConstants {
     public static class CropWindowSettings{

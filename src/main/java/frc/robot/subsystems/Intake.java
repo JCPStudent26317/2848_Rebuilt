@@ -42,15 +42,4 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> setMotorOutput(0.0));
     }
 
-    // Put these on a whiletrue connected to a controller button
-    public Command manualIntake() {
-        return Commands.startRun(() -> setMotorOutput(1.0), () -> intakeMotor.setControl(intakeOut))
-        .finallyDo(() -> setMotorOutput(0.0));
-    }
-
-    public Command manualOuttake() {
-        return Commands.startRun(() -> setMotorOutput(-1.0), () -> intakeMotor.setControl(intakeOut))
-        .finallyDo(() -> setMotorOutput(0.0));
-    }
-
 }
