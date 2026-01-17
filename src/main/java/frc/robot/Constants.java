@@ -6,6 +6,9 @@ package frc.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +26,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  //**Just copied from 2025 project.*/
+  public static class IntakeConstants {
+    public static final int kIntakeMotorID = 0;
+  }
+
+  //** Just copied from 2025 project.*/
   public static class VisionConstants {
     public static class CropWindowSettings{
         @Getter @Setter private double cropXMin;
@@ -84,6 +91,6 @@ public final class Constants {
     public static final double kMinimumTranslationalStandardDeviation = 0.5;
     public static final double kMinimumRotationalStandardDeviation = Math.toRadians(2.5); // rad
     public static final double kAddSkewDataDistanceThreshold = 2; //m
-}
+    }
 
 }
