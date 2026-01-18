@@ -58,5 +58,6 @@
     "edu.wpi.first.math.**.struct.*",
   ],
   "java.dependency.enableDependencyCheckup": false,
-  "java.checkstyle.configuration": "/google_checks.xml"
+  "java.checkstyle.configuration": "/C:/Program Files/RangersCheckstyle/RangerCheckstyle.xml",
+  "java.checkstyle.version": "10.23.1"
 }
