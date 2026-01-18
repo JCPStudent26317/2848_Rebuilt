@@ -98,7 +98,7 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  /** Sets the flywheel to the full shooting speed. */
+  /** Sets the flywheel and hood angle to their shot velocity and shot position. */
   public Command shoot() {
     return holdState().alongWith(Commands.idle(this).onlyIf(() -> readyToShoot()).repeatedly());
   }
