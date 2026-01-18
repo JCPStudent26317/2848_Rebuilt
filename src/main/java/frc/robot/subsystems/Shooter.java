@@ -1,24 +1,27 @@
 package frc.robot.subsystems;
-import static frc.robot.Constants.ShooterConstants.*;
-import frc.robot.RangerHelpers;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.StatusCode;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.StatusCode;
+import frc.robot.RangerHelpers;
 import lombok.Getter;
 
+/** Shooter Subsystem. */
 public class Shooter extends SubsystemBase{
-  private final TalonFX m_Flywheel, m_Turret, m_Hood;
+  private final TalonFX m_Flywheel;
+
+  private final TalonFX m_Turret;
+
+  private final TalonFX m_Hood;
 
   private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
   private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0);
