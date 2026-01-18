@@ -24,6 +24,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
     public static final int kFlywheelMotorID = 10;
     public static final int kHoodMotorID = 11;
@@ -31,30 +32,32 @@ public final class Constants {
 
   }
 
-  //**Just copied from 2025 project.*/
+  /**Constant values for the Vision subsystem.*/
   public static class VisionConstants {
+
+    /** Class for applying crop settings to LimeLights.*/
     public static class CropWindowSettings{
-        @Getter @Setter private double cropXMin;
-        @Getter @Setter private double cropXMax;
-        @Getter @Setter private double cropYMin;
-        @Getter @Setter private double cropYMax;
+      @Getter @Setter private double cropXMin;
+      @Getter @Setter private double cropXMax;
+      @Getter @Setter private double cropYMin;
+      @Getter @Setter private double cropYMax;
 
-        public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
-            if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
-                throw new IllegalArgumentException("Invalid crop window: min must be less than max");
-            }
-            this.cropXMin = cropXMin;
-            this.cropXMax = cropXMax;
-            this.cropYMin = cropYMin;
-            this.cropYMax = cropYMax;
+      public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
+        if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
+          throw new IllegalArgumentException("Invalid crop window: min must be less than max");
         }
+        this.cropXMin = cropXMin;
+        this.cropXMax = cropXMax;
+        this.cropYMin = cropYMin;
+        this.cropYMax = cropYMax;
+      }
 
-        public CropWindowSettings(){
-            this.cropXMin = -1;
-            this.cropXMax = 1;
-            this.cropYMin = -1;
-            this.cropYMax = 1;
-        }
+      public CropWindowSettings(){
+        this.cropXMin = -1;
+        this.cropXMax = 1;
+        this.cropYMin = -1;
+        this.cropYMax = 1;
+      }
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
