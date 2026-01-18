@@ -11,12 +11,11 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.StatusCode;
 import frc.robot.RangerHelpers;
 import lombok.Getter;
 
 /** Shooter Subsystem. */
-public class Shooter extends SubsystemBase{
+public class Shooter extends SubsystemBase {
   private final TalonFX m_Flywheel;
 
   private final TalonFX m_Turret;
@@ -30,11 +29,13 @@ public class Shooter extends SubsystemBase{
 
   private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
 
-  public Shooter(){
+  /** Shooter Subsystem. */
+  public Shooter() {
     m_Flywheel = new TalonFX(kFlywheelMotorID);
     m_Turret = new TalonFX(kTurretMotorID);
     m_Hood = new TalonFX(kHoodMotorID);
 
+    // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Slot0.kS = 0;
     flywheelConfig.Slot0.kV = 0;
@@ -43,7 +44,6 @@ public class Shooter extends SubsystemBase{
     flywheelConfig.Slot0.kD = 0;
     flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
     RangerHelpers.setupTalonFX(m_Flywheel, flywheelConfig);
-
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
     turretConfig.Slot0.kS = 0;
@@ -56,7 +56,6 @@ public class Shooter extends SubsystemBase{
         .withPeakReverseVoltage(Volts.of(-6));
     RangerHelpers.setupTalonFX(m_Turret, turretConfig);
 
-
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0.kS = 0;
     hoodConfig.Slot0.kV = 0;
@@ -67,9 +66,6 @@ public class Shooter extends SubsystemBase{
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
     RangerHelpers.setupTalonFX(m_Hood, hoodConfig);
-
-
-
   }
 
   @Override
@@ -77,35 +73,47 @@ public class Shooter extends SubsystemBase{
     // This method will be called once per scheduler run
   }
 
-  private void setTurret(){
+  /** Sets the turret angle to aim the shooter at the target.*/
+  private void setTurret() {
+
+  }
+
+  /** Sets the hood angle based on the required shot trajectory.*/
+  private void setHood() {
+
+  }
+
+  /**
+   * Sets the target velocity for the flywheel.
+   *
+   * @param vel desired flywheel velocity (units defined by motor configuration)
+   */
+  private void setFlywheel(int vel) {
+
+  }
+
+  /** Set the target for the shooter. */
+  public void setTarget() {
 
 
   }
 
-  private void setHood(){
-
-
-  }
-
-  private void setFlywheel(int vel){
-
-
-  }
-
-  public void setTarget(){
-
-
-  }
-
-  public Command shoot(){
+  /** Sets the flywheel to the full shooting speed. */
+  public Command shoot() {
     return holdState().alongWith(Commands.idle(this).onlyIf(() -> readyToShoot()).repeatedly());
   }
 
-  public Command holdState(){
+  /** Hold the current shooting state. */
+  public Command holdState() {
     return null;
   }
 
-  public boolean readyToShoot(){
+  /**
+   * Checks whether the shooter has reached its target aiming state.
+   *
+   * @return true when the shooter is aligned and ready to fire.
+   */
+  public boolean readyToShoot() {
     return false;
   }
 
