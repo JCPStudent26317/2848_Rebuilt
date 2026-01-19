@@ -2,38 +2,53 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.RangerHelpers.*;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import frc.robot.RangerHelpers;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import lombok.Getter;
 
 /** Shooter Subsystem. */
 public class Shooter extends SubsystemBase {
-  private final TalonFX m_Flywheel;
+  private final TalonFX m_FlywheelLeftLeader;
+  private final TalonFX m_FlywheelRightFollower;
 
   private final TalonFX m_Turret;
+  private final CANcoder m_TurretCANcoder;
 
-  private final TalonFX m_Hood;
+  //private final TalonFX m_Hood;
 
   private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
   private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0);
 
   private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
 
-  private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
+  //private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
+
+  private @Getter double m_FlywheelOutputDutyCycle = 0;
+  private @Getter long m_TurretAngle = 0;
 
   /** Shooter Subsystem. */
   public Shooter() {
-    m_Flywheel = new TalonFX(kFlywheelMotorID);
+    m_FlywheelLeftLeader = new TalonFX(kFlywheelLeftMotorID);
+    m_FlywheelRightFollower = new TalonFX(kFlywheelRightMotorID);
     m_Turret = new TalonFX(kTurretMotorID);
-    m_Hood = new TalonFX(kHoodMotorID);
+    m_TurretCANcoder = new CANcoder(kTurretCANcoderID);
+    //m_Hood = new TalonFX(kHoodMotorID);
 
     // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
@@ -43,7 +58,8 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Slot0.kI = 0;
     flywheelConfig.Slot0.kD = 0;
     flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
-    RangerHelpers.setupTalonFX(m_Flywheel, flywheelConfig);
+    setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
+    m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
     turretConfig.Slot0.kS = 0;
@@ -54,7 +70,11 @@ public class Shooter extends SubsystemBase {
     turretConfig.Voltage
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
-    RangerHelpers.setupTalonFX(m_Turret, turretConfig);
+    turretConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    turretConfig.Feedback.FeedbackRemoteSensorID = kTurretCANcoderID;
+    setupTalonFx(m_Turret, turretConfig);
+    CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
+    retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0.kS = 0;
@@ -65,22 +85,38 @@ public class Shooter extends SubsystemBase {
     hoodConfig.Voltage
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
-    RangerHelpers.setupTalonFX(m_Hood, hoodConfig);
+    //setupTalonFx(m_Hood, hoodConfig);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putData(this);
   }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty("Flywheel Output Duty Cycle",
+        this::getM_FlywheelOutputDutyCycle,
+        this::setM_FlywheelOutputDutyCycle);
+    builder.addIntegerProperty("m_TurretAngle", 
+        this::getM_TurretAngle, 
+        this::setM_TurretAngle);
+
+    
+  } 
 
   /** Sets the turret angle to aim the shooter at the target.*/
-  private void setTurret() {
-
+  private Command setTurret() {
+    return Commands.runOnce(
+      () -> m_Turret.setControl(m_TurretPV.withPosition(m_TurretAngle / 180)), 
+      this);
   }
 
-  /** Sets the hood angle based on the required shot trajectory.*/
-  private void setHood() {
-
+  /** Sets the hood angle.*/
+  private Command setHood() {
+    return null;
   }
 
   /**
@@ -88,13 +124,14 @@ public class Shooter extends SubsystemBase {
    *
    * @param vel desired flywheel velocity (units defined by motor configuration)
    */
-  private void setFlywheel(int vel) {
-
+  private Command setFlywheel() {
+    return Commands.runOnce(
+      () -> m_FlywheelLeftLeader.setControl(m_FlywheelOut.withOutput(m_FlywheelOutputDutyCycle)), 
+      this);
   }
 
   /** Set the target for the shooter. */
   public void setTarget() {
-
 
   }
 
@@ -105,7 +142,7 @@ public class Shooter extends SubsystemBase {
 
   /** Hold the current shooting state. */
   public Command holdState() {
-    return null;
+    return setFlywheel().andThen(setTurret());
   }
 
   /**
@@ -115,6 +152,16 @@ public class Shooter extends SubsystemBase {
    */
   public boolean readyToShoot() {
     return false;
+  }
+
+  /** Sets the turret angle in degrees, clamped to [-135, 135]. */
+  public void setM_TurretAngle(long angle) {
+    m_TurretAngle = (long) MathUtil.clamp(angle, -135, 135);
+  }
+
+  /** Sets the flywheel output duty cycle, clamped to [-1, 1]. */
+  public void setM_FlywheelOutputDutyCycle(double angle) {
+    m_FlywheelOutputDutyCycle = MathUtil.clamp(angle, -1, 1);
   }
 
 }

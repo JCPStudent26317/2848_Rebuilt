@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +27,16 @@ public final class Constants {
 
   /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
-    public static final int kFlywheelMotorID = 10;
-    public static final int kHoodMotorID = 11;
-    public static final int kTurretMotorID = 12;
+    public static final int kFlywheelLeftMotorID = 10;
+    public static final int kFlywheelRightMotorID = 11;
+    public static final int kHoodMotorID = 12;
+    public static final int kTurretMotorID = 13;
+    public static final int kTurretCANcoderID = 14;
+
+    public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
+        .withMagnetOffset(0)
+        .withAbsoluteSensorDiscontinuityPoint(0.5)
+        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
 
   }
 
