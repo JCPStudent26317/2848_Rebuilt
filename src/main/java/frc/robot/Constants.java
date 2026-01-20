@@ -33,12 +33,14 @@ public final class Constants {
     public static final int kBeltMotorID = 0;
     public static final double kBeltMotorSpeed = 1.0;    
     public static final int kRollerMotorID = 0;
-    public static final double kRollerMotorSpeed = 1.0;    
+    public static final double kRollerMotorSpeed = 1.0;
+    public static final int kTransitionMotorID = 0;
+    public static final double kTransitionMotorSpeed = 1.0;    
   }
 
-  public static class TransitionConstants {
-    public static final int kTransitionMotorID = 0;
-    public static final double kTransitionMotorSpeed = 1.0;
+  public static class MagazineConstants {
+    public static final int kMagazineMotorID = 0;
+    public static final double kMagazineMotorSpeed = 1.0;
   }
 
   //** Just copied from 2025 project.*/

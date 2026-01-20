@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import static frc.robot.Constants.HopperConstants.*;
 
-public class Hopper extends SubsystemBase {
+public class HopperTransition extends SubsystemBase {
     private final TalonFX beltMotor = new TalonFX(kBeltMotorID);
     private final TalonFXConfiguration beltMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut beltOut = new DutyCycleOut(0.0);
@@ -19,7 +19,7 @@ public class Hopper extends SubsystemBase {
     private final TalonFXConfiguration rollerMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut rollerOut = new DutyCycleOut(0.0);
 
-    public Hopper() {
+    public HopperTransition() {
         // Apply things to the configurations here
 
         beltMotor.getConfigurator().apply(beltMotorConfig);

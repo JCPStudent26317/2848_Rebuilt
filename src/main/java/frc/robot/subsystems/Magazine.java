@@ -8,30 +8,31 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import static frc.robot.Constants.TransitionConstants.*;
+import static frc.robot.Constants.MagazineConstants.*;
 
-public class Transition extends SubsystemBase {
-    private final TalonFX transitionMotor = new TalonFX(kTransitionMotorID);
-    private final TalonFXConfiguration transitionMotorConfig = new TalonFXConfiguration();
-    private final DutyCycleOut transitionOut = new DutyCycleOut(0.0);
+public class Magazine extends SubsystemBase {
 
-    public Transition() {
+    private final TalonFX magazineMotor = new TalonFX(kMagazineMotorID);
+    private final TalonFXConfiguration magazineMotorConfig = new TalonFXConfiguration();
+    private final DutyCycleOut magazineOut = new DutyCycleOut(0.0);    
+
+    public Magazine() {
         // Apply motor configurations here
 
-        transitionMotor.getConfigurator().apply(transitionMotorConfig);
+        magazineMotor.getConfigurator().apply(magazineMotorConfig);
     }
 
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
-        return Commands.run(() -> transitionMotor.setControl(transitionOut));
+        return Commands.run(() -> magazineMotor.setControl(magazineOut));
     }
 
     public void setMotorOutput(double output) {
-        transitionOut.Output = output;
+        magazineOut.Output = output;
     }
     
     public Command run() {
-        return Commands.runOnce(() -> setMotorOutput(kTransitionMotorSpeed));
+        return Commands.runOnce(() -> setMotorOutput(kMagazineMotorSpeed));
     }
 
     public Command stop() {
