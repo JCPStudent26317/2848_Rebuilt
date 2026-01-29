@@ -48,10 +48,10 @@ public class RobotContainer {
     private final CommandXboxController testingJoystick = new CommandXboxController(5);
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public static final Intake intake = new Intake();
-    public static final HopperTransition hopper = new HopperTransition();
-    public static final Magazine magazine = new Magazine();
-    public static final Shooter shooter = new Shooter();
+    // public static final Intake intake = new Intake();
+    // public static final HopperTransition hopper = new HopperTransition();
+    // public static final Magazine magazine = new Magazine();
+    // public static final Shooter shooter = new Shooter();
 
 
     public RobotContainer() {
@@ -91,14 +91,14 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        driverJoystick.a().onTrue(intake.intake());
-        driverJoystick.a().onFalse(intake.stop());
+        // driverJoystick.a().onTrue(intake.intake());
+        // driverJoystick.a().onFalse(intake.stop());
 
-        driverJoystick.b().onTrue(hopper.forward());
-        driverJoystick.b().onFalse(hopper.stop());
+        // driverJoystick.b().onTrue(hopper.forward());
+        // driverJoystick.b().onFalse(hopper.stop());
 
-        driverJoystick.x().onTrue(magazine.run());
-        driverJoystick.x().onFalse(magazine.stop());
+        // driverJoystick.x().onTrue(magazine.run());
+        // driverJoystick.x().onFalse(magazine.stop());
     }
 
   /**
