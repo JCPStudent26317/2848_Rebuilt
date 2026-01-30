@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToNeutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralSweep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SweepToTower"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
