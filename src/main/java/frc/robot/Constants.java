@@ -70,7 +70,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-right"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-vision"}; // limelight-left
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings

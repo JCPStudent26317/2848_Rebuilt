@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -21,7 +22,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.HopperTransition;
 import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
-
+import frc.robot.subsystems.Vision;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,6 +49,7 @@ public class RobotContainer {
     private final CommandXboxController testingJoystick = new CommandXboxController(5);
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    @Getter public static final Vision vision = new Vision();
     // public static final Intake intake = new Intake();
     // public static final HopperTransition hopper = new HopperTransition();
     // public static final Magazine magazine = new Magazine();
@@ -69,6 +71,15 @@ public class RobotContainer {
                     .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+
+
+        driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+
+        driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
+                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-drivetrain.getPIDTurn()) // Drive counterclockwise with negative X (left)
+            ));
 
         /*
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
