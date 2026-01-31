@@ -231,7 +231,7 @@ public class Vision extends SubsystemBase {
      */
     public void updateVisionPoseEstimate(){
         LimelightHelpers.PoseEstimate visionPoseEstimate = new LimelightHelpers.PoseEstimate();
-              
+        
         if (useMegaTag2){
             visionPoseEstimate = visionPoseEstimateMT2;
             // Check to ensure there is a valid pose estimate
@@ -241,7 +241,12 @@ public class Vision extends SubsystemBase {
         }
         else {
             // Using Megatag1 
-            visionPoseEstimate = visionPoseEstimateMT1;
+            if (bestLimeLight.equals("limelight-turret")){
+                visionPoseEstimate = getTurretToRobotPose();
+            }
+            else{
+                visionPoseEstimate = visionPoseEstimateMT1;
+            }
             poseError = visionPoseEstimate.pose.minus(RobotContainer.getDrivetrain().getState().Pose);
             
             // Check to ensure there is a valid pose estimate
@@ -372,7 +377,9 @@ public class Vision extends SubsystemBase {
 
         Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
         Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+        
         robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
+        
         return robotPose;
     }
 
