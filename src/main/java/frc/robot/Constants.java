@@ -30,6 +30,25 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static class IntakeConstants {
+    public static final int kIntakeMotorID = 0;
+    public static final double kIntakeMotorSpeed = 1.0;
+  }
+
+  public static class HopperConstants {
+    public static final int kBeltMotorID = 0;
+    public static final double kBeltMotorSpeed = 1.0;    
+    public static final int kRollerMotorID = 0;
+    public static final double kRollerMotorSpeed = 1.0;
+    public static final int kTransitionMotorID = 0;
+    public static final double kTransitionMotorSpeed = 1.0;    
+  }
+
+  public static class MagazineConstants {
+    public static final int kMagazineMotorID = 0;
+    public static final double kMagazineMotorSpeed = 1.0;
+  }
+
   /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
     public static final int kFlywheelLeftMotorID = 10;
