@@ -53,7 +53,7 @@ public class RobotContainer {
     // public static final Intake intake = new Intake();
     // public static final HopperTransition hopper = new HopperTransition();
     // public static final Magazine magazine = new Magazine();
-    // public static final Shooter shooter = new Shooter();
+    @Getter public static final Shooter shooter = new Shooter();
 
 
     public RobotContainer() {

@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import edu.wpi.first.math.geometry.Translation2d;
+
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import lombok.Getter;
@@ -73,7 +76,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-vision"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-vision", "limelight-turret"}; // limelight-left
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
@@ -90,6 +93,9 @@ public final class Constants {
         cameraCropWindowMap.put("limelight-vision", new CropWindowSettings());
     }
 
+    // Position Constants
+    public static final Translation2d kRobotToTurretTranslation = new Translation2d(0.2, -0.2); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
+    public static final double kTurretToCameraMagnitude = .1; // The distance from the center of the turret to the Limelight
 
     // Filters
     public static final boolean kApplyFilters = true;

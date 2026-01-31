@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
   //private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
 
   private @Getter double m_FlywheelOutputDutyCycle = 0;
-  private @Getter long m_TurretAngle = 0;
+  private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
   /** Shooter Subsystem. */
   public Shooter() {

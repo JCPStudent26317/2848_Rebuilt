@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -22,6 +24,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionConstants.CropWindowSettings;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.LimelightHelpers;
 
 import lombok.Getter;
@@ -356,6 +359,21 @@ public class Vision extends SubsystemBase {
      */
     public int getTag(){
         return (int) NetworkTableInstance.getDefault().getTable(bestLimeLight).getEntry("tid").getInteger(-1);
+    }
+
+    /**
+     * Calculates the robot's pose based on the turret limelight
+     * Note: Might need to track the turret angle and match the position with the timestamp from the pose estimate (source of error if we don't)
+     * @return the calculated robot pose
+     */
+    public PoseEstimate getTurretToRobotPose(){
+        PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
+        PoseEstimate robotPose = turretCameraPose;
+
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
+        return robotPose;
     }
 
 }
