@@ -21,6 +21,7 @@ import edu.wpi.first.math.VecBuilder;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionConstants.CropWindowSettings;
 import frc.robot.LimelightHelpers;
 
 import lombok.Getter;
@@ -65,15 +66,7 @@ public class Vision extends SubsystemBase {
     }
 
     private void configureCamera(String camera){
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kRedAprilTagList); // Only track these tag IDs
-        }
-        else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kBlueAprilTagList); // Only track these tag IDs
-        }
-        else{
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
-        }
+        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
         LimelightHelpers.SetFiducialDownscalingOverride(camera, kDownscaleFactor); // Increases the framerate
 
         // Force LEDs off
@@ -332,7 +325,7 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Old Standard Deviation", (visionPoseEstimate.avgTagArea * (-18.3)) + 11.34);
 
         // Fill out Standard deviation matrix for drivebase
-        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
     }
 
     /**

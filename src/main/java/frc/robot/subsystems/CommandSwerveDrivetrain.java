@@ -22,10 +22,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -46,9 +48,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private PIDController rotation_controller = new PIDController(8,0, 0);
+    private PIDController rotation_controller = new PIDController(8,2, 0);
 
-    private Translation2d targetPos = new Translation2d(5,4);
+    private Translation2d targetPos;
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -142,9 +144,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
     public void visionOdoReset(){
-        Pose2d pose = RobotContainer.getVision().getVisionPoseEstimate().pose;
-        if (pose != null){
-            this.resetPose(pose);
+        PoseEstimate poseEstimate = RobotContainer.getVision().getVisionPoseEstimate();
+        if (poseEstimate != null){
+            this.resetPose(poseEstimate.pose);
         }
     }
 
@@ -153,6 +155,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void init(){
         rotation_controller.setSetpoint(0);
+        rotation_controller.enableContinuousInput(-Math.PI, Math.PI);
+
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            targetPos = new Translation2d(12,4);
+        } else{
+            targetPos = new Translation2d(5,4);
+        }
     }
 
     /**
@@ -246,7 +255,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     private double getHubTheta(){
-        return (Math.atan2(getState().Pose.getY()-targetPos.getY(),getState().Pose.getX()-targetPos.getX()));   
+        SmartDashboard.putNumber("Target X", getState().Pose.getTranslation().minus(targetPos).getX());
+        SmartDashboard.putNumber("Target Y", getState().Pose.getTranslation().minus(targetPos).getY());
+
+        return (targetPos.minus(getState().Pose.getTranslation()).getAngle().getRadians());  
     }
     public double getPIDTurn(){
         return rotation_controller.calculate(getHubTheta()-this.getState().Pose.getRotation().getRadians());
@@ -274,6 +286,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_field.setRobotPose(this.getState().Pose);
 
         
+
+        SmartDashboard.putData("Field",m_field);
+        SmartDashboard.putNumber("hub theta",getHubTheta());
     }
 
     private void startSimThread() {

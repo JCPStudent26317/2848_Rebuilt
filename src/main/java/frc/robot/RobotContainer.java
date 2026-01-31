@@ -97,6 +97,11 @@ public class RobotContainer {
         driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         */
 
+        driverJoystick.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverJoystick.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverJoystick.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverJoystick.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
         // reset the field-centric heading on back press
         driverJoystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
