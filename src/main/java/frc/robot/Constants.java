@@ -43,22 +43,6 @@ public final class Constants {
   }
 
   /**Constant values for the Vision subsystem.*/
-  /**Constant values for the Shooter subsystem.*/
-  public static class ShooterConstants {
-    public static final int kFlywheelLeftMotorID = 10;
-    public static final int kFlywheelRightMotorID = 11;
-    public static final int kHoodMotorID = 12;
-    public static final int kTurretMotorID = 13;
-    public static final int kTurretCANcoderID = 14;
-
-    public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(0)
-        .withAbsoluteSensorDiscontinuityPoint(0.5)
-        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
-
-  }
-
-  /**Constant values for the Vision subsystem.*/
   public static class VisionConstants {
 
     /** Class for applying crop settings to LimeLights.*/
@@ -69,10 +53,6 @@ public final class Constants {
       @Getter @Setter private double cropXMax;
       @Getter @Setter private double cropYMin;
       @Getter @Setter private double cropYMax;
-      @Getter @Setter private double cropXMin;
-      @Getter @Setter private double cropXMax;
-      @Getter @Setter private double cropYMin;
-      @Getter @Setter private double cropYMax;
 
       public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
         if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
@@ -83,22 +63,7 @@ public final class Constants {
         this.cropYMin = cropYMin;
         this.cropYMax = cropYMax;
       }
-      public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
-        if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
-          throw new IllegalArgumentException("Invalid crop window: min must be less than max");
-        }
-        this.cropXMin = cropXMin;
-        this.cropXMax = cropXMax;
-        this.cropYMin = cropYMin;
-        this.cropYMax = cropYMax;
-      }
 
-      public CropWindowSettings(){
-        this.cropXMin = -1;
-        this.cropXMax = 1;
-        this.cropYMin = -1;
-        this.cropYMax = 1;
-      }
       public CropWindowSettings(){
         this.cropXMin = -1;
         this.cropXMax = 1;
@@ -112,9 +77,6 @@ public final class Constants {
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
-    public static final int[] kRedAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
-    public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kRedAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
