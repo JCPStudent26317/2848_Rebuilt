@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -17,6 +20,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+
+  private static Alliance firstInactive;
+
+  private static Timer timer = new Timer();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -75,7 +82,53 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    timer.reset();
+    timer.start();
+
+    if (DriverStation.getGameSpecificMessage().equals("R")) {
+      firstInactive = Alliance.Red;
+    } else {
+      firstInactive = Alliance.Blue;
+    }
   }
+
+  /**
+ * boolean for whether OUR hub is active.
+ * @return boolean value for whether OUR hub is currently active
+ */
+  public static boolean getHubIsActive() {
+    double timeLeft = timer.get(); // seconds since match start
+
+    // Active during AUTO and transition
+    if (timeLeft > 130) {
+      return true;
+    }
+
+    // Determine shift number (0-indexed: 0 = SHIFT1, ... 3 = SHIFT4)
+    int shift = (int) ((130 - timeLeft) / 25);
+
+    // active pattern: (if your alliance goes firstInactive)
+    // SHIFT1  -> opposite alliance active
+    // SHIFT2  -> firstInactive active
+    // SHIFT3  -> opposite alliance active
+    // SHIFT4  -> firstInactive active
+    boolean firstInactiveActiveThisShift = (shift % 2 == 1);
+
+    boolean myIsFirstInactive = (firstInactive == DriverStation.getAlliance().get());
+
+    // If this shift the inactive alliance *is active*, invert
+    boolean myHubActive = myIsFirstInactive
+        ? firstInactiveActiveThisShift
+        : !firstInactiveActiveThisShift;
+
+    // END GAME (last 30s) always active
+    if (timeLeft <= 30) {
+      return true;
+    }
+
+    return myHubActive;
+  }
+
 
   /** This function is called periodically during operator control. */
   @Override
@@ -99,3 +152,7 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 }
+
+
+
+
