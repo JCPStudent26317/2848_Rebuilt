@@ -77,7 +77,7 @@ public class Vision extends SubsystemBase {
 
         // Apply window crop settings to increase framerate
         CropWindowSettings cropWindow = cameraCropWindowMap.get(camera);
-        LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
+        //LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
     }
 
 

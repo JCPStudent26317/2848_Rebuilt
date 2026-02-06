@@ -4,11 +4,15 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.RangerHelpers.*;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -42,6 +46,8 @@ public class Shooter extends SubsystemBase {
   private @Getter double m_FlywheelOutputDutyCycle = 0;
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
+  private DutyCycleOut flywheelOut = new DutyCycleOut(0.0);    
+
   /** Shooter Subsystem. */
   public Shooter() {
     m_FlywheelLeftLeader = new TalonFX(kFlywheelLeftMotorID);
@@ -50,11 +56,13 @@ public class Shooter extends SubsystemBase {
     m_TurretCANcoder = new CANcoder(kTurretCANcoderID);
     //m_Hood = new TalonFX(kHoodMotorID);
 
+     
+
     // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Slot0.kS = 0;
     flywheelConfig.Slot0.kV = 0;
-    flywheelConfig.Slot0.kP = 0;  
+    flywheelConfig.Slot0.kP = 5;  
     flywheelConfig.Slot0.kI = 0;
     flywheelConfig.Slot0.kD = 0;
     flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
@@ -86,10 +94,12 @@ public class Shooter extends SubsystemBase {
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
     //setupTalonFx(m_Hood, hoodConfig);
+    //m_FlywheelLeftLeader.setControl(flywheelOut);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Flywheel RPM",getFlywheelRPM());
     SmartDashboard.putData(this);
   }
 
@@ -119,6 +129,14 @@ public class Shooter extends SubsystemBase {
     return null;
   }
 
+  public void initialize(){
+    CommandScheduler.getInstance().schedule(setFlywheel());
+  }
+
+
+  public double getFlywheelRPM(){
+    return m_FlywheelLeftLeader.getVelocity().getValueAsDouble()*60;
+  }
   /**
    * Sets the target velocity for the flywheel.
    *
@@ -130,6 +148,12 @@ public class Shooter extends SubsystemBase {
       this);
   }
 
+  public void flyWheelOn(){
+    m_FlywheelOutputDutyCycle = 1;
+  }
+  public void flyWheelOff(){
+    m_FlywheelOutputDutyCycle = 0;
+  }
   /** Set the target for the shooter. */
   public void setTarget() {
 

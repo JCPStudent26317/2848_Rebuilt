@@ -61,25 +61,33 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        shooter.register();
+
+        driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
+        driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
+        
+
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        //             .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
 
 
         driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
-        driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-drivetrain.getPIDTurn()) // Drive counterclockwise with negative X (left)
-            ));
+        // driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        //             .withRotationalRate(-drivetrain.getPIDTurn()) // Drive counterclockwise with negative X (left)
+        //     ));
 
         /*
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));

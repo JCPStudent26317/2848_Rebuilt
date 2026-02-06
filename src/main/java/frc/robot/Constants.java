@@ -51,11 +51,11 @@ public final class Constants {
 
   /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
-    public static final int kFlywheelLeftMotorID = 10;
-    public static final int kFlywheelRightMotorID = 11;
+    public static final int kFlywheelLeftMotorID = 50;
+    public static final int kFlywheelRightMotorID = 51;
     public static final int kHoodMotorID = 12;
     public static final int kTurretMotorID = 13;
-    public static final int kTurretCANcoderID = 14;
+    public static final int kTurretCANcoderID = 47;
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(0)
@@ -95,7 +95,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-vision", "limelight-turret"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-turret"}; // limelight-left
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
