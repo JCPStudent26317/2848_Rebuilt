@@ -36,17 +36,18 @@ public final class Constants {
   }
 
   public static class HopperConstants {
-    public static final int kBeltMotorID = 0;
-    public static final double kBeltMotorSpeed = 1.0;    
-    public static final int kRollerMotorID = 0;
-    public static final double kRollerMotorSpeed = 1.0;
-    public static final int kTransitionMotorID = 0;
-    public static final double kTransitionMotorSpeed = 1.0;    
+    // These names should be changed
+    public static final int kBeltMotorID = 44;
+    public static final double kBeltMotorSpeed = 0.66;    
+    public static final int kRollerMotorID = 41;
+    public static final double kRollerMotorSpeed = 0.66;
+    public static final int kTransitionMotorID = 42;
+    public static final double kTransitionMotorSpeed = 0.66;    
   }
 
   public static class MagazineConstants {
-    public static final int kMagazineMotorID = 0;
-    public static final double kMagazineMotorSpeed = 1.0;
+    public static final int kMagazineMotorID = 40;
+    public static final double kMagazineMotorSpeed = .5;
   }
 
   /**Constant values for the Shooter subsystem.*/

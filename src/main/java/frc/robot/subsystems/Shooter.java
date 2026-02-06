@@ -18,12 +18,15 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+
 import lombok.Getter;
 
 /** Shooter Subsystem. */
@@ -37,7 +40,7 @@ public class Shooter extends SubsystemBase {
   //private final TalonFX m_Hood;
 
   private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
-  private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0);
+  private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0.0);
 
   private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
 
@@ -46,7 +49,6 @@ public class Shooter extends SubsystemBase {
   private @Getter double m_FlywheelOutputDutyCycle = 0;
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
-  private DutyCycleOut flywheelOut = new DutyCycleOut(0.0);    
 
   /** Shooter Subsystem. */
   public Shooter() {
@@ -62,10 +64,11 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Slot0.kS = 0;
     flywheelConfig.Slot0.kV = 0;
-    flywheelConfig.Slot0.kP = 5;  
-    flywheelConfig.Slot0.kI = 0;
-    flywheelConfig.Slot0.kD = 0;
+    flywheelConfig.Slot0.kP = .000175;  
+    flywheelConfig.Slot0.kI = 0.0;
+    flywheelConfig.Slot0.kD = 0.0;
     flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
+    flywheelConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
@@ -95,11 +98,13 @@ public class Shooter extends SubsystemBase {
         .withPeakReverseVoltage(Volts.of(-6));
     //setupTalonFx(m_Hood, hoodConfig);
     //m_FlywheelLeftLeader.setControl(flywheelOut);
+    init();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Flywheel RPM",getFlywheelRPM());
+    SmartDashboard.putNumber("Flywheel vel error",getFlywheelRPM()-getM_FlywheelOutputDutyCycle());
     SmartDashboard.putData(this);
   }
 
@@ -129,9 +134,9 @@ public class Shooter extends SubsystemBase {
     return null;
   }
 
-  public void initialize(){
-    CommandScheduler.getInstance().schedule(setFlywheel());
-  }
+public void init(){
+  CommandScheduler.getInstance().schedule(setFlywheel());
+}
 
 
   public double getFlywheelRPM(){
@@ -144,15 +149,16 @@ public class Shooter extends SubsystemBase {
    */
   private Command setFlywheel() {
     return Commands.runOnce(
-      () -> m_FlywheelLeftLeader.setControl(m_FlywheelOut.withOutput(m_FlywheelOutputDutyCycle)), 
-      this);
+      () -> m_FlywheelLeftLeader.setControl(new VelocityDutyCycle(m_FlywheelOutputDutyCycle)),this);
   }
 
   public void flyWheelOn(){
-    m_FlywheelOutputDutyCycle = 1;
+    m_FlywheelOutputDutyCycle = 4000;
+    CommandScheduler.getInstance().schedule(setFlywheel());
   }
   public void flyWheelOff(){
     m_FlywheelOutputDutyCycle = 0;
+    CommandScheduler.getInstance().schedule(setFlywheel());
   }
   /** Set the target for the shooter. */
   public void setTarget() {

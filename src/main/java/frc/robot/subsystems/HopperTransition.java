@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import static frc.robot.Constants.HopperConstants.*;
 
@@ -26,6 +27,8 @@ public class HopperTransition extends SubsystemBase {
     public HopperTransition() {
         // Apply things to the configurations here
 
+        transitionMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
         beltMotor.getConfigurator().apply(beltMotorConfig);
         rollerMotor.getConfigurator().apply(rollerMotorConfig);
         transitionMotor.getConfigurator().apply(transitionMotorConfig);
@@ -39,6 +42,13 @@ public class HopperTransition extends SubsystemBase {
             transitionMotor.setControl(rollerOut);
         });
     }    
+
+    @Override
+    public void periodic(){
+        beltMotor.setControl(beltOut);
+        rollerMotor.setControl(rollerOut);
+        transitionMotor.setControl(rollerOut);
+    }
 
     public void setMotorsOutput(double beltOutput, double rollerOutput, double transitionOutput) {
         beltOut.Output = beltOutput;

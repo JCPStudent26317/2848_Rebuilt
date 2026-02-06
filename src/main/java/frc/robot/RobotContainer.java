@@ -51,8 +51,8 @@ public class RobotContainer {
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
     // public static final Intake intake = new Intake();
-    // public static final HopperTransition hopper = new HopperTransition();
-    // public static final Magazine magazine = new Magazine();
+    public static final HopperTransition hopper = new HopperTransition();
+    public static final Magazine magazine = new Magazine();
     @Getter public static final Shooter shooter = new Shooter();
 
 
@@ -63,9 +63,18 @@ public class RobotContainer {
     private void configureBindings() {
 
         shooter.register();
+        magazine.register();
+        hopper.register();
+
+
 
         driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
         driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
+
+        driverJoystick.b().onTrue(magazine.run());
+        driverJoystick.b().onFalse(magazine.stop());
+        driverJoystick.b().onTrue(hopper.forward());
+        driverJoystick.b().onFalse(hopper.stop());
         
 
 
