@@ -51,6 +51,8 @@ public class Shooter extends SubsystemBase {
 
   private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
 
+  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(.2);
+
   private double turretSetpoint = 0;
 
   // create a Motion Magic request, voltage output
@@ -86,22 +88,24 @@ public class Shooter extends SubsystemBase {
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
-    turretConfig.Slot0.kS = 0;
-    turretConfig.Slot0.kV = 0.1;
-    turretConfig.Slot0.kP = 4;
-    turretConfig.Slot0.kI = 0;
-    turretConfig.Slot0.kD = 0;
+    turretConfig.Slot0.kS = 0.2;
+    turretConfig.Slot0.kV = 5;
+    turretConfig.Slot0.kA = .2;
+    turretConfig.Slot0.kP = 30;
+    turretConfig.Slot0.kI = 0.3;
+    turretConfig.Slot0.kD = 0.00;
     turretConfig.Voltage
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
     turretConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turretConfig.Feedback.FeedbackRemoteSensorID = kTurretCANcoderID;
+    var motionMagicConfigs = turretConfig.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 7; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 14; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicJerk = 140; // Target jerk of 1600 rps/s/s (0.1 seconds)
     setupTalonFx(m_Turret, turretConfig);
-    MotionMagicConfigs motionMagicConfigs = new TalonFXConfiguration().MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    m_Turret.getConfigurator().apply(motionMagicConfigs);
+    
+    //m_Turret.getConfigurator().apply(motionMagicConfigs);
     CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
     retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
     
@@ -130,7 +134,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()/60);
     SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("turret output",m_Turret.get());
-    turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.9);
+    SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);
+    turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
     SmartDashboard.putData(this);
     dist = SmartDashboard.getNumber("Distance",0);
   }
@@ -152,7 +157,7 @@ public class Shooter extends SubsystemBase {
   /** Sets the turret angle to aim the shooter at the target.*/
   public Command setTurret() {
     return Commands.runOnce(
-      () -> m_Turret.setControl(new MotionMagicVoltage(.9)), 
+      () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint)), 
       this);
   }
 

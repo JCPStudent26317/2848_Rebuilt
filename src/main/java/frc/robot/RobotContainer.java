@@ -83,9 +83,9 @@ public class RobotContainer {
         driverJoystick.x().onTrue(intake.intake());
         driverJoystick.x().onFalse(intake.stop());
 
-        driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
+        //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
-        driverJoystick.rightBumper().onTrue(shooter.setTurret());
+        driverJoystick.y().onTrue(shooter.setTurret());
         
 
 
