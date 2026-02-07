@@ -174,7 +174,7 @@ public void init(){
 
 
 private double getExitVelo(double dist){
-  return 6.7+1.75*dist;
+  return 6+1.75*dist;
 }
 
 private double getVeloRPM(double velo){
