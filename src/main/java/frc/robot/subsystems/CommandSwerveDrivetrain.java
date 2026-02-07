@@ -288,7 +288,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
 
         SmartDashboard.putData("Field",m_field);
-        SmartDashboard.putNumber("hub theta",getHubTheta());
+        
     }
 
     private void startSimThread() {

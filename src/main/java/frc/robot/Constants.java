@@ -120,7 +120,7 @@ public final class Constants {
     }
 
     // Position Constants
-    public static final Translation2d kRobotToTurretTranslation = new Translation2d(-0.25, .508); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
+    public static final Translation2d kRobotToTurretTranslation = new Translation2d(0, .0); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
     public static final double kTurretToCameraMagnitude = .19; // The distance from the center of the turret to the Limelight
 
     // Filters

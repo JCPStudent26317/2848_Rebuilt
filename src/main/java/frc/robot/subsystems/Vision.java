@@ -375,8 +375,8 @@ public class Vision extends SubsystemBase {
         PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
         PoseEstimate robotPose = turretCameraPose;
 
-        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle())));
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getTurretAngle()).rotateBy(new Rotation2d(0));
         
         robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
         

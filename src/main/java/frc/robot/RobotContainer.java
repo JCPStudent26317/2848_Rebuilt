@@ -67,6 +67,9 @@ public class RobotContainer {
         hopper.register();
         intake.register();
 
+        drivetrain.register();
+        vision.register();
+
         intake.setDefaultCommand(intake.holdState());
         hopper.setDefaultCommand(hopper.holdState());
 
@@ -86,6 +89,8 @@ public class RobotContainer {
         //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
         driverJoystick.y().onTrue(shooter.setTurret());
+
+        driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
         
 
 

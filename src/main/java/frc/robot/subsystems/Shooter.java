@@ -7,6 +7,7 @@ import static frc.robot.RangerHelpers.*;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -26,6 +29,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -62,6 +66,8 @@ public class Shooter extends SubsystemBase {
 
   private @Getter double m_FlywheelOutputDutyCycle = 0;
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
+
+  private Translation2d targetPos = new Translation2d(12,4);
 
 
   /** Shooter Subsystem. */
@@ -135,9 +141,21 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("turret output",m_Turret.get());
     SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);
-    turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
+    //turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
+    SmartDashboard.putNumber("turret setpoint",turretSetpoint);
     SmartDashboard.putData(this);
     dist = SmartDashboard.getNumber("Distance",0);
+
+    SmartDashboard.putNumber("hub theta",getHubTheta());
+
+    turretSetpoint = getHubTheta()/2/Math.PI;
+
+    turretSetpoint = MathUtil.clamp(turretSetpoint,-.33,.09);
+
+  }
+
+  public double getTurretAngle(){
+    return turretSetpoint * 2 *Math.PI;
   }
 
   @Override
@@ -180,6 +198,14 @@ private double getExitVelo(double dist){
 private double getVeloRPM(double velo){
   return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
 }
+
+    private double getHubTheta(){
+        SwerveDriveState state = RobotContainer.getDrivetrain().getState();
+        SmartDashboard.putNumber("Target X", state.Pose.getTranslation().minus(targetPos).getX());
+        SmartDashboard.putNumber("Target Y", state.Pose.getTranslation().minus(targetPos).getY());
+
+        return (targetPos.minus(state.Pose.getTranslation()).getAngle().getRadians())+Math.PI;  
+    }
 
 
   public double getFlywheelRPM(){
