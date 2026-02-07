@@ -31,7 +31,7 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeMotorID = 0;
+    public static final int kIntakeMotorID = 43;
     public static final double kIntakeMotorSpeed = 1.0;
   }
 
@@ -55,12 +55,18 @@ public final class Constants {
     public static final int kFlywheelLeftMotorID = 50;
     public static final int kFlywheelRightMotorID = 51;
     public static final int kHoodMotorID = 12;
-    public static final int kTurretMotorID = 13;
+    public static final int kTurretMotorID = 48;
     public static final int kTurretCANcoderID = 47;
 
+    public static final double kTurretOffset = -.033;
+
+    public static final double kFlywheelRPMMult = 1.5;
+
+    public static final double kFlywheelRadius = .05; //meters
+
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(0)
-        .withAbsoluteSensorDiscontinuityPoint(0.5)
+        .withMagnetOffset(-.033)
+        .withAbsoluteSensorDiscontinuityPoint(0)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
 
   }

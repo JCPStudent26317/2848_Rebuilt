@@ -17,15 +17,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 
 import lombok.Getter;
 
@@ -37,12 +42,21 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
 
+  private double dist =0;
+
   //private final TalonFX m_Hood;
 
   private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
   private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0.0);
 
   private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
+
+  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(.2);
+
+  private double turretSetpoint = 0;
+
+  // create a Motion Magic request, voltage output
+
 
   //private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
 
@@ -62,30 +76,39 @@ public class Shooter extends SubsystemBase {
 
     // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
-    flywheelConfig.Slot0.kS = 0;
-    flywheelConfig.Slot0.kV = 0;
-    flywheelConfig.Slot0.kP = .000175;  
+    flywheelConfig.Slot0.kS = 0.0005;
+    flywheelConfig.Slot0.kV = 0.002;
+    flywheelConfig.Slot0.kP = 0;//.000175;  
     flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = 0.0;
-    flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
+    flywheelConfig.Slot0.kD = 0.000;
+    flywheelConfig.Slot0.kA = .0005;
+    flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(16)).withPeakReverseVoltage(Volts.of(-16));
     flywheelConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
-    turretConfig.Slot0.kS = 0;
-    turretConfig.Slot0.kV = 0;
-    turretConfig.Slot0.kP = 0;
-    turretConfig.Slot0.kI = 0;
-    turretConfig.Slot0.kD = 0;
+    turretConfig.Slot0.kS = 0.2;
+    turretConfig.Slot0.kV = 5;
+    turretConfig.Slot0.kA = .2;
+    turretConfig.Slot0.kP = 30;
+    turretConfig.Slot0.kI = 0.3;
+    turretConfig.Slot0.kD = 0.00;
     turretConfig.Voltage
         .withPeakForwardVoltage(Volts.of(6))
         .withPeakReverseVoltage(Volts.of(-6));
     turretConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turretConfig.Feedback.FeedbackRemoteSensorID = kTurretCANcoderID;
+    var motionMagicConfigs = turretConfig.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 7; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 14; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicJerk = 140; // Target jerk of 1600 rps/s/s (0.1 seconds)
     setupTalonFx(m_Turret, turretConfig);
+    
+    //m_Turret.getConfigurator().apply(motionMagicConfigs);
     CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
     retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
+    
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0.kS = 0;
@@ -104,8 +127,17 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Flywheel RPM",getFlywheelRPM());
-    SmartDashboard.putNumber("Flywheel vel error",getFlywheelRPM()-getM_FlywheelOutputDutyCycle());
+    SmartDashboard.putNumber("Flywheel vel error",getVeloRPM(getExitVelo(dist))-getFlywheelRPM());
+    SmartDashboard.putNumber("Commanded flywheel rpm",getVeloRPM(getExitVelo(dist)));
+    SmartDashboard.putNumber("Motor Output", m_FlywheelLeftLeader.get());
+    SmartDashboard.putNumber("Shooter1 RPM",m_FlywheelLeftLeader.getVelocity().getValueAsDouble()/60);
+    SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()/60);
+    SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("turret output",m_Turret.get());
+    SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);
+    turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
     SmartDashboard.putData(this);
+    dist = SmartDashboard.getNumber("Distance",0);
   }
 
   @Override
@@ -123,9 +155,9 @@ public class Shooter extends SubsystemBase {
   } 
 
   /** Sets the turret angle to aim the shooter at the target.*/
-  private Command setTurret() {
+  public Command setTurret() {
     return Commands.runOnce(
-      () -> m_Turret.setControl(m_TurretPV.withPosition(m_TurretAngle / 180)), 
+      () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint)), 
       this);
   }
 
@@ -136,6 +168,17 @@ public class Shooter extends SubsystemBase {
 
 public void init(){
   CommandScheduler.getInstance().schedule(setFlywheel());
+  SmartDashboard.putNumber("turret setpoint",turretSetpoint);
+  SmartDashboard.putNumber("Distance",dist);
+}
+
+
+private double getExitVelo(double dist){
+  return 6.7+1.75*dist;
+}
+
+private double getVeloRPM(double velo){
+  return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
 }
 
 
@@ -149,11 +192,12 @@ public void init(){
    */
   private Command setFlywheel() {
     return Commands.runOnce(
-      () -> m_FlywheelLeftLeader.setControl(new VelocityDutyCycle(m_FlywheelOutputDutyCycle)),this);
+      () -> m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
   }
 
   public void flyWheelOn(){
-    m_FlywheelOutputDutyCycle = 4000;
+    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo(this.dist));
+    //m_FlywheelOutputDutyCycle = 5000;
     CommandScheduler.getInstance().schedule(setFlywheel());
   }
   public void flyWheelOff(){
