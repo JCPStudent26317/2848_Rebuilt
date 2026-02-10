@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -21,6 +23,8 @@ import edu.wpi.first.math.VecBuilder;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionConstants.CropWindowSettings;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.LimelightHelpers;
 
 import lombok.Getter;
@@ -65,15 +69,7 @@ public class Vision extends SubsystemBase {
     }
 
     private void configureCamera(String camera){
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kRedAprilTagList); // Only track these tag IDs
-        }
-        else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kBlueAprilTagList); // Only track these tag IDs
-        }
-        else{
-            LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
-        }
+        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
         LimelightHelpers.SetFiducialDownscalingOverride(camera, kDownscaleFactor); // Increases the framerate
 
         // Force LEDs off
@@ -81,7 +77,7 @@ public class Vision extends SubsystemBase {
 
         // Apply window crop settings to increase framerate
         CropWindowSettings cropWindow = cameraCropWindowMap.get(camera);
-        LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
+        //LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
     }
 
 
@@ -235,7 +231,7 @@ public class Vision extends SubsystemBase {
      */
     public void updateVisionPoseEstimate(){
         LimelightHelpers.PoseEstimate visionPoseEstimate = new LimelightHelpers.PoseEstimate();
-              
+        
         if (useMegaTag2){
             visionPoseEstimate = visionPoseEstimateMT2;
             // Check to ensure there is a valid pose estimate
@@ -245,7 +241,12 @@ public class Vision extends SubsystemBase {
         }
         else {
             // Using Megatag1 
-            visionPoseEstimate = visionPoseEstimateMT1;
+            if (bestLimeLight.equals("limelight-turret")){
+                visionPoseEstimate = getTurretToRobotPose();
+            }
+            else{
+                visionPoseEstimate = visionPoseEstimateMT1;
+            }
             poseError = visionPoseEstimate.pose.minus(RobotContainer.getDrivetrain().getState().Pose);
             
             // Check to ensure there is a valid pose estimate
@@ -332,7 +333,7 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Old Standard Deviation", (visionPoseEstimate.avgTagArea * (-18.3)) + 11.34);
 
         // Fill out Standard deviation matrix for drivebase
-        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
     }
 
     /**
@@ -363,6 +364,23 @@ public class Vision extends SubsystemBase {
      */
     public int getTag(){
         return (int) NetworkTableInstance.getDefault().getTable(bestLimeLight).getEntry("tid").getInteger(-1);
+    }
+
+    /**
+     * Calculates the robot's pose based on the turret limelight
+     * Note: Might need to track the turret angle and match the position with the timestamp from the pose estimate (source of error if we don't)
+     * @return the calculated robot pose
+     */
+    public PoseEstimate getTurretToRobotPose(){
+        PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
+        PoseEstimate robotPose = turretCameraPose;
+
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+        
+        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
+        
+        return robotPose;
     }
 
 }

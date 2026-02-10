@@ -6,7 +6,13 @@ package frc.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Translation2d;
+
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,58 +31,84 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeMotorID = 0;
+    public static final int kIntakeMotorID = 43;
     public static final double kIntakeMotorSpeed = 1.0;
   }
 
   public static class HopperConstants {
-    public static final int kBeltMotorID = 0;
-    public static final double kBeltMotorSpeed = 1.0;    
-    public static final int kRollerMotorID = 0;
-    public static final double kRollerMotorSpeed = 1.0;
-    public static final int kTransitionMotorID = 0;
-    public static final double kTransitionMotorSpeed = 1.0;    
+    // These names should be changed
+    public static final int kBeltMotorID = 44;
+    public static final double kBeltMotorSpeed = 0.66;    
+    public static final int kRollerMotorID = 41;
+    public static final double kRollerMotorSpeed = 0.66;
+    public static final int kTransitionMotorID = 42;
+    public static final double kTransitionMotorSpeed = 0.66;    
   }
 
   public static class MagazineConstants {
-    public static final int kMagazineMotorID = 0;
-    public static final double kMagazineMotorSpeed = 1.0;
+    public static final int kMagazineMotorID = 40;
+    public static final double kMagazineMotorSpeed = .5;
   }
 
-  //** Just copied from 2025 project.*/
+  /**Constant values for the Shooter subsystem.*/
+  public static class ShooterConstants {
+    public static final int kFlywheelLeftMotorID = 50;
+    public static final int kFlywheelRightMotorID = 51;
+    public static final int kHoodMotorID = 12;
+    public static final int kTurretMotorID = 48;
+    public static final int kTurretCANcoderID = 47;
+
+    public static final double kTurretOffset = -.033;
+
+    public static final double kFlywheelRPMMult = 1.5;
+
+    public static final double kFlywheelRadius = .05; //meters
+
+    public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
+        .withMagnetOffset(-.033)
+        .withAbsoluteSensorDiscontinuityPoint(0)
+        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+
+  }
+
+  /**Constant values for the Vision subsystem.*/
   public static class VisionConstants {
+
+    /** Class for applying crop settings to LimeLights.*/
+
+    /** Class for applying crop settings to LimeLights.*/
     public static class CropWindowSettings{
-        @Getter @Setter private double cropXMin;
-        @Getter @Setter private double cropXMax;
-        @Getter @Setter private double cropYMin;
-        @Getter @Setter private double cropYMax;
+      @Getter @Setter private double cropXMin;
+      @Getter @Setter private double cropXMax;
+      @Getter @Setter private double cropYMin;
+      @Getter @Setter private double cropYMax;
 
-        public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
-            if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
-                throw new IllegalArgumentException("Invalid crop window: min must be less than max");
-            }
-            this.cropXMin = cropXMin;
-            this.cropXMax = cropXMax;
-            this.cropYMin = cropYMin;
-            this.cropYMax = cropYMax;
+      public CropWindowSettings(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
+        if (cropXMin >= cropXMax || cropYMin >= cropYMax) {
+          throw new IllegalArgumentException("Invalid crop window: min must be less than max");
         }
+        this.cropXMin = cropXMin;
+        this.cropXMax = cropXMax;
+        this.cropYMin = cropYMin;
+        this.cropYMax = cropYMax;
+      }
 
-        public CropWindowSettings(){
-            this.cropXMin = -1;
-            this.cropXMax = 1;
-            this.cropYMin = -1;
-            this.cropYMax = 1;
-        }
+      public CropWindowSettings(){
+        this.cropXMin = -1;
+        this.cropXMax = 1;
+        this.cropYMin = -1;
+        this.cropYMax = 1;
+      }
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-right"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-turret"}; // limelight-left
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
-    public static final int[] kRedAprilTagList = new int[]{6, 7, 8, 9, 10, 11};
-    public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22};
-    public static final int[] kAllAprilTagList = new int[]{6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+    public static final int[] kRedAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+    public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final float kDownscaleFactor = 4.0f;
     // crop settings
     public static final Map<String, CropWindowSettings> cameraCropWindowMap;
@@ -84,9 +116,12 @@ public final class Constants {
     static {
         cameraCropWindowMap = new HashMap<>();
         cameraCropWindowMap.put("limelight-right", new CropWindowSettings(-1, 1, -0.4, 0.9));
-        cameraCropWindowMap.put("limelight-left", new CropWindowSettings());
+        cameraCropWindowMap.put("limelight-vision", new CropWindowSettings());
     }
 
+    // Position Constants
+    public static final Translation2d kRobotToTurretTranslation = new Translation2d(-0.25, .508); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
+    public static final double kTurretToCameraMagnitude = .19; // The distance from the center of the turret to the Limelight
 
     // Filters
     public static final boolean kApplyFilters = true;
