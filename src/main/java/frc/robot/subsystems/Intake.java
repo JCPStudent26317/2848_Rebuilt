@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import static frc.robot.Constants.IntakeConstants.*;
 
@@ -16,12 +17,17 @@ public class Intake extends SubsystemBase {
     private final TalonFXConfiguration intakeMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut intakeOut = new DutyCycleOut(0.0);
 
+    private final TalonFX pivotMotor = null;
+    private final TalonFXConfiguration pivotMotorConfig = new TalonFXConfiguration();
+    // Pivot motor would use PID, maybe feedforward with arm angle
+
     public Intake() {
         // Apply things to the configuration here
-        intakeMotorConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
+        intakeMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         intakeMotor.getConfigurator().apply(intakeMotorConfig);
-    }
+        pivotMotor.getConfigurator().apply(pivotMotorConfig);
+    } 
 
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
