@@ -33,6 +33,8 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int kIntakeMotorID = 43;
     public static final double kIntakeMotorSpeed = 1.0;
+    public static final int kPivotMotorID = 0;
+    public static final double kPivotMotorSpeed = 1.0;    
   }
 
   public static class HopperConstants {
@@ -140,5 +142,11 @@ public final class Constants {
     public static final double kMinimumRotationalStandardDeviation = Math.toRadians(2.5); // rad
     public static final double kAddSkewDataDistanceThreshold = 2; //m
     }
+
+  public static class ClimberConstants {
+    public static final int kClimberMotorID = 0;
+    public static final double kClimberMotorSpeed = 1;    
+  }
+
 
 }
