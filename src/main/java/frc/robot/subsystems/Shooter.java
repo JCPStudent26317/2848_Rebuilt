@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -31,6 +33,7 @@ import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 
 import lombok.Getter;
 
@@ -54,6 +57,9 @@ public class Shooter extends SubsystemBase {
   private final MotionMagicVoltage turretOut = new MotionMagicVoltage(.2);
 
   private double turretSetpoint = 0;
+
+  private double hubTheta = 0;
+  private double hubDist = 0;
 
   // create a Motion Magic request, voltage output
 
@@ -104,40 +110,53 @@ public class Shooter extends SubsystemBase {
     motionMagicConfigs.MotionMagicAcceleration = 14; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 140; // Target jerk of 1600 rps/s/s (0.1 seconds)
     setupTalonFx(m_Turret, turretConfig);
+
+    SoftwareLimitSwitchConfigs turretSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    turretSwitchConfigs.ForwardSoftLimitThreshold = .05;
+    turretSwitchConfigs.ReverseSoftLimitThreshold= -.33;
+    turretSwitchConfigs.ForwardSoftLimitEnable = true;
+    turretSwitchConfigs.ForwardSoftLimitEnable = true;
+    m_Turret.getConfigurator().apply(turretSwitchConfigs);
     
     //m_Turret.getConfigurator().apply(motionMagicConfigs);
     CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
     retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
     
 
-    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
-    hoodConfig.Slot0.kS = 0;
-    hoodConfig.Slot0.kV = 0;
-    hoodConfig.Slot0.kP = 0;
-    hoodConfig.Slot0.kI = 0;
-    hoodConfig.Slot0.kD = 0;
-    hoodConfig.Voltage
-        .withPeakForwardVoltage(Volts.of(6))
-        .withPeakReverseVoltage(Volts.of(-6));
-    //setupTalonFx(m_Hood, hoodConfig);
-    //m_FlywheelLeftLeader.setControl(flywheelOut);
+    // TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+    // hoodConfig.Slot0.kS = 0;
+    // hoodConfig.Slot0.kV = 0;
+    // hoodConfig.Slot0.kP = 0;
+    // hoodConfig.Slot0.kI = 0;
+    // hoodConfig.Slot0.kD = 0;
+    // hoodConfig.Voltage
+    //     .withPeakForwardVoltage(Volts.of(6))
+    //     .withPeakReverseVoltage(Volts.of(-6));
+    // //setupTalonFx(m_Hood, hoodConfig);
+    // //m_FlywheelLeftLeader.setControl(flywheelOut);
     init();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Flywheel RPM",getFlywheelRPM());
-    SmartDashboard.putNumber("Flywheel vel error",getVeloRPM(getExitVelo(dist))-getFlywheelRPM());
-    SmartDashboard.putNumber("Commanded flywheel rpm",getVeloRPM(getExitVelo(dist)));
+    SmartDashboard.putNumber("Flywheel vel error",getVeloRPM(getExitVelo())-getFlywheelRPM());
+    SmartDashboard.putNumber("Commanded flywheel rpm",getVeloRPM(getExitVelo()));
     SmartDashboard.putNumber("Motor Output", m_FlywheelLeftLeader.get());
     SmartDashboard.putNumber("Shooter1 RPM",m_FlywheelLeftLeader.getVelocity().getValueAsDouble()/60);
     SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()/60);
     SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("turret output",m_Turret.get());
     SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);
-    turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
+    //turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
+    SmartDashboard.putNumber("turret setpoint",turretSetpoint);
     SmartDashboard.putData(this);
-    dist = SmartDashboard.getNumber("Distance",0);
+    SmartDashboard.putNumber("Shooter hub theta",hubTheta);
+
+
+    hubTheta=(RobotContainer.getDrivetrain().getTargetTheta());
+    dist = RobotContainer.getDrivetrain().getTargetDist();
+    setTurretAngle(hubTheta);
   }
 
   @Override
@@ -161,10 +180,6 @@ public class Shooter extends SubsystemBase {
       this);
   }
 
-  /** Sets the hood angle.*/
-  private Command setHood() {
-    return null;
-  }
 
 public void init(){
   CommandScheduler.getInstance().schedule(setFlywheel());
@@ -173,12 +188,17 @@ public void init(){
 }
 
 
-private double getExitVelo(double dist){
+private double getExitVelo(){
   return 0.7191*dist + 5.5572;
 }
 
 private double getVeloRPM(double velo){
   return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
+}
+
+
+public void setTurretAngle(double angle){
+  turretSetpoint = angle / (2 * Math.PI);
 }
 
 
@@ -196,7 +216,7 @@ private double getVeloRPM(double velo){
   }
 
   public void flyWheelOn(){
-    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo(this.dist));
+    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
     //m_FlywheelOutputDutyCycle = 5000;
     CommandScheduler.getInstance().schedule(setFlywheel());
   }

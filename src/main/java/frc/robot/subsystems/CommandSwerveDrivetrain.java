@@ -166,10 +166,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         rotation_controller.enableContinuousInput(-Math.PI, Math.PI);
 
         if (DriverStation.getAlliance().get() == Alliance.Red){
-            targetPos = new Translation2d(12,4);
+            targetPos = new Translation2d(11.9,4);
         } else{
             targetPos = new Translation2d(5,4);
         }
+        SmartDashboard.putString("TargetPos",targetPos.toString());
 
     }
 
@@ -264,15 +265,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
-
-    private double getHubTheta(){
+/**
+ * gets the distance from the center of the robot and target
+ * @return distance in meters
+ */
+    public double getTargetDist(){
+        return targetPos.minus(this.getState().Pose.getTranslation()).getNorm();
+    }
+/**
+ * gets the theta between robot front and target translation
+ * @return angle in radians
+ */
+    public double getTargetTheta(){
         SmartDashboard.putNumber("Target X", getState().Pose.getTranslation().minus(targetPos).getX());
         SmartDashboard.putNumber("Target Y", getState().Pose.getTranslation().minus(targetPos).getY());
 
         return (targetPos.minus(getState().Pose.getTranslation()).getAngle().getRadians());  
     }
     public double getPIDTurn(){
-        return rotation_controller.calculate(getHubTheta()-this.getState().Pose.getRotation().getRadians());
+        return rotation_controller.calculate(getTargetTheta()-this.getState().Pose.getRotation().getRadians());
     }
 
     @Override
@@ -297,7 +308,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_field.setRobotPose(this.getState().Pose);
       
         SmartDashboard.putData("Field",m_field);
-        SmartDashboard.putNumber("hub theta",getHubTheta());
+        SmartDashboard.putNumber("hub theta",getTargetTheta());
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }

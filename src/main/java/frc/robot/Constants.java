@@ -102,7 +102,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-turret"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-front"}; // limelight-left
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
@@ -116,7 +116,7 @@ public final class Constants {
     static {
         cameraCropWindowMap = new HashMap<>();
         cameraCropWindowMap.put("limelight-right", new CropWindowSettings(-1, 1, -0.4, 0.9));
-        cameraCropWindowMap.put("limelight-vision", new CropWindowSettings());
+        cameraCropWindowMap.put("limelight-front", new CropWindowSettings());
     }
 
     // Position Constants
