@@ -71,6 +71,30 @@ public final class Constants {
         .withAbsoluteSensorDiscontinuityPoint(0)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
 
+    public static final double kFlywheelkS = 0.0005;
+    public static final double kFlywheelkV = 0.002;
+    public static final double kFlywheelkP = 0;//.000175;  
+    public static final double kFlywheelkI = 0.0;
+    public static final double kFlywheelkD = 0.000;
+    public static final double kFlywheelkA = .0005;
+    // the order of the pid values is different between these two !!
+    public static final double kTurretkS = 0.2;
+    public static final double kTurretkV = 5;
+    public static final double kTurretkA = .2;
+    public static final double kTurretkP = 30;
+    public static final double kTurretkI = 0.3;
+    public static final double kTurretkD = 0.00;    
+    
+    public static final double kFlywheelPeakVoltage = 16;
+    public static final double kTurretPeakVoltage = 6;
+
+    public static final double kTurretMMCruiseVelocity = 7;
+    public static final double kTurretMMAcceleration = 14;
+    public static final double kTurretMMJerk = 140;
+
+    public static final double kTurretSwitchForwardLimit = 0.05;
+    public static final double kTurretSwitchReverseLimit = -0.33;
+
   }
 
   /**Constant values for the Vision subsystem.*/

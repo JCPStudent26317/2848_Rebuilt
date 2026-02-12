@@ -1,10 +1,23 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.*;
-import static frc.robot.RangerHelpers.*;
+import static frc.robot.RangerHelpers.retryConfigApply;
+import static frc.robot.RangerHelpers.setupTalonFx;
 
-import java.util.function.DoubleSupplier;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -12,29 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-
 import lombok.Getter;
 
 /** Shooter Subsystem. */
@@ -82,40 +74,42 @@ public class Shooter extends SubsystemBase {
 
     // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
-    flywheelConfig.Slot0.kS = 0.0005;
-    flywheelConfig.Slot0.kV = 0.002;
-    flywheelConfig.Slot0.kP = 0;//.000175;  
-    flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = 0.000;
-    flywheelConfig.Slot0.kA = .0005;
-    flywheelConfig.Voltage.withPeakForwardVoltage(Volts.of(16)).withPeakReverseVoltage(Volts.of(-16));
+    flywheelConfig.Slot0.kS = kFlywheelkS;
+    flywheelConfig.Slot0.kV = kFlywheelkV;
+    flywheelConfig.Slot0.kP = kFlywheelkP;//.000175;  
+    flywheelConfig.Slot0.kI = kFlywheelkI;
+    flywheelConfig.Slot0.kD = kFlywheelkD;
+    flywheelConfig.Slot0.kA = kFlywheelkA;
+    flywheelConfig.Voltage
+        .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
+        .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
     flywheelConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
-    turretConfig.Slot0.kS = 0.2;
-    turretConfig.Slot0.kV = 5;
-    turretConfig.Slot0.kA = .2;
-    turretConfig.Slot0.kP = 30;
-    turretConfig.Slot0.kI = 0.3;
-    turretConfig.Slot0.kD = 0.00;
+    turretConfig.Slot0.kS = kTurretkS;
+    turretConfig.Slot0.kV = kTurretkV;
+    turretConfig.Slot0.kA = kTurretkA;
+    turretConfig.Slot0.kP = kTurretkP;
+    turretConfig.Slot0.kI = kTurretkI;
+    turretConfig.Slot0.kD = kTurretkD;
     turretConfig.Voltage
-        .withPeakForwardVoltage(Volts.of(6))
-        .withPeakReverseVoltage(Volts.of(-6));
+        .withPeakForwardVoltage(Volts.of(kTurretPeakVoltage))
+        .withPeakReverseVoltage(Volts.of(-1 * kTurretPeakVoltage));
     turretConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turretConfig.Feedback.FeedbackRemoteSensorID = kTurretCANcoderID;
     var motionMagicConfigs = turretConfig.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 7; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 14; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = 140; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicCruiseVelocity = kTurretMMCruiseVelocity; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = kTurretMMAcceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicJerk = kTurretMMJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
     setupTalonFx(m_Turret, turretConfig);
 
     SoftwareLimitSwitchConfigs turretSwitchConfigs = new SoftwareLimitSwitchConfigs();
-    turretSwitchConfigs.ForwardSoftLimitThreshold = .05;
-    turretSwitchConfigs.ReverseSoftLimitThreshold= -.33;
+    turretSwitchConfigs.ForwardSoftLimitThreshold = kTurretSwitchForwardLimit;
+    turretSwitchConfigs.ReverseSoftLimitThreshold = kTurretSwitchReverseLimit;
     turretSwitchConfigs.ForwardSoftLimitEnable = true;
-    turretSwitchConfigs.ForwardSoftLimitEnable = true;
+    turretSwitchConfigs.ReverseSoftLimitEnable = true;
     m_Turret.getConfigurator().apply(turretSwitchConfigs);
     
     //m_Turret.getConfigurator().apply(motionMagicConfigs);
