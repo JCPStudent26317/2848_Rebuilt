@@ -55,10 +55,10 @@ public class RobotContainer {
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
-    public static final Intake intake = new Intake();
-    public static final HopperTransition hopper = new HopperTransition();
-    public static final Magazine magazine = new Magazine();
-    @Getter public static final Shooter shooter = new Shooter();
+    // public static final Intake intake = new Intake();
+    // public static final HopperTransition hopper = new HopperTransition();
+    // public static final Magazine magazine = new Magazine();
+    // @Getter public static final Shooter shooter = new Shooter();
 
     private final SendableChooser<Command> autoChooser;
 
@@ -74,31 +74,31 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        shooter.register();
-        magazine.register();
-        hopper.register();
-        intake.register();
+        // shooter.register();
+        // magazine.register();
+        // hopper.register();
+        // intake.register();
         drivetrain.register();
 
-        intake.setDefaultCommand(intake.holdState());
-        hopper.setDefaultCommand(hopper.holdState());
+        // intake.setDefaultCommand(intake.holdState());
+        // hopper.setDefaultCommand(hopper.holdState());
 
 
 
-        driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
-        driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
+        // driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
+        // driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
 
-        driverJoystick.b().onTrue(magazine.run());
-        driverJoystick.b().onFalse(magazine.stop());
-        driverJoystick.b().onTrue(hopper.forward());
-        driverJoystick.b().onFalse(hopper.stop());
+        // driverJoystick.b().onTrue(magazine.run());
+        // driverJoystick.b().onFalse(magazine.stop());
+        // driverJoystick.b().onTrue(hopper.forward());
+        // driverJoystick.b().onFalse(hopper.stop());
 
-        driverJoystick.x().onTrue(intake.intake());
-        driverJoystick.x().onFalse(intake.stop());
+        // driverJoystick.x().onTrue(intake.intake());
+        // driverJoystick.x().onFalse(intake.stop());
 
         //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
-        driverJoystick.y().onTrue(shooter.setTurret());
+        // driverJoystick.y().onTrue(shooter.setTurret());
         
 
 

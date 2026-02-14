@@ -242,7 +242,7 @@ public class Vision extends SubsystemBase {
         else {
             // Using Megatag1 
             if (bestLimeLight.equals("limelight-turret")){
-                visionPoseEstimate = getTurretToRobotPose();
+                //visionPoseEstimate = getTurretToRobotPose();
             }
             else{
                 visionPoseEstimate = visionPoseEstimateMT1;
@@ -371,17 +371,17 @@ public class Vision extends SubsystemBase {
      * Note: Might need to track the turret angle and match the position with the timestamp from the pose estimate (source of error if we don't)
      * @return the calculated robot pose
      */
-    public PoseEstimate getTurretToRobotPose(){
-        PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
-        PoseEstimate robotPose = turretCameraPose;
+    // public PoseEstimate getTurretToRobotPose(){
+    //     PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
+    //     PoseEstimate robotPose = turretCameraPose;
 
-        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+    //     Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
+    //     Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
         
-        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
+    //     robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
         
-        return robotPose;
-    }
+    //     return robotPose;
+    // }
 
 }
 
