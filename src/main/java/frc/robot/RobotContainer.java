@@ -47,6 +47,10 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.RobotCentric preciseAdjustments = new SwerveRequest.RobotCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -138,10 +142,15 @@ public class RobotContainer {
         driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         */
 
-        driverJoystick.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driverJoystick.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driverJoystick.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driverJoystick.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // Small adjustments code
+        driverJoystick.pov(90)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0).withVelocityY(-0.2))); //right
+        driverJoystick.pov(270)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0).withVelocityY(0.2))); //left
+        driverJoystick.pov(0)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0.2).withVelocityY(0)));
+        driverJoystick.pov(180)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(-0.2).withVelocityY(0)));
 
         // reset the field-centric heading on back press
         driverJoystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
