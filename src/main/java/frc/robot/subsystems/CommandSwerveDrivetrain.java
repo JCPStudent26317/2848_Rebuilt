@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -17,6 +18,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Avoider;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -233,6 +236,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         init();
         configureAutoBuilder();
     }
+/**
+ * gets the field relative speeds of the robot
+ * @return ChassisSpeeds which are field relative
+ */
+
+    public ChassisSpeeds getFieldSpeed(){
+        return ChassisSpeeds.fromRobotRelativeSpeeds(
+            this.getState().Speeds,
+            this.getState().Pose.getRotation()
+        );
+    }
 
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
@@ -241,8 +255,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
-    }
+    return run(() -> {
+        SwerveRequest request = requestSupplier.get();
+
+        if (request instanceof SwerveRequest.FieldCentric req) {
+            Translation2d scale = getDriverScale();
+            request = req.withVelocityX(req.VelocityX * scale.getX())
+            .withVelocityY(req.VelocityY * scale.getY());
+        }
+
+        this.setControl(request);
+    });
+}
+
 
     /**
      * Runs the SysId Quasistatic test in the given direction for the routine
@@ -253,6 +278,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.quasistatic(direction);
+    }
+
+    public Translation2d getDriverScale(){
+        return Avoider.getInputScales(this.getState().Pose, getFieldSpeed());
     }
 
     /**
@@ -286,6 +315,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return rotation_controller.calculate(getTargetTheta()-this.getState().Pose.getRotation().getRadians());
     }
 
+    public void drawRectangle(String name, Rectangle2d rect) {
+    double minX = rect.getCenter().getX() - rect.getXWidth() / 2.0;
+    double maxX = rect.getCenter().getX() + rect.getXWidth() / 2.0;
+    double minY = rect.getCenter().getY() - rect.getYWidth() / 2.0;
+    double maxY = rect.getCenter().getY() + rect.getYWidth() / 2.0;
+
+    List<Pose2d> outline = List.of(
+        new Pose2d(minX, minY, new Rotation2d()),
+        new Pose2d(maxX, minY, new Rotation2d()),
+        new Pose2d(maxX, maxY, new Rotation2d()),
+        new Pose2d(minX, maxY, new Rotation2d()),
+        new Pose2d(minX, minY, new Rotation2d())  // Close the loop
+    );
+
+    m_field.getObject(name).setPoses(outline);
+}
+
     @Override
     public void periodic() {
         /*
@@ -306,9 +352,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         m_field.setRobotPose(this.getState().Pose);
+
+        //m_field.getObject("breakpoint").setPoses();
+
+        m_field.getObject("Breaking Point").setPose(new Pose2d(Avoider.getBrakePoint(getFieldSpeed()),new Rotation2d(0)));
+
       
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());
+        
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }
