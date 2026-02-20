@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.RangerHelpers.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,7 +14,7 @@ public class Climber extends SubsystemBase {
     private final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
 
     public Climber() {
-        climberMotor.getConfigurator().apply(climberMotorConfig);
+        setupTalonFx(climberMotor, climberMotorConfig);
     }
 
 }

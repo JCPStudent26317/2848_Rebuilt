@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import static frc.robot.Constants.HopperConstants.*;
+import static frc.robot.RangerHelpers.setupTalonFx;
 
 public class HopperTransition extends SubsystemBase {
     private final TalonFX sidewaysBeltMotor = new TalonFX(kSidewaysBeltMotorID);
@@ -28,8 +29,8 @@ public class HopperTransition extends SubsystemBase {
     public HopperTransition() {
         // Apply things to the configurations here
 
-        sidewaysBeltMotor.getConfigurator().apply(sidewaysBeltMotorConfig);
-        forwardBeltMotor.getConfigurator().apply(forwardBeltMotorConfig);
+        setupTalonFx(sidewaysBeltMotor, sidewaysBeltMotorConfig);
+        setupTalonFx(forwardBeltMotor, forwardBeltMotorConfig);
 
         timer.reset();
         timer.start();

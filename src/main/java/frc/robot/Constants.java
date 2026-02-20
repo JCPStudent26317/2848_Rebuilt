@@ -31,8 +31,9 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeMotorID = 43;
-    public static final double kIntakeMotorSpeed = 1.0;
+    public static final int kLRollersMotorID = 43;
+    public static final int kRRollersMotorID = 42;
+    public static final double kRollersMotorSpeed = 1.0;
     public static final int kPivotMotorID = 0;
     public static final double kPivotMotorSpeed = 1.0;    
   }
