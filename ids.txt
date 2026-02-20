@@ -1,0 +1,53 @@
+[Kraken IDs - current]
+1  Swerve BLD
+2  Swerve BRS
+3  Swerve FLS
+4  Swerve FLD
+5  Swerve FRS
+6  Swerve FLS
+7  Swerve FRD
+8  Swerve BRD
+
+10 Shooter Flywheel 1
+11 Shooter Flywheel 2
+12 Magazine
+ 
+*"S" - steering motor, swerve module
+
+[IDs - planned]
+0  Pigeon
+
+Drivebase Modules - in "reading order"
+1  Kraken FLD
+2  Kraken FLS
+3  Encoder FL
+4  Kraken FRD
+5  Kraken FRS
+6  Encoder FR
+7  Kraken BLD
+8  Kraken BLS
+9  Encoder BL
+10 Kraken BRD
+11 Kraken BRS
+12 Encoder BR
+
+Intake
+15 Kraken Rollers L
+16 Kraken Rollers R
+17 Kraken Pivot
+18 Encoder Pivot
+
+Hopper
+21 Kraken Sideways Belts
+22 Kraken Forward Belts
+
+Shooter (+magazine, to be integrated into shooter subsystem)
+25 Kraken Pivot
+26 Encoder Pivot
+27 Kraken Magazine
+28 Kraken Flywheel L
+29 Kraken Flywheel R
+30 CANrange (beam break)
+
+Climber
+33 Kraken Climber
