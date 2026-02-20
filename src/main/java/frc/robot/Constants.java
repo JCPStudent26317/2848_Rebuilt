@@ -38,13 +38,10 @@ public final class Constants {
   }
 
   public static class HopperConstants {
-    // These names should be changed
-    public static final int kBeltMotorID = 44;
-    public static final double kBeltMotorSpeed = 0.66;    
-    public static final int kRollerMotorID = 41;
-    public static final double kRollerMotorSpeed = 0.66;
-    public static final int kTransitionMotorID = 42;
-    public static final double kTransitionMotorSpeed = 0.66;    
+    public static final int kSidewaysBeltMotorID = 44;
+    public static final double kSidewaysBeltSpeed = 0.66;    
+    public static final int kForwardBeltMotorID = 41;
+    public static final double kForwardBeltSpeed = 0.66;    
   }
 
   /**Constant values for the Shooter subsystem.*/

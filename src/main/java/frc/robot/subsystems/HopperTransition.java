@@ -15,27 +15,21 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import static frc.robot.Constants.HopperConstants.*;
 
 public class HopperTransition extends SubsystemBase {
-    private final TalonFX beltMotor = new TalonFX(kBeltMotorID);
-    private final TalonFXConfiguration beltMotorConfig = new TalonFXConfiguration();
-    private final DutyCycleOut beltOut = new DutyCycleOut(0.0);
+    private final TalonFX sidewaysBeltMotor = new TalonFX(kSidewaysBeltMotorID);
+    private final TalonFXConfiguration sidewaysBeltMotorConfig = new TalonFXConfiguration();
+    private final DutyCycleOut sidewaysBeltOut = new DutyCycleOut(0.0);
     
-    private final TalonFX rollerMotor = new TalonFX(kRollerMotorID);
-    private final TalonFXConfiguration rollerMotorConfig = new TalonFXConfiguration();
-    @Getter private final DutyCycleOut rollerOut = new DutyCycleOut(0.0);
+    private final TalonFX forwardBeltMotor = new TalonFX(kForwardBeltMotorID);
+    private final TalonFXConfiguration forwardBeltMotorConfig = new TalonFXConfiguration();
+    @Getter private final DutyCycleOut forwardBeltOut = new DutyCycleOut(0.0);
 
-    private final TalonFX transitionMotor = new TalonFX(kTransitionMotorID);
-    private final TalonFXConfiguration transitionMotorConfig = new TalonFXConfiguration();
-    private final DutyCycleOut transitionOut = new DutyCycleOut(0.0);
     private final Timer timer = new Timer();
 
     public HopperTransition() {
         // Apply things to the configurations here
 
-        transitionMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-        beltMotor.getConfigurator().apply(beltMotorConfig);
-        rollerMotor.getConfigurator().apply(rollerMotorConfig);
-        transitionMotor.getConfigurator().apply(transitionMotorConfig);
+        sidewaysBeltMotor.getConfigurator().apply(sidewaysBeltMotorConfig);
+        forwardBeltMotor.getConfigurator().apply(forwardBeltMotorConfig);
 
         timer.reset();
         timer.start();
@@ -44,9 +38,8 @@ public class HopperTransition extends SubsystemBase {
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
         return Commands.run(() -> {
-            beltMotor.setControl(beltOut);
-            rollerMotor.setControl(rollerOut);
-            transitionMotor.setControl(rollerOut);
+            sidewaysBeltMotor.setControl(sidewaysBeltOut);
+            forwardBeltMotor.setControl(forwardBeltOut);
         },this);
     }    
 
@@ -67,29 +60,21 @@ public class HopperTransition extends SubsystemBase {
         
     }
 
-    public void hopperBackwards(){
-        beltOut.Output = -.66;
-    }
-    public void hopperForwards(){
-        beltOut.Output = .66;
-    }
-
-    public void setMotorsOutput(double beltOutput, double rollerOutput, double transitionOutput) {
-        beltOut.Output = beltOutput;
-        rollerOut.Output = rollerOutput;
-        transitionOut.Output = transitionOutput;
+    public void setMotorsOutput(double sidewaysBeltOutput, double kForwardBeltOutput) {
+        sidewaysBeltOut.Output = sidewaysBeltOutput;
+        forwardBeltOut.Output = kForwardBeltOutput;
     }
 
     public Command forward() {
-        return Commands.runOnce(() -> setMotorsOutput(kBeltMotorSpeed, kRollerMotorSpeed, kTransitionMotorSpeed));
+        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed, kForwardBeltSpeed));
     }
 
     public Command backward() {
-        return Commands.runOnce(() -> setMotorsOutput(kBeltMotorSpeed * -1, kRollerMotorSpeed * -1, kTransitionMotorSpeed * -1));
+        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed * -1, kForwardBeltSpeed * -1));
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0, 0.0));
+        return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0));
     }
 
 }
