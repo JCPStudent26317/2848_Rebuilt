@@ -33,9 +33,11 @@ import lombok.Getter;
 public class Shooter extends SubsystemBase {
   private final TalonFX m_FlywheelLeftLeader;
   private final TalonFX m_FlywheelRightFollower;
-
+  
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
+
+  private final TalonFX m_Magazine;
 
   private double dist =0;
 
@@ -68,9 +70,7 @@ public class Shooter extends SubsystemBase {
     m_FlywheelRightFollower = new TalonFX(kFlywheelRightMotorID);
     m_Turret = new TalonFX(kTurretMotorID);
     m_TurretCANcoder = new CANcoder(kTurretCANcoderID);
-    //m_Hood = new TalonFX(kHoodMotorID);
-
-     
+    m_Magazine = new TalonFX(kMagazineMotorID);
 
     // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
@@ -115,19 +115,10 @@ public class Shooter extends SubsystemBase {
     //m_Turret.getConfigurator().apply(motionMagicConfigs);
     CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
     retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
-    
 
-    // TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
-    // hoodConfig.Slot0.kS = 0;
-    // hoodConfig.Slot0.kV = 0;
-    // hoodConfig.Slot0.kP = 0;
-    // hoodConfig.Slot0.kI = 0;
-    // hoodConfig.Slot0.kD = 0;
-    // hoodConfig.Voltage
-    //     .withPeakForwardVoltage(Volts.of(6))
-    //     .withPeakReverseVoltage(Volts.of(-6));
-    // //setupTalonFx(m_Hood, hoodConfig);
-    // //m_FlywheelLeftLeader.setControl(flywheelOut);
+    TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
+    retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
+
     init();
   }
 
@@ -231,6 +222,16 @@ public void setTurretAngle(double angle){
   /** Hold the current shooting state. */
   public Command holdState() {
     return setFlywheel().andThen(setTurret());
+  }
+
+  /** Run magazine */
+  public Command runMagazine() {
+    return Commands.runOnce(() -> m_Magazine.set(1.0), this);
+  }
+
+  /** Stop magazine */
+  public Command stopMagazine() {
+    return Commands.runOnce(() -> m_Magazine.set(0.0), this);
   }
 
   /**

@@ -47,18 +47,14 @@ public final class Constants {
     public static final double kTransitionMotorSpeed = 0.66;    
   }
 
-  public static class MagazineConstants {
-    public static final int kMagazineMotorID = 40;
-    public static final double kMagazineMotorSpeed = .5;
-  }
-
   /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
     public static final int kFlywheelLeftMotorID = 50;
     public static final int kFlywheelRightMotorID = 51;
-    public static final int kHoodMotorID = 12;
     public static final int kTurretMotorID = 48;
     public static final int kTurretCANcoderID = 47;
+    public static final int kMagazineMotorID = 40;
+    public static final double kMagazineMotorSpeed = .5;
 
     public static final double kTurretOffset = -.033;
 

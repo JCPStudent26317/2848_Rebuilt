@@ -25,7 +25,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.HopperTransition;
-import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import lombok.Getter;
@@ -47,6 +46,8 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.RobotCentric preciseAdjustments = new SwerveRequest.RobotCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -57,7 +58,6 @@ public class RobotContainer {
     @Getter public static final Vision vision = new Vision();
     public static final Intake intake = new Intake();
     public static final HopperTransition hopper = new HopperTransition();
-    public static final Magazine magazine = new Magazine();
     @Getter public static final Shooter shooter = new Shooter();
 
     private final SendableChooser<Command> autoChooser;
@@ -75,7 +75,6 @@ public class RobotContainer {
     private void configureBindings() {
 
         shooter.register();
-        magazine.register();
         hopper.register();
         intake.register();
         drivetrain.register();
@@ -88,8 +87,6 @@ public class RobotContainer {
         driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
         driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
 
-        driverJoystick.b().onTrue(magazine.run());
-        driverJoystick.b().onFalse(magazine.stop());
         driverJoystick.b().onTrue(hopper.forward());
         driverJoystick.b().onFalse(hopper.stop());
 
@@ -129,19 +126,15 @@ public class RobotContainer {
         ));
         */
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        /*
-        driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driverJoystick.back().and(driverJoystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driverJoystick.start().and(driverJoystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        */
-
-        driverJoystick.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driverJoystick.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driverJoystick.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driverJoystick.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // Small adjustments code
+        driverJoystick.pov(90)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0).withVelocityY(-0.2))); //right
+        driverJoystick.pov(270)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0).withVelocityY(0.2))); //left
+        driverJoystick.pov(0)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0.2).withVelocityY(0)));
+        driverJoystick.pov(180)
+                .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(-0.2).withVelocityY(0)));
 
         // reset the field-centric heading on back press
         driverJoystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
