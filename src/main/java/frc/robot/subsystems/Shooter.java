@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
 
   private double turretSetpoint = 0;
 
-  private double hubTheta = 0;
+  private double targetTheta = 0;
   private double hubDist = 0;
 
   // create a Motion Magic request, voltage output
@@ -145,12 +145,12 @@ public class Shooter extends SubsystemBase {
     //turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
     SmartDashboard.putNumber("turret setpoint",turretSetpoint);
     SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Shooter hub theta",hubTheta);
+    SmartDashboard.putNumber("Shooter hub theta",targetTheta);
 
 
-    hubTheta=(RobotContainer.getDrivetrain().getTargetTheta());
+    targetTheta=(RobotContainer.getDrivetrain().getTargetTheta());
     dist = RobotContainer.getDrivetrain().getTargetDist();
-    setTurretAngle(hubTheta);
+    setTurretAngle(targetTheta);
   }
 
   @Override
@@ -181,11 +181,23 @@ public void init(){
   SmartDashboard.putNumber("Distance",dist);
 }
 
+/**
+ * 0 rad is forward relative to the robot
+ * @return ROBOT RELATIVE TURRET ANGLE 0 rad is forwards
+ */
+public double getTurretAngle(){
+  return m_TurretCANcoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
+}
+
 
 private double getExitVelo(){
   return 0.7191*dist + 5.5572;
 }
-
+/**
+ * 
+ * @param velocity in m/s
+ * @return actual flywheel rpm for given m/s
+ */
 private double getVeloRPM(double velo){
   return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
 }
@@ -229,6 +241,7 @@ public void setTurretAngle(double angle){
   }
 
   /** Hold the current shooting state. */
+  //TODO: Make this a run command
   public Command holdState() {
     return setFlywheel().andThen(setTurret());
   }
@@ -239,7 +252,8 @@ public void setTurretAngle(double angle){
    * @return true when the shooter is aligned and ready to fire.
    */
   public boolean readyToShoot() {
-    return false;
+    return m_TurretCANcoder.getAbsolutePosition().isNear(turretSetpoint,.01) &&
+    m_Turret.getVelocity().isNear(m_FlywheelOutputDutyCycle,50);
   }
 
   /** Sets the turret angle in degrees, clamped to [-135, 135]. */
