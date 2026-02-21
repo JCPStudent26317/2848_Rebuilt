@@ -26,21 +26,20 @@ public class Shooter extends SubsystemBase {
 
   private final TalonFX m_Magazine;
 
-  private double dist =0;
+  private double targetDist =0;
 
   //private final TalonFX m_Hood;
 
-  private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
-  private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0.0);
+  // private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
+  // private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0.0);
 
-  private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
+  // private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
 
-  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(.2);
+  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
 
   private double turretSetpoint = 0;
 
   private double hubTheta = 0;
-  private double hubDist = 0;
 
   // create a Motion Magic request, voltage output
 
@@ -70,7 +69,7 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Voltage
         .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
-    flywheelConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
+    flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
@@ -127,7 +126,7 @@ public class Shooter extends SubsystemBase {
 
 
     hubTheta=(RobotContainer.getDrivetrain().getTargetTheta());
-    dist = RobotContainer.getDrivetrain().getTargetDist();
+    targetDist = RobotContainer.getDrivetrain().getTargetDist();
     setTurretAngle(hubTheta);
   }
 
@@ -156,16 +155,20 @@ public class Shooter extends SubsystemBase {
 public void init(){
   CommandScheduler.getInstance().schedule(setFlywheel());
   SmartDashboard.putNumber("turret setpoint",turretSetpoint);
-  SmartDashboard.putNumber("Distance",dist);
+  SmartDashboard.putNumber("Distance",targetDist);
 }
 
 
 private double getExitVelo(){
-  return 0.7191*dist + 5.5572;
+  return  0.6632 * targetDist + 5.7486;
 }
 
 private double getVeloRPM(double velo){
   return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
+}
+
+public double getTurretAngle(){
+  return m_TurretCANcoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
 }
 
 
@@ -196,10 +199,10 @@ public void setTurretAngle(double angle){
     m_FlywheelOutputDutyCycle = 0;
     CommandScheduler.getInstance().schedule(setFlywheel());
   }
-  /** Set the target for the shooter. */
-  public void setTarget() {
+  // /** Set the target for the shooter. */
+  // public void setTarget() {
 
-  }
+  // }
 
   /** Sets the flywheel and hood angle to their shot velocity and shot position. */
   public Command shoot() {
@@ -226,10 +229,10 @@ public void setTurretAngle(double angle){
    *
    * @return true when the shooter is aligned and ready to fire.
    */
-  public boolean readyToShoot() {
-    return false;
+ public boolean readyToShoot() {
+    return m_TurretCANcoder.getAbsolutePosition().isNear(turretSetpoint,kTurretPositionTolerance) &&
+    m_Turret.getVelocity().isNear(m_FlywheelOutputDutyCycle,kFlywheelRPMTolerance);
   }
-
   /** Sets the turret angle in degrees, clamped to [-135, 135]. */
   public void setM_TurretAngle(long angle) {
     m_TurretAngle = (long) MathUtil.clamp(angle, -135, 135);

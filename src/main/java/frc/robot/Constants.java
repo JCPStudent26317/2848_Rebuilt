@@ -33,9 +33,17 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int kLRollersMotorID = 43;
     public static final int kRRollersMotorID = 42;
+    public static final int kIntakePivotID = 17;
+    public static final int kIntakePivotCANcoderID = 18;
     public static final double kRollersMotorSpeed = 1.0;
     public static final int kPivotMotorID = 0;
     public static final double kPivotMotorSpeed = 1.0;    
+
+
+     public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
+        .withMagnetOffset(-.033)
+        .withAbsoluteSensorDiscontinuityPoint(0)
+        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
 
   public static class HopperConstants {
@@ -67,7 +75,7 @@ public final class Constants {
 
     public static final double kFlywheelkS = 0.0005;
     public static final double kFlywheelkV = 0.002;
-    public static final double kFlywheelkP = 0;//.000175;  
+    public static final double kFlywheelkP = .0001;  
     public static final double kFlywheelkI = 0.0;
     public static final double kFlywheelkD = 0.000;
     public static final double kFlywheelkA = .0005;
@@ -88,6 +96,9 @@ public final class Constants {
 
     public static final double kTurretSwitchForwardLimit = 0.05;
     public static final double kTurretSwitchReverseLimit = -0.33;
+
+    public static final double kFlywheelRPMTolerance = 50;
+    public static final double kTurretPositionTolerance = .01;
 
   }
 
