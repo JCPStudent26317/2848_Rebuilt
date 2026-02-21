@@ -191,7 +191,7 @@ public double getTurretAngle(){
 
 
 private double getExitVelo(){
-  return 0.7191*dist + 5.5572;
+  return  0.6632 * dist + 5.7486;
 }
 /**
  * 
