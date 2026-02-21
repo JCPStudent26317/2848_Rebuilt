@@ -17,6 +17,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import lombok.Getter;
+import lombok.Setter;
 
 /** Shooter Subsystem. */
 public class Shooter extends SubsystemBase {
@@ -46,7 +48,7 @@ public class Shooter extends SubsystemBase {
 
   private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
 
-  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(.2);
+  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
 
   private double turretSetpoint = 0;
 
@@ -58,7 +60,7 @@ public class Shooter extends SubsystemBase {
 
   //private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
 
-  private @Getter double m_FlywheelOutputDutyCycle = 0;
+  private @Setter @Getter double m_FlywheelOutputDutyCycle = 0;
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
 
@@ -83,7 +85,7 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Voltage
         .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
-    flywheelConfig.MotorOutput.Inverted = new MotorOutputConfigs().Inverted.Clockwise_Positive;
+    flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
@@ -157,12 +159,12 @@ public class Shooter extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
-    builder.addDoubleProperty("Flywheel Output Duty Cycle",
-        this::getM_FlywheelOutputDutyCycle,
-        this::setM_FlywheelOutputDutyCycle);
-    builder.addIntegerProperty("m_TurretAngle", 
-        this::getM_TurretAngle, 
-        this::setM_TurretAngle);
+    // builder.addDoubleProperty("Flywheel Output Duty Cycle",
+    //     this::getM_FlywheelOutputDutyCycle,
+    //     this::setM_FlywheelOutputDutyCycle);
+    // builder.addIntegerProperty("m_TurretAngle", 
+    //     this::getM_TurretAngle, 
+    //     this::setM_TurretAngle);
 
     
   } 
@@ -241,7 +243,8 @@ public void setTurretAngle(double angle){
   }
 
   /** Hold the current shooting state. */
-  //TODO: Make this a run command
+  //TODO: Make this a run command or make the two sub commands run and the .while()
+
   public Command holdState() {
     return setFlywheel().andThen(setTurret());
   }
@@ -257,13 +260,13 @@ public void setTurretAngle(double angle){
   }
 
   /** Sets the turret angle in degrees, clamped to [-135, 135]. */
-  public void setM_TurretAngle(long angle) {
-    m_TurretAngle = (long) MathUtil.clamp(angle, -135, 135);
-  }
+  // public void setM_TurretAngle(long angle) {
+  //   m_TurretAngle = (long) MathUtil.clamp(angle, -135, 135);
+  // }
 
-  /** Sets the flywheel output duty cycle, clamped to [-1, 1]. */
-  public void setM_FlywheelOutputDutyCycle(double angle) {
-    m_FlywheelOutputDutyCycle = MathUtil.clamp(angle, -1, 1);
-  }
+  // /** Sets the flywheel output duty cycle, clamped to [-1, 1]. */
+  // public void setM_FlywheelOutputDutyCycle(double angle) {
+  //   m_FlywheelOutputDutyCycle = MathUtil.clamp(angle, -1, 1);
+  // }
 
 }
