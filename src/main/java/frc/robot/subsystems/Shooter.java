@@ -69,7 +69,7 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Voltage
         .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
-    flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    //flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
@@ -103,6 +103,7 @@ public class Shooter extends SubsystemBase {
     retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
 
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
+    magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
 
     init();
@@ -191,8 +192,8 @@ public void setTurretAngle(double angle){
   }
 
   public void flyWheelOn(){
-    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
-    //m_FlywheelOutputDutyCycle = 5000;
+    //m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
+    m_FlywheelOutputDutyCycle = 4000;
     CommandScheduler.getInstance().schedule(setFlywheel());
   }
   public void flyWheelOff(){

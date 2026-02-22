@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.RangerHelpers.*;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -42,6 +44,10 @@ public class Climber extends SubsystemBase {
 
     public Command stop() {
         return Commands.runOnce(() -> climberMotor.set(0.0));
+    }
+
+    public Command directControl(DoubleSupplier input) {
+        return Commands.run(() -> climberMotor.set(input.getAsDouble()), this);
     }
 
 }

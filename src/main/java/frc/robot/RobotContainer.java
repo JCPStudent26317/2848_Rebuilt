@@ -52,6 +52,7 @@ public class RobotContainer {
     public static final Intake intake = new Intake();
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
+    public static final Climber climber = new Climber();
 
     private final SendableChooser<Command> autoChooser;
 
@@ -77,14 +78,14 @@ public class RobotContainer {
 
 
 
-        driverJoystick.a().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
-        driverJoystick.a().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
+        driverJoystick.rightBumper().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
+        driverJoystick.rightBumper().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
 
-        driverJoystick.b().onTrue(hopper.forward());
-        driverJoystick.b().onFalse(hopper.stop());
+        driverJoystick.b().onTrue(hopper.forward().andThen(shooter.runMagazine()));
+        driverJoystick.b().onFalse(hopper.stop().andThen(shooter.stopMagazine()));
 
-        driverJoystick.x().onTrue(intake.intake());
-        driverJoystick.x().onFalse(intake.stop());
+        driverJoystick.leftBumper().onTrue(intake.intake());
+        driverJoystick.leftBumper().onFalse(intake.stop());
 
         //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
@@ -104,7 +105,7 @@ public class RobotContainer {
         );
 
 
-        driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+        //driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
         // driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
         //         drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -142,6 +143,9 @@ public class RobotContainer {
 
         // driverJoystick.x().onTrue(magazine.run());
         // driverJoystick.x().onFalse(magazine.stop());
+
+        climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
+        
     }
 
   /**
