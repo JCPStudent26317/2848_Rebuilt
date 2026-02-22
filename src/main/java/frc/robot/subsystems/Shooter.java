@@ -147,13 +147,13 @@ public class Shooter extends SubsystemBase {
   /** Sets the turret angle to aim the shooter at the target.*/
   public Command setTurret() {
     return Commands.runOnce(
-      () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint)), 
+      () -> {},//m_Turret.setControl(turretOut.withPosition(turretSetpoint)), 
       this);
   }
 
 
 public void init(){
-  CommandScheduler.getInstance().schedule(setFlywheel());
+  //CommandScheduler.getInstance().schedule(setFlywheel());
   SmartDashboard.putNumber("turret setpoint",turretSetpoint);
   SmartDashboard.putNumber("Distance",targetDist);
 }

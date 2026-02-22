@@ -31,8 +31,8 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kLRollersMotorID = 43;
-    public static final int kRRollersMotorID = 42;
+    public static final int kLRollersMotorID = 15;
+    public static final int kRRollersMotorID = 16;
     public static final int kIntakePivotID = 17;
     public static final int kIntakePivotCANcoderID = 18;
     public static final double kRollersMotorSpeed = 1.0;
@@ -47,19 +47,19 @@ public final class Constants {
   }
 
   public static class HopperConstants {
-    public static final int kSidewaysBeltMotorID = 44;
+    public static final int kSidewaysBeltMotorID = 21;
     public static final double kSidewaysBeltSpeed = 0.66;    
-    public static final int kForwardBeltMotorID = 41;
+    public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = 0.66;    
   }
 
   /**Constant values for the Shooter subsystem.*/
   public static class ShooterConstants {
-    public static final int kFlywheelLeftMotorID = 50;
-    public static final int kFlywheelRightMotorID = 51;
-    public static final int kTurretMotorID = 48;
-    public static final int kTurretCANcoderID = 47;
-    public static final int kMagazineMotorID = 40;
+    public static final int kFlywheelLeftMotorID = 28;
+    public static final int kFlywheelRightMotorID = 29;
+    public static final int kTurretMotorID = 25;
+    public static final int kTurretCANcoderID = 26;
+    public static final int kMagazineMotorID = 27;
     public static final double kMagazineMotorSpeed = .5;
 
     public static final double kTurretOffset = -.033;
@@ -173,7 +173,7 @@ public final class Constants {
     }
 
   public static class ClimberConstants {
-    public static final int kClimberMotorID = 0;
+    public static final int kClimberMotorID = 33;
     public static final double kClimberMotorSpeed = 1;    
   }
 

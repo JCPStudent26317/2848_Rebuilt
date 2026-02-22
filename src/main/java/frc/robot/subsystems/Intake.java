@@ -76,7 +76,7 @@ public class Intake extends SubsystemBase {
 
 
     public Command setPivot(){
-        return new InstantCommand(()->pivotMotor.setControl(pivotOut.withPosition(pivotSetpoint)));
+        return new InstantCommand(()->{});//pivotMotor.setControl(pivotOut.withPosition(pivotSetpoint)));
     }
 
     public Command holdState() {
