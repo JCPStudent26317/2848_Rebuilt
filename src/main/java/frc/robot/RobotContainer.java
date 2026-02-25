@@ -134,6 +134,10 @@ public class RobotContainer {
         // driverJoystick.x().onFalse(magazine.stop());
 
         climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
+
+        // testingJoystick.a().onTrue(intake.deploy());
+        // testingJoystick.b().onTrue(intake.lowStow());
+        // testingJoystick.x().onTrue(intake.highStow());
         
     }
 
