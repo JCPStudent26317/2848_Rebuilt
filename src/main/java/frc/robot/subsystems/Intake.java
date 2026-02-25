@@ -21,14 +21,14 @@ import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.RangerHelpers.*;
 
 public class Intake extends SubsystemBase {
-    private final TalonFX lRollersMotor = new TalonFX(kLRollersMotorID);
+    private final TalonFX m_RollersL = new TalonFX(kLRollersMotorID);
     private final TalonFXConfiguration lRollersMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut lRollersOut = new DutyCycleOut(0.0);
 
-    private final TalonFX rRollersMotor = new TalonFX(kRRollersMotorID);
+    private final TalonFX m_RollersR = new TalonFX(kRRollersMotorID);
     private final TalonFXConfiguration rRollersMotorConfig = new TalonFXConfiguration();
 
-    private final TalonFX pivotMotor = new TalonFX(kIntakePivotID);
+    private final TalonFX m_Pivot = new TalonFX(kIntakePivotID);
     private final TalonFXConfiguration pivotMotorConfig = new TalonFXConfiguration();
 
     private final CANcoder m_IntakeCANcoder = new CANcoder(kIntakePivotCANcoderID);
@@ -65,13 +65,13 @@ public class Intake extends SubsystemBase {
         // Apply things to the configuration here
         lRollersMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        setupTalonFx(lRollersMotor, lRollersMotorConfig);
-        setupTalonFx(rRollersMotor, rRollersMotorConfig);
-        setupTalonFx(pivotMotor, pivotMotorConfig);
+        setupTalonFx(m_RollersL, lRollersMotorConfig);
+        setupTalonFx(m_RollersR, rRollersMotorConfig);
+        setupTalonFx(m_Pivot, pivotMotorConfig);
 
-        pivotMotor.getConfigurator().apply(pivotSoftwareConfigs);
+        m_Pivot.getConfigurator().apply(pivotSoftwareConfigs);
     
-        rRollersMotor.setControl(new Follower(lRollersMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+        m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
     } 
 
 
@@ -81,7 +81,7 @@ public class Intake extends SubsystemBase {
 
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
-        return Commands.run(() -> lRollersMotor.setControl(lRollersOut),this);
+        return Commands.run(() -> m_RollersL.setControl(lRollersOut),this);
     }
 
     public void setPivotOutput(double pos){
