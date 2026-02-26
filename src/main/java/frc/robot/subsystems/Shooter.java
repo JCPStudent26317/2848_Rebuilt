@@ -115,8 +115,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Flywheel vel error",getVeloRPM(getExitVelo())-getFlywheelRPM());
     SmartDashboard.putNumber("Commanded flywheel rpm",getVeloRPM(getExitVelo()));
     SmartDashboard.putNumber("Motor Output", m_FlywheelLeftLeader.get());
-    SmartDashboard.putNumber("Shooter1 RPM",m_FlywheelLeftLeader.getVelocity().getValueAsDouble()/60);
-    SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()/60);
+    SmartDashboard.putNumber("Shooter1 RPM",m_FlywheelLeftLeader.getVelocity().getValueAsDouble()*60);
+    SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()*60);
     SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("turret output",m_Turret.get());
     SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);

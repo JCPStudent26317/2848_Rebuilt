@@ -39,9 +39,13 @@ public final class Constants {
     public static final int kPivotMotorID = 0;
     public static final double kPivotMotorSpeed = 1.0;    
 
+    // Pivot all the way up: -0.043701
+    public static final double kDeploySetpoint = -0.425537;
+    public static final double kLowStowSetpoint = -0.338867;
+    public static final double kHighStowSetpoint = -0.209717;
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-.033)
+        .withMagnetOffset(0.10)
         .withAbsoluteSensorDiscontinuityPoint(0)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }

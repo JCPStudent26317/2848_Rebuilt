@@ -1,3 +1,5 @@
+Currently we're using what was existing for the drivebase, the planned IDs for everything else.
+
 [Kraken IDs - current]
 1  Swerve BLD
 2  Swerve BRS

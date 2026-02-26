@@ -14,40 +14,40 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
     
-    private final TalonFX climberMotor = new TalonFX(kClimberMotorID);
+    private final TalonFX m_Climber = new TalonFX(kClimberMotorID);
     private final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
 
     public Climber() {
-        setupTalonFx(climberMotor, climberMotorConfig);
+        setupTalonFx(m_Climber, climberMotorConfig);
 
-        climberMotor.setPosition(0.0);
+        m_Climber.setPosition(0.0);
     }
 
     public boolean atTop() {
-        return climberMotor.getPosition().getValueAsDouble() >= 10;
+        return m_Climber.getPosition().getValueAsDouble() >= 10;
     }
 
     public boolean atBottom() {
-        return climberMotor.getPosition().getValueAsDouble() <= 0;
+        return m_Climber.getPosition().getValueAsDouble() <= 0;
     }
 
 
     public Command raise() {
-        return Commands.run(() -> climberMotor.set(1.0)).until(this::atTop)
-        .finallyDo(() -> climberMotor.set(0.0));
+        return Commands.run(() -> m_Climber.set(1.0)).until(this::atTop)
+        .finallyDo(() -> m_Climber.set(0.0));
     }
 
     public Command lower() {
-        return Commands.run(() -> climberMotor.set(-1.0)).until(this::atBottom)
-        .finallyDo(() -> climberMotor.set(0.0));
+        return Commands.run(() -> m_Climber.set(-1.0)).until(this::atBottom)
+        .finallyDo(() -> m_Climber.set(0.0));
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> climberMotor.set(0.0));
+        return Commands.runOnce(() -> m_Climber.set(0.0));
     }
 
     public Command directControl(DoubleSupplier input) {
-        return Commands.run(() -> climberMotor.set(input.getAsDouble()), this);
+        return Commands.run(() -> m_Climber.set(input.getAsDouble()), this);
     }
 
 }
