@@ -48,9 +48,9 @@ public final class Constants {
 
   public static class HopperConstants {
     public static final int kSidewaysBeltMotorID = 21;
-    public static final double kSidewaysBeltSpeed = 0.66;    
+    public static final double kSidewaysBeltSpeed = 0.85;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = 0.66;    
+    public static final double kForwardBeltSpeed = 0.85;    
   }
 
   /**Constant values for the Shooter subsystem.*/
