@@ -42,7 +42,7 @@ public final class Constants {
     public static final double kPivotkS = 0;
     public static final double kPivotkV = 0;
     public static final double kPivotkA = 0;
-    public static final double kPivotkP = 30;
+    public static final double kPivotkP = 36;
     public static final double kPivotkI = 0;
     public static final double kPivotkD = 0;
 

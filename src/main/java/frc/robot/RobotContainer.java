@@ -143,6 +143,7 @@ public class RobotContainer {
         testingJoystick.leftBumper().onTrue(intake.intake());
         testingJoystick.leftBumper().onFalse(intake.stop());
         
+        testingJoystick.rightBumper().onTrue(intake.jiggle()); // Not being interrupted by the other commands for some reason
     }
 
   /**

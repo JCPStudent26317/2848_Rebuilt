@@ -4,7 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -137,6 +140,16 @@ public class Intake extends SubsystemBase {
     // Note for future self: don't run the transition on this because it will eat cable
     public Command stow() {
         return Commands.runOnce(() -> setPivot(kStowSetpoint));
+    }
+
+    public Command jiggle() {
+        return new SequentialCommandGroup(
+            highRetract(),
+            new WaitCommand(0.25),
+            lowRetract(),
+            new WaitCommand(0.25)
+        ).repeatedly();
+        
     }
 
 }
