@@ -135,9 +135,13 @@ public class RobotContainer {
 
         climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
 
-        // testingJoystick.a().onTrue(intake.deploy());
-        // testingJoystick.b().onTrue(intake.lowStow());
-        // testingJoystick.x().onTrue(intake.highStow());
+        testingJoystick.a().onTrue(intake.deploy());
+        testingJoystick.b().onTrue(intake.lowRetract());
+        testingJoystick.x().onTrue(intake.highRetract());
+        testingJoystick.y().onTrue(intake.stow());
+
+        testingJoystick.leftBumper().onTrue(intake.intake());
+        testingJoystick.leftBumper().onFalse(intake.stop());
         
     }
 

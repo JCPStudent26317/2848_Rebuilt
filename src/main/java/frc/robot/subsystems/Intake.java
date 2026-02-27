@@ -41,12 +41,12 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
 
-        pivotMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        pivotMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         pivotMotorConfig.Slot0.kS = 0;
         pivotMotorConfig.Slot0.kV = 0;
         pivotMotorConfig.Slot0.kA = 0;
-        pivotMotorConfig.Slot0.kP = 0;//1;
+        pivotMotorConfig.Slot0.kP = 30;
         pivotMotorConfig.Slot0.kI = 0;
         pivotMotorConfig.Slot0.kD = 0;
         pivotMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 7;
@@ -55,15 +55,16 @@ public class Intake extends SubsystemBase {
 
         pivotMotorConfig.Feedback.FeedbackRemoteSensorID = kIntakePivotCANcoderID;
         pivotMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-
-        SoftwareLimitSwitchConfigs pivotSoftwareConfigs = new SoftwareLimitSwitchConfigs();
-        pivotSoftwareConfigs.ForwardSoftLimitThreshold =-0.5;
-        pivotSoftwareConfigs.ReverseSoftLimitThreshold =0;
-        pivotSoftwareConfigs.ForwardSoftLimitEnable = true;
-        pivotSoftwareConfigs.ReverseSoftLimitEnable = true;
+        //pivotMotorConfig.Feedback.SensorToMechanismRatio =-1;
+        
+        pivotMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =-0.5;
+        pivotMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =0;
+        pivotMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+        pivotMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
         CANcoderConfigurator intakeCANcoderConfigurator = m_IntakeCANcoder.getConfigurator();
         retryConfigApply(() -> intakeCANcoderConfigurator.apply(kIntakeCANcoderMagnetSensorConfigs));
+
 
         // Apply things to the configuration here
         lRollersMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -71,8 +72,6 @@ public class Intake extends SubsystemBase {
         setupTalonFx(m_RollersL, lRollersMotorConfig);
         setupTalonFx(m_RollersR, rRollersMotorConfig);
         setupTalonFx(m_Pivot, pivotMotorConfig);
-
-        m_Pivot.getConfigurator().apply(pivotSoftwareConfigs);
     
         m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
     } 
@@ -83,9 +82,15 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Pivot RPM", m_Pivot.getVelocity().getValueAsDouble() * 60);
         SmartDashboard.putNumber("Pivot Motor Temperature", m_Pivot.getDeviceTemp().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Supply Current", m_Pivot.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Pivot get()", m_Pivot.get());
+        SmartDashboard.putNumber("Pivot Error", m_Pivot.getClosedLoopError().getValueAsDouble());
 
         SmartDashboard.putNumber("CANcoder Absolute Position", m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition().getValueAsDouble());        
+        SmartDashboard.putNumber("Pivot Motor Encoder Position",m_Pivot.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Setpoint", pivotSetpoint);
+
+        
     }
 
     public Command holdState() {
@@ -121,12 +126,17 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> setPivot(kDeploySetpoint));
     }
 
-    public Command lowStow() {
-        return Commands.runOnce(() -> setPivot(kLowStowSetpoint));
+    public Command lowRetract() {
+        return Commands.runOnce(() -> setPivot(kLowRetractSetpoint));
     }
 
-    public Command highStow() {
-        return Commands.runOnce(() -> setPivot(kHighStowSetpoint));
+    public Command highRetract() {
+        return Commands.runOnce(() -> setPivot(kHighRetractSetpoint));
+    }
+
+    // Note for future self: don't run the transition on this because it will eat cable
+    public Command stow() {
+        return Commands.runOnce(() -> setPivot(kStowSetpoint));
     }
 
 }
