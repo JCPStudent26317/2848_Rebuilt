@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NeutralCycle"
+            "pathName": "NeutralHalfSweep"
           }
         },
         {
