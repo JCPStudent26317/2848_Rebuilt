@@ -39,7 +39,17 @@ public final class Constants {
     public static final int kPivotMotorID = 0;
     public static final double kPivotMotorSpeed = 1.0;    
 
-    // Pivot all the way up: -0.043701
+    public static final double kPivotkS = 0;
+    public static final double kPivotkV = 0;
+    public static final double kPivotkA = 0;
+    public static final double kPivotkP = 30;
+    public static final double kPivotkI = 0;
+    public static final double kPivotkD = 0;
+
+    public static final double kPivotMMCruiseVelocity = 7;
+    public static final double kPivotMMAcceleration = 14;
+    public static final double kPivotMMJerk = 140;
+    
     public static final double kDeploySetpoint = 0.573486328125;
     public static final double kLowRetractSetpoint = 0.65;
     public static final double kHighRetractSetpoint = 0.75;

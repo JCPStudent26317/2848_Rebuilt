@@ -43,15 +43,15 @@ public class Intake extends SubsystemBase {
 
         pivotMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        pivotMotorConfig.Slot0.kS = 0;
-        pivotMotorConfig.Slot0.kV = 0;
-        pivotMotorConfig.Slot0.kA = 0;
-        pivotMotorConfig.Slot0.kP = 30;
-        pivotMotorConfig.Slot0.kI = 0;
-        pivotMotorConfig.Slot0.kD = 0;
-        pivotMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 7;
-        pivotMotorConfig.MotionMagic.MotionMagicAcceleration = 14;
-        pivotMotorConfig.MotionMagic.MotionMagicJerk = 140;
+        pivotMotorConfig.Slot0.kS = kPivotkS;
+        pivotMotorConfig.Slot0.kV = kPivotkV;
+        pivotMotorConfig.Slot0.kA = kPivotkA;
+        pivotMotorConfig.Slot0.kP = kPivotkP;
+        pivotMotorConfig.Slot0.kI = kPivotkI;
+        pivotMotorConfig.Slot0.kD = kPivotkD;
+        pivotMotorConfig.MotionMagic.MotionMagicCruiseVelocity = kPivotMMCruiseVelocity;
+        pivotMotorConfig.MotionMagic.MotionMagicAcceleration = kPivotMMAcceleration;
+        pivotMotorConfig.MotionMagic.MotionMagicJerk = kPivotMMJerk;
 
         pivotMotorConfig.Feedback.FeedbackRemoteSensorID = kIntakePivotCANcoderID;
         pivotMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
