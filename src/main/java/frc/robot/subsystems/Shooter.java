@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
     //flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
-    m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+    m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
     turretConfig.Slot0.kS = kTurretkS;

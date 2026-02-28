@@ -67,6 +67,10 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        NamedCommands.registerCommand("Intake Deploy", intake.deploy());
+        NamedCommands.registerCommand("Intake Run Rollers", intake.intake());
+        NamedCommands.registerCommand("Intake Stop Rollers", intake.stop());
+
         autoChooser = AutoBuilder.buildAutoChooser("DoNothing");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 

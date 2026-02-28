@@ -139,7 +139,6 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> setPivot(kHighRetractSetpoint), this);
     }
 
-    // Note for future self: don't run the transition on this because it will eat cable
     public Command stow() {
         return Commands.runOnce(() -> setPivot(kStowSetpoint), this);
     }
@@ -151,6 +150,14 @@ public class Intake extends SubsystemBase {
             lowRetract(),
             new WaitCommand(0.25)
         ).repeatedly().withName("Jiggle");
+    }
+
+    /**
+     * Wires to the intake roller motors can get eaten by the transition when the intake is stowed.
+     * This function outputs true if it is safe to run the transition motors.
+     */
+    public boolean safeToRunTransition() {
+        return m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble() <= kHighRetractSetpoint;
     }
 
 }
