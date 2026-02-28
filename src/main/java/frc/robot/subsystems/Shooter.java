@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
 
   private double turretSetpoint = 0;
 
-  private double hubTheta = 0;
+  private double targetTheta = 0;
 
   // create a Motion Magic request, voltage output
 
@@ -85,11 +85,17 @@ public class Shooter extends SubsystemBase {
         .withPeakReverseVoltage(Volts.of(-1 * kTurretPeakVoltage));
     turretConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turretConfig.Feedback.FeedbackRemoteSensorID = kTurretCANcoderID;
+    //turretConfig.Feedback.SensorToMechanismRatio =-1;
+    turretConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     var motionMagicConfigs = turretConfig.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = kTurretMMCruiseVelocity; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = kTurretMMAcceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = kTurretMMJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicCruiseVelocity = kTurretMMCruiseVelocity; 
+    motionMagicConfigs.MotionMagicAcceleration = kTurretMMAcceleration; 
+    motionMagicConfigs.MotionMagicJerk = kTurretMMJerk;
+    //CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
+    m_TurretCANcoder.getConfigurator().apply(kTurretCANcoderMagnetSensorConfigs);
+    //retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs)); 
     setupTalonFx(m_Turret, turretConfig);
+
 
     SoftwareLimitSwitchConfigs turretSwitchConfigs = new SoftwareLimitSwitchConfigs();
     turretSwitchConfigs.ForwardSoftLimitThreshold = kTurretSwitchForwardLimit;
@@ -99,8 +105,7 @@ public class Shooter extends SubsystemBase {
     m_Turret.getConfigurator().apply(turretSwitchConfigs);
     
     //m_Turret.getConfigurator().apply(motionMagicConfigs);
-    CANcoderConfigurator turretCANcoderConfigurator = m_TurretCANcoder.getConfigurator();
-    retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs));
+    
 
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -111,24 +116,24 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Flywheel RPM",getFlywheelRPM());
-    SmartDashboard.putNumber("Flywheel vel error",getVeloRPM(getExitVelo())-getFlywheelRPM());
-    SmartDashboard.putNumber("Commanded flywheel rpm",getVeloRPM(getExitVelo()));
-    SmartDashboard.putNumber("Motor Output", m_FlywheelLeftLeader.get());
-    SmartDashboard.putNumber("Shooter1 RPM",m_FlywheelLeftLeader.getVelocity().getValueAsDouble()/60);
-    SmartDashboard.putNumber("Shooter2 RPM",m_FlywheelRightFollower.getVelocity().getValueAsDouble()/60);
-    SmartDashboard.putNumber("turret angle",m_Turret.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("turret output",m_Turret.get());
-    SmartDashboard.putNumber("turret error",m_Turret.getPosition().getValueAsDouble()-turretSetpoint);
-    //turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),-.33,.09);
-    SmartDashboard.putNumber("turret setpoint",turretSetpoint);
+    //turretSetpoint = MathUtil.clamp(SmartDashboard.getNumber("turret setpoint",0),kTurretSwitchReverseLimit,kTurretSwitchForwardLimit);
     SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Shooter hub theta",hubTheta);
 
-
-    hubTheta=(RobotContainer.getDrivetrain().getTargetTheta());
+    //turretSetpoint =0;
+    targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
-    setTurretAngle(hubTheta);
+
+    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
+
+    
+    setTurretAngle(targetTheta,false);
+  }
+
+  private double lastTargetTheta = 0;
+  private double getTurretFFCorrection(){
+    double omegaFF = (targetTheta - lastTargetTheta) / .02;
+    lastTargetTheta = targetTheta;
+    return kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF);
   }
 
   @Override
@@ -141,6 +146,34 @@ public class Shooter extends SubsystemBase {
     builder.addIntegerProperty("m_TurretAngle", 
         this::getM_TurretAngle, 
         this::setM_TurretAngle);
+    builder.addDoubleProperty("Feedforward correct",
+    this::getTurretFFCorrection,
+    null
+    );
+    builder.addDoubleProperty("Flywheel rpm",
+      this::getFlywheelRPM,
+      null
+    );
+    builder.addDoubleProperty("Commanded flywheel rpm",
+      ()->m_FlywheelOutputDutyCycle
+      ,null);
+    builder.addDoubleProperty("turret angle",
+      this::getTurretAngle,
+      null);
+    builder.addDoubleProperty("Turret Encoder Output",
+      ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
+      null);
+    builder.addDoubleProperty("turret error",
+      ()->m_Turret.getClosedLoopError().getValueAsDouble(),
+      null);
+    builder.addDoubleProperty("turret setpoint",
+      ()->turretSetpoint,
+      null);
+    builder.addDoubleProperty("Shooter hub theta",
+      ()-> targetTheta,
+      null);
+
+
 
     
   } 
@@ -148,7 +181,7 @@ public class Shooter extends SubsystemBase {
   /** Sets the turret angle to aim the shooter at the target.*/
   public Command setTurret() {
     return Commands.runOnce(
-      () -> {},//m_Turret.setControl(turretOut.withPosition(turretSetpoint)), 
+      () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection())), 
       this);
   }
 
@@ -157,27 +190,54 @@ public void init(){
   //CommandScheduler.getInstance().schedule(setFlywheel());
   SmartDashboard.putNumber("turret setpoint",turretSetpoint);
   SmartDashboard.putNumber("Distance",targetDist);
+  this.register();
 }
 
-
+/**
+ * gets the needed exit velocity of the ball to reach the goal
+ * @return velocity in m/s
+ */
 private double getExitVelo(){
-  return  0.6632 * targetDist + 5.7486;
+      return RobotContainer.getDrivetrain().getPolarVelocity().getX() * 0.66516439
+      + targetDist * 0.71612605
+      +5.3496863293326635;
 }
-
+/**
+ * gets the angle needed to add to the turret setpoint to account for tangential velocity around the target
+ * @return the angle needed to add ccw positive, radians
+ */
+public double getTurretTangentOffset(){
+  return Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3))/(2*Math.PI);
+}
+/**
+ * turns the needed exit velocity in m/s to rpm for motor control, added multiplier to account for slip
+ * @param velo
+ * @return
+ */
 private double getVeloRPM(double velo){
   return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
 }
-
+/**
+ * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
+ * @return current turret angle, radians
+ */
 public double getTurretAngle(){
-  return m_TurretCANcoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
+  return m_Turret.getPosition().getValueAsDouble() * Math.PI *2;
 }
 
-
-public void setTurretAngle(double angle){
-  turretSetpoint = angle / (2 * Math.PI);
+/**
+ * sets the turret setpoint
+ * @param angle in radians
+ * @param tanjentAdjust whether or not to include tangential velocity adjustments
+ */
+public void setTurretAngle(double angle,boolean tanjentAdjust){
+  turretSetpoint = (angle + (tanjentAdjust ? getTurretTangentOffset() : 0)) /(2*Math.PI);
 }
 
-
+/**
+ * gets flywheel rpm
+ * @return velocity of flywheel in rpm
+ */
   public double getFlywheelRPM(){
     return m_FlywheelLeftLeader.getVelocity().getValueAsDouble()*60;
   }
@@ -212,7 +272,8 @@ public void setTurretAngle(double angle){
 
   /** Hold the current shooting state. */
   public Command holdState() {
-    return setFlywheel().andThen(setTurret());
+    return Commands.run(()->{CommandScheduler.getInstance().schedule(setFlywheel());
+    CommandScheduler.getInstance().schedule(setTurret());},this);
   }
 
   /** Run magazine */

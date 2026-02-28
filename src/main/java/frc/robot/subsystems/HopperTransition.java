@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +26,8 @@ public class HopperTransition extends SubsystemBase {
 
         setupTalonFx(sidewaysBeltMotor, sidewaysBeltMotorConfig);
         setupTalonFx(forwardBeltMotor, forwardBeltMotorConfig);
+
+        this.register();
 
     }
 

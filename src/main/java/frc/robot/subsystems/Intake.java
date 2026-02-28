@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -72,6 +73,8 @@ public class Intake extends SubsystemBase {
         pivotMotor.getConfigurator().apply(pivotSoftwareConfigs);
     
         rRollersMotor.setControl(new Follower(lRollersMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+
+        this.register();
     } 
 
 

@@ -9,13 +9,16 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -25,6 +28,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,11 +37,15 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import lombok.Setter;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -48,7 +56,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    private FieldCentric autoAlignRequest = new SwerveRequest.FieldCentric();
+
     private Field2d m_field = new Field2d();
+
+    private final ProfiledPIDController autoAlignXController = new ProfiledPIDController(TunerConstants.autoAlign_Translation_P, TunerConstants.autoAlign_Translation_I, TunerConstants.autoAlign_Translation_D, 
+                                                                                    new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Translation_maxVx, TunerConstants.autoAlign_Translation_MaxA));
+    private final ProfiledPIDController autoAlignYController = new ProfiledPIDController(TunerConstants.autoAlign_Translation_P, TunerConstants.autoAlign_Translation_I, TunerConstants.autoAlign_Translation_D, 
+                                                                                    new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Translation_maxVy, TunerConstants.autoAlign_Translation_MaxA));
+    private final ProfiledPIDController autoAlignRotationController = new ProfiledPIDController(TunerConstants.autoAlign_Rotation_P, TunerConstants.autoAlign_Rotation_I, TunerConstants.autoAlign_Rotation_D, 
+                                                                                    new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Rotation_maxV, TunerConstants.autoAlign_Rotation_MaxA));
+    
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -57,9 +75,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private PIDController rotation_controller = new PIDController(8,2, 0);
-
-    private Translation2d targetPos;
+    private @Setter Translation2d targetPos;
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -162,8 +178,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void init(){
-        rotation_controller.setSetpoint(0);
-        rotation_controller.enableContinuousInput(-Math.PI, Math.PI);
+
+        autoAlignRotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+        autoAlignXController.setTolerance(TunerConstants.autoAlign_Translation_Tolerance);
+        autoAlignYController.setTolerance(TunerConstants.autoAlign_Translation_Tolerance);
+        autoAlignRotationController.setTolerance(TunerConstants.autoAlign_Rotation_Tolerance);
+
+        this.register();
+
+
 
         if (DriverStation.getAlliance().get() == Alliance.Red){
             targetPos = new Translation2d(11.9,4);
@@ -276,14 +300,55 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * gets the theta between robot front and target translation
  * @return angle in radians
  */
-    public double getTargetTheta(){
-        SmartDashboard.putNumber("Target X", getState().Pose.getTranslation().minus(targetPos).getX());
-        SmartDashboard.putNumber("Target Y", getState().Pose.getTranslation().minus(targetPos).getY());
+    // public double getTargetTheta(){
+    //     SmartDashboard.putNumber("Target X", getState().Pose.getTranslation().minus(targetPos).getX());
+    //     SmartDashboard.putNumber("Target Y", getState().Pose.getTranslation().minus(targetPos).getY());
 
-        return (targetPos.minus(getState().Pose.getTranslation()).getAngle().getRadians());  
+    //     return targetPos.minus(getState().Pose.getTranslation()).getAngle().getRadians();  
+    // }
+        public double getTargetTheta() {
+        Pose2d robotPose = getState().Pose;
+
+        Translation2d toTarget =
+            targetPos.minus(robotPose.getTranslation());
+
+        double targetAngle = toTarget.getAngle().getRadians();
+        double robotAngle  = robotPose.getRotation().getRadians();
+
+        return MathUtil.angleModulus(targetAngle - robotAngle);
     }
-    public double getPIDTurn(){
-        return rotation_controller.calculate(getTargetTheta()-this.getState().Pose.getRotation().getRadians());
+
+    public ChassisSpeeds getFieldOrientedSpeeds(){
+        return ChassisSpeeds.fromRobotRelativeSpeeds(this.getState().Speeds,this.getState().Pose.getRotation());
+    }
+
+/**
+ * gets the polar velocities around a point
+ * @return translation2d of radial, tangential
+ */
+    public Translation2d getPolarVelocity(){
+        Translation2d r = targetPos.minus(this.getState().Pose.getTranslation());
+        double dist = getTargetDist();
+
+        // Unit radial vector
+        double rx = r.getX() / dist;
+        double ry = r.getY() / dist;
+
+        // Unit tangential vector (90° CCW rotation)
+        double tx = -ry;
+        double ty = rx;
+
+        // Robot velocity components
+        double vx = getFieldOrientedSpeeds().vxMetersPerSecond;
+        double vy = getFieldOrientedSpeeds().vyMetersPerSecond;
+
+        // Dot products → projections
+        double vRadial = vx * rx + vy * ry;
+        double vTangential = vx * tx + vy * ty;
+
+        // Return as Translation2d: x = radial, y = tangential
+        return new Translation2d(vRadial, vTangential);
+
     }
 
     @Override
@@ -361,6 +426,41 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
+
+    public Command autoAlignTo(Pose2d endPose){
+        return Commands.startRun(()->{
+            autoAlignXController.reset(this.getState().Pose.getX(),getFieldOrientedSpeeds().vxMetersPerSecond);
+            autoAlignYController.reset(this.getState().Pose.getY(),getFieldOrientedSpeeds().vyMetersPerSecond);
+            autoAlignRotationController.reset(this.getState().Pose.getRotation().getRadians(),getFieldOrientedSpeeds().omegaRadiansPerSecond);
+
+            //Pose2d poseError = this.getState().Pose.relativeTo(endPose);
+
+            autoAlignXController.setGoal(endPose.getX());
+            autoAlignYController.setGoal(endPose.getY());
+            autoAlignRotationController.setGoal(endPose.getRotation().getRadians());
+        },
+        ()->{
+            Pose2d pose = this.getState().Pose;
+
+            ChassisSpeeds out = new ChassisSpeeds(
+                -autoAlignXController.calculate(pose.getX()),
+                -autoAlignYController.calculate(pose.getY()),
+                autoAlignRotationController.calculate(pose.getRotation().getRadians())
+            );
+
+            autoAlignRequest
+            .withVelocityX(out.vxMetersPerSecond)
+            .withVelocityY(out.vyMetersPerSecond)
+            .withRotationalRate(out.omegaRadiansPerSecond);
+            this.setControl(autoAlignRequest);
+        }).until(()->autoAlignAtGoal()).withName("Auto Align");
+    }
+
+    private boolean autoAlignAtGoal(){
+        return autoAlignXController.atGoal() && autoAlignYController.atGoal() && autoAlignRotationController.atGoal();
+    }
+
+
 
     private void configureAutoBuilder() {
         try {
