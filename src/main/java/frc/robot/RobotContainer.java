@@ -84,8 +84,6 @@ public class RobotContainer {
         hopper.setDefaultCommand(hopper.holdState());
         shooter.setDefaultCommand(shooter.holdState());
 
-
-
         driverJoystick.rightBumper().onTrue(shooter.shoot());
         driverJoystick.rightBumper().onFalse(shooter.idleFlywheel());
 
@@ -97,9 +95,8 @@ public class RobotContainer {
 
         //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
-        driverJoystick.y().onTrue(drivetrain.autoAlignTo(Constants.drivePoints.redOutpostClimbLineup).andThen(
-            drivetrain.autoAlignTo(Constants.drivePoints.redOutpostClimb).until(manualDrivebase)
-        ));
+        driverJoystick.y().onTrue(shooter.setTurret());
+        
 
 
         // Note that X is defined as forward according to WPILib convention,
@@ -115,11 +112,14 @@ public class RobotContainer {
         );
 
 
-        driverJoystick.a().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+        //driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
-        driverJoystick.x().onTrue(new InstantCommand(()->vision.setFilterTagID(!vision.getFilterTagID())));
+        // driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        //             .withRotationalRate(-drivetrain.getPIDTurn()) // Drive counterclockwise with negative X (left)
+        //     ));
 
-       
         /*
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverJoystick.b().whileTrue(drivetrain.applyRequest(() ->

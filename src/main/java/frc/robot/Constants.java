@@ -60,15 +60,15 @@ public final class Constants {
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(0.10)
-        .withAbsoluteSensorDiscontinuityPoint(0)
+        .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
 
   public static class HopperConstants {
     public static final int kSidewaysBeltMotorID = 21;
-    public static final double kSidewaysBeltSpeed = 0.85;    
+    public static final double kSidewaysBeltSpeed = 1.0;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = 0.85;    
+    public static final double kForwardBeltSpeed = 1.0;    
   }
 
   /**Constant values for the Shooter subsystem.*/
