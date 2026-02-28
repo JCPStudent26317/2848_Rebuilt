@@ -54,12 +54,18 @@ public class Vision extends SubsystemBase {
     @Getter @Setter private boolean addToPoseEstimator;
     @Getter @Setter private boolean useOldStdDev = true;
 
+    private boolean filterTagID = false;
+
+
+
+    
 
     public Vision(){
         this.cameraList = kCameraList;
         this.applyFilters = kApplyFilters;
         this.addToPoseEstimator = kAddToPoseEstimator;
         configureCameras();
+        this.register();
     }
 
     public void configureCameras(){
@@ -68,6 +74,12 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    public boolean getFilterTagID(){
+        return filterTagID;
+}
+public void setFilterTagID(boolean val){
+    filterTagID = val;
+}
     private void configureCamera(String camera){
         LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
         LimelightHelpers.SetFiducialDownscalingOverride(camera, kDownscaleFactor); // Increases the framerate
@@ -77,7 +89,7 @@ public class Vision extends SubsystemBase {
 
         // Apply window crop settings to increase framerate
         CropWindowSettings cropWindow = cameraCropWindowMap.get(camera);
-        //LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
+        LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
     }
 
 
@@ -98,6 +110,9 @@ public class Vision extends SubsystemBase {
         // Debugging/Testing
         builder.addDoubleProperty("Translational Standard Deviation", this::getTranslationStdDev, this::setTranslationStdDev);
         builder.addDoubleProperty("Rotational Standard Deviation", this::getRotationStdDev, this::setRotationStdDev);
+
+        builder.addBooleanProperty("Filter climb tags",this::getFilterTagID,this::setFilterTagID);
+
         builder.addDoubleProperty(
             "Vision Pose Estimate Avg Tag Area",
             () -> (visionPoseEstimate != null ? visionPoseEstimate.avgTagArea : 0.0),
@@ -165,6 +180,15 @@ public class Vision extends SubsystemBase {
                 }
             }
         }
+
+            for(String camera :cameraList){
+                if(filterTagID){
+                LimelightHelpers.SetFiducialIDFiltersOverride(camera,kTowerAprilTagList);
+                } else{
+                    LimelightHelpers.SetFiducialIDFiltersOverride(camera,kAllAprilTagList);
+                }
+            }
+        
         
 
         SmartDashboard.putData(this);
@@ -375,8 +399,8 @@ public class Vision extends SubsystemBase {
         PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
         PoseEstimate robotPose = turretCameraPose;
 
-        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getM_TurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getM_TurretAngle());
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle())));
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getTurretAngle());
         
         robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
         
@@ -386,7 +410,7 @@ public class Vision extends SubsystemBase {
 }
 
 /*
- * To Do 
+ * TODO:
  * Calibrate limelights
  * Conditions for filters and std devs when there are two visible tags
  * figure out window crop values to increase framerate?

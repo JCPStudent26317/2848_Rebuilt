@@ -53,6 +53,23 @@ public class TunerConstants {
     // This needs to be tuned to your individual robot
     private static final Current kSlipCurrent = Amps.of(120);
 
+
+    public static final double autoAlign_Translation_P = 4; // 4 (m/s) / m error
+    public static final double autoAlign_Translation_I = 0; // (m/s) / m error
+    public static final double autoAlign_Translation_D = 0.0;
+    public static final double autoAlign_Translation_maxVy = 3; // m/s // parallel to tag
+    public static final double autoAlign_Translation_maxVx = 2; // m/s // normal to tag
+    public static final double autoAlign_Translation_MaxA = 1.25; // 1.65
+    public static final double autoAlign_Translation_Tolerance =.025;
+
+
+    public static final double autoAlign_Rotation_P = 4; // 4 (rad/s) / rad error
+    public static final double autoAlign_Rotation_I = 0; // (rad/s) / rad error
+    public static final double autoAlign_Rotation_D = 0.0;
+    public static final double autoAlign_Rotation_maxV = 2; // rad/s 1.5
+    public static final double autoAlign_Rotation_MaxA = 2; // 2 rad/s/s 
+    public static final double autoAlign_Rotation_Tolerance =.05;
+
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();

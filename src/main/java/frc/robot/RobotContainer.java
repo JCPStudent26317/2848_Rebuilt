@@ -6,12 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -41,11 +45,13 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric preciseAdjustments = new SwerveRequest.RobotCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
+        
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driverJoystick = new CommandXboxController(0);
     private final CommandXboxController testingJoystick = new CommandXboxController(5);
+
+
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
@@ -53,6 +59,9 @@ public class RobotContainer {
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
+
+    private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.25
+                                                                || Math.abs(driverJoystick.getRightX()) > 0.25;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -68,13 +77,12 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        shooter.register();
-        hopper.register();
-        intake.register();
-        drivetrain.register();
+        //all subsystems are registered in their constructor
+
 
         intake.setDefaultCommand(intake.holdState());
         hopper.setDefaultCommand(hopper.holdState());
+        shooter.setDefaultCommand(shooter.holdState());
 
 
 
@@ -89,8 +97,11 @@ public class RobotContainer {
 
         //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
 
-        driverJoystick.y().onTrue(shooter.setTurret());
-        
+        driverJoystick.y().onTrue(drivetrain.autoAlignTo(Constants.drivePoints.redOutpostClimbLineup).andThen(
+            drivetrain.autoAlignTo(Constants.drivePoints.redOutpostClimb).until(manualDrivebase)
+        ));
+
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -99,9 +110,16 @@ public class RobotContainer {
                 drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
         );
 
+
+        driverJoystick.a().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+
+        driverJoystick.x().onTrue(new InstantCommand(()->vision.setFilterTagID(!vision.getFilterTagID())));
+
+       
         /*
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverJoystick.b().whileTrue(drivetrain.applyRequest(() ->
