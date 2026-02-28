@@ -86,8 +86,8 @@ public class RobotContainer {
 
 
 
-        driverJoystick.rightBumper().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
-        driverJoystick.rightBumper().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
+        driverJoystick.rightBumper().onTrue(shooter.shoot());
+        driverJoystick.rightBumper().onFalse(shooter.idleFlywheel());
 
         driverJoystick.b().onTrue(hopper.forward().andThen(shooter.runMagazine()));
         driverJoystick.b().onFalse(hopper.stop().andThen(shooter.stopMagazine()));
