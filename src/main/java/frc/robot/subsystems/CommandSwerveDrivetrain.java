@@ -66,7 +66,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                                                                                     new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Translation_maxVy, TunerConstants.autoAlign_Translation_MaxA));
     private final ProfiledPIDController autoAlignRotationController = new ProfiledPIDController(TunerConstants.autoAlign_Rotation_P, TunerConstants.autoAlign_Rotation_I, TunerConstants.autoAlign_Rotation_D, 
                                                                                     new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Rotation_maxV, TunerConstants.autoAlign_Rotation_MaxA));
-    
+    private int redAutoAlign = 1;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -191,8 +191,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (DriverStation.getAlliance().get() == Alliance.Red){
             targetPos = new Translation2d(11.9,4);
+            redAutoAlign =-1;
         } else{
             targetPos = new Translation2d(5,4);
+            redAutoAlign = 1;
         }
         SmartDashboard.putString("TargetPos",targetPos.toString());
 
@@ -443,8 +445,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             Pose2d pose = this.getState().Pose;
 
             ChassisSpeeds out = new ChassisSpeeds(
-                -autoAlignXController.calculate(pose.getX()),
-                -autoAlignYController.calculate(pose.getY()),
+                autoAlignXController.calculate(pose.getX()) *redAutoAlign,
+                autoAlignYController.calculate(pose.getY()) *redAutoAlign,
                 autoAlignRotationController.calculate(pose.getRotation().getRadians())
             );
 

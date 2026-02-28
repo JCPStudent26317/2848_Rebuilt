@@ -40,7 +40,13 @@ public class Shooter extends SubsystemBase {
   private double turretSetpoint = 0;
 
   private double targetTheta = 0;
+  
+  private enum flywheelStates {
+    IDLE,
+    SHOOT
+  };
 
+  private flywheelStates currentState = flywheelStates.IDLE;
   // create a Motion Magic request, voltage output
 
 
@@ -251,14 +257,12 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
       () -> m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
   }
 
-  public void flyWheelOn(){
-    //m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
-    m_FlywheelOutputDutyCycle = 4000;
-    CommandScheduler.getInstance().schedule(setFlywheel());
+  public Command idleFlywheel(){
+    return new InstantCommand(()->m_FlywheelOutputDutyCycle = kFlywheelIdleSpeed,this);
+    
   }
-  public void flyWheelOff(){
-    m_FlywheelOutputDutyCycle = 0;
-    CommandScheduler.getInstance().schedule(setFlywheel());
+  public Command runFlywheel(){
+    return new InstantCommand(()->m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo()), this);
   }
   // /** Set the target for the shooter. */
   // public void setTarget() {
@@ -267,8 +271,10 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
 
   /** Sets the flywheel and hood angle to their shot velocity and shot position. */
   public Command shoot() {
-    return holdState().alongWith(Commands.idle(this).onlyIf(() -> readyToShoot()).repeatedly());
+      return runFlywheel().andThen(runMagazine().onlyIf(()->readyToShoot()).repeatedly());
   }
+
+
 
   /** Hold the current shooting state. */
   public Command holdState() {

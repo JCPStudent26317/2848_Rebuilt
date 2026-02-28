@@ -86,6 +86,8 @@ public final class Constants {
 
     public static final double kFlywheelRadius = .05; //meters
 
+    public static final double kFlywheelIdleSpeed = 200;
+
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(-0.009)
         .withAbsoluteSensorDiscontinuityPoint(.5)
