@@ -79,10 +79,16 @@ public class Intake extends SubsystemBase {
         setupTalonFx(m_Pivot, pivotMotorConfig);
     
         m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
+
+        m_IntakeCANcoder.setPosition(m_IntakeCANcoder.getAbsolutePosition().getValue());
     } 
 
     @Override
     public void periodic() {
+        // setControl needs to run periodically at all times or the motor will disable I think
+        
+        m_RollersL.setControl(lRollersOut);
+        m_Pivot.setControl(pivotOut);
         SmartDashboard.putNumber("Pivot Motor Voltage", m_Pivot.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot RPM", m_Pivot.getVelocity().getValueAsDouble() * 60);
         SmartDashboard.putNumber("Pivot Motor Temperature", m_Pivot.getDeviceTemp().getValueAsDouble());
@@ -94,16 +100,10 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition().getValueAsDouble());        
         SmartDashboard.putNumber("Pivot Motor Encoder Position",m_Pivot.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Setpoint", pivotSetpoint);
-
-        
     }
 
     public Command holdState() {
-        // setControl needs to run periodically at all times or the motor will disable I think
-        return Commands.run(() -> {
-            m_RollersL.setControl(lRollersOut);
-            m_Pivot.setControl(pivotOut);
-        } ,this);
+        return Commands.idle(this);
     }
 
     public void setPivot(double pos){
@@ -116,32 +116,32 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed));
+        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed), this);
     }
 
     public Command outtake() {
-        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed * -1));
+        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed * -1), this);
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> setRollersOutput(0.0));
+        return Commands.runOnce(() -> setRollersOutput(0.0), this);
     }
 
     public Command deploy() {
-        return Commands.runOnce(() -> setPivot(kDeploySetpoint));
+        return Commands.runOnce(() -> setPivot(kDeploySetpoint), this);
     }
 
     public Command lowRetract() {
-        return Commands.runOnce(() -> setPivot(kLowRetractSetpoint));
+        return Commands.runOnce(() -> setPivot(kLowRetractSetpoint), this);
     }
 
     public Command highRetract() {
-        return Commands.runOnce(() -> setPivot(kHighRetractSetpoint));
+        return Commands.runOnce(() -> setPivot(kHighRetractSetpoint), this);
     }
 
     // Note for future self: don't run the transition on this because it will eat cable
     public Command stow() {
-        return Commands.runOnce(() -> setPivot(kStowSetpoint));
+        return Commands.runOnce(() -> setPivot(kStowSetpoint), this);
     }
 
     public Command jiggle() {
@@ -150,8 +150,7 @@ public class Intake extends SubsystemBase {
             new WaitCommand(0.25),
             lowRetract(),
             new WaitCommand(0.25)
-        ).repeatedly().withName("Jiggle").withInterruptBehavior(InterruptionBehavior.kCancelSelf);
-        
+        ).repeatedly().withName("Jiggle");
     }
 
 }

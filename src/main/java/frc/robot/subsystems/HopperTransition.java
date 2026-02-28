@@ -50,15 +50,15 @@ public class HopperTransition extends SubsystemBase {
     }
 
     public Command forward() {
-        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed, kForwardBeltSpeed));
+        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed, kForwardBeltSpeed), this);
     }
 
     public Command backward() {
-        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed * -1, kForwardBeltSpeed * -1));
+        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed * -1, kForwardBeltSpeed * -1), this);
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0));
+        return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
     }
 
 }

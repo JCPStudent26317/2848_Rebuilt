@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -25,7 +26,7 @@ public class Lights extends SubsystemBase {
     }
 
     public Command runPattern(LEDPattern pattern) {
-        return run(() -> pattern.applyTo(ledBuffer));
+        return Commands.runOnce(() -> pattern.applyTo(ledBuffer), this);
     }
 
 }

@@ -60,7 +60,7 @@ public final class Constants {
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(0.10)
-        .withAbsoluteSensorDiscontinuityPoint(0)
+        .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
 

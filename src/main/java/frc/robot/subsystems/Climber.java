@@ -36,17 +36,17 @@ public class Climber extends SubsystemBase {
 
 
     public Command raise() {
-        return Commands.run(() -> m_Climber.set(1.0)).until(this::atTop)
+        return Commands.run(() -> m_Climber.set(1.0), this).until(this::atTop)
         .finallyDo(() -> m_Climber.set(0.0));
     }
 
     public Command lower() {
-        return Commands.run(() -> m_Climber.set(-1.0)).until(this::atBottom)
+        return Commands.run(() -> m_Climber.set(-1.0), this).until(this::atBottom)
         .finallyDo(() -> m_Climber.set(0.0));
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> m_Climber.set(0.0));
+        return Commands.runOnce(() -> m_Climber.set(0.0), this);
     }
 
     public Command directControl(DoubleSupplier input) {
