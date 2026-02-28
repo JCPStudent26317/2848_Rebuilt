@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -148,7 +149,7 @@ public class Intake extends SubsystemBase {
             new WaitCommand(0.25),
             lowRetract(),
             new WaitCommand(0.25)
-        ).repeatedly();
+        ).repeatedly().withName("Jiggle").withInterruptBehavior(InterruptionBehavior.kCancelSelf);
         
     }
 
