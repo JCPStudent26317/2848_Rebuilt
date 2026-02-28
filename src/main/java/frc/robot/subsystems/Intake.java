@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -22,89 +26,131 @@ import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.RangerHelpers.*;
 
 public class Intake extends SubsystemBase {
-    private final TalonFX lRollersMotor = new TalonFX(kLRollersMotorID);
+    private final TalonFX m_RollersL = new TalonFX(kLRollersMotorID);
     private final TalonFXConfiguration lRollersMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut lRollersOut = new DutyCycleOut(0.0);
 
-    private final TalonFX rRollersMotor = new TalonFX(kRRollersMotorID);
+    private final TalonFX m_RollersR = new TalonFX(kRRollersMotorID);
     private final TalonFXConfiguration rRollersMotorConfig = new TalonFXConfiguration();
 
-    private final TalonFX pivotMotor = new TalonFX(kIntakePivotID);
+    private final TalonFX m_Pivot = new TalonFX(kIntakePivotID);
     private final TalonFXConfiguration pivotMotorConfig = new TalonFXConfiguration();
 
     private final CANcoder m_IntakeCANcoder = new CANcoder(kIntakePivotCANcoderID);
 
-    private MotionMagicVoltage pivotOut = new MotionMagicVoltage(0);
+    private MotionMagicVoltage pivotOut = new MotionMagicVoltage(kDeploySetpoint);
 
-    private double pivotSetpoint = 0;
+    private double pivotSetpoint = kDeploySetpoint;
     // Pivot motor would use PID, maybe feedforward with arm angle
 
     public Intake() {
 
-        pivotMotorConfig.Slot0.kS = 0;
-        pivotMotorConfig.Slot0.kV = 0;
-        pivotMotorConfig.Slot0.kA = 0;
-        pivotMotorConfig.Slot0.kP = 0;
-        pivotMotorConfig.Slot0.kI = 0;
-        pivotMotorConfig.Slot0.kD = 0;
-        pivotMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 7;
-        pivotMotorConfig.MotionMagic.MotionMagicAcceleration = 14;
-        pivotMotorConfig.MotionMagic.MotionMagicJerk = 140;
+        pivotMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        pivotMotorConfig.Feedback.FeedbackRemoteSensorID= kIntakePivotCANcoderID;
+        pivotMotorConfig.Slot0.kS = kPivotkS;
+        pivotMotorConfig.Slot0.kV = kPivotkV;
+        pivotMotorConfig.Slot0.kA = kPivotkA;
+        pivotMotorConfig.Slot0.kP = kPivotkP;
+        pivotMotorConfig.Slot0.kI = kPivotkI;
+        pivotMotorConfig.Slot0.kD = kPivotkD;
+        pivotMotorConfig.MotionMagic.MotionMagicCruiseVelocity = kPivotMMCruiseVelocity;
+        pivotMotorConfig.MotionMagic.MotionMagicAcceleration = kPivotMMAcceleration;
+        pivotMotorConfig.MotionMagic.MotionMagicJerk = kPivotMMJerk;
+
+        pivotMotorConfig.Feedback.FeedbackRemoteSensorID = kIntakePivotCANcoderID;
         pivotMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-
-        SoftwareLimitSwitchConfigs pivotSoftwareConfigs = new SoftwareLimitSwitchConfigs();
-        pivotSoftwareConfigs.ForwardSoftLimitThreshold =1;
-        pivotSoftwareConfigs.ReverseSoftLimitThreshold =0;
-        pivotSoftwareConfigs.ForwardSoftLimitEnable = true;
-        pivotSoftwareConfigs.ReverseSoftLimitEnable = true;
+        //pivotMotorConfig.Feedback.SensorToMechanismRatio =-1;
+        
+        pivotMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =-0.5;
+        pivotMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =0;
+        pivotMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+        pivotMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
         CANcoderConfigurator intakeCANcoderConfigurator = m_IntakeCANcoder.getConfigurator();
         retryConfigApply(() -> intakeCANcoderConfigurator.apply(kIntakeCANcoderMagnetSensorConfigs));
 
+
         // Apply things to the configuration here
         lRollersMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        setupTalonFx(lRollersMotor, lRollersMotorConfig);
-        setupTalonFx(rRollersMotor, rRollersMotorConfig);
-        setupTalonFx(pivotMotor, pivotMotorConfig);
-
-        pivotMotor.getConfigurator().apply(pivotSoftwareConfigs);
+        setupTalonFx(m_RollersL, lRollersMotorConfig);
+        setupTalonFx(m_RollersR, rRollersMotorConfig);
+        setupTalonFx(m_Pivot, pivotMotorConfig);
     
-        rRollersMotor.setControl(new Follower(lRollersMotor.getDeviceID(), MotorAlignmentValue.Opposed));
-
-        this.register();
+        m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
     } 
 
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Pivot Motor Voltage", m_Pivot.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Pivot RPM", m_Pivot.getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Pivot Motor Temperature", m_Pivot.getDeviceTemp().getValueAsDouble());
+        SmartDashboard.putNumber("Pivot Supply Current", m_Pivot.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Pivot get()", m_Pivot.get());
+        SmartDashboard.putNumber("Pivot Error", m_Pivot.getClosedLoopError().getValueAsDouble());
 
-    public Command setPivot(){
-        return new InstantCommand(()->{});//pivotMotor.setControl(pivotOut.withPosition(pivotSetpoint)));
+        SmartDashboard.putNumber("CANcoder Absolute Position", m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition().getValueAsDouble());        
+        SmartDashboard.putNumber("Pivot Motor Encoder Position",m_Pivot.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Setpoint", pivotSetpoint);
+
+        
     }
 
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
-        return Commands.run(() -> lRollersMotor.setControl(lRollersOut),this);
+        return Commands.run(() -> {
+            m_RollersL.setControl(lRollersOut);
+            m_Pivot.setControl(pivotOut);
+        } ,this);
     }
 
-    public void setPivotOutput(double pos){
+    public void setPivot(double pos){
+        pivotSetpoint = pos;
         pivotOut.Position = pos;
     }
 
-    public void setMotorOutput(double output) {
+    public void setRollersOutput(double output) {
         lRollersOut.Output = output;
     }
 
     public Command intake() {
-        return Commands.runOnce(() -> setMotorOutput(kRollersMotorSpeed));
+        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed));
     }
 
     public Command outtake() {
-        return Commands.runOnce(() -> setMotorOutput(kRollersMotorSpeed * -1));
+        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed * -1));
     }
 
     public Command stop() {
-        return Commands.runOnce(() -> setMotorOutput(0.0));
+        return Commands.runOnce(() -> setRollersOutput(0.0));
+    }
+
+    public Command deploy() {
+        return Commands.runOnce(() -> setPivot(kDeploySetpoint));
+    }
+
+    public Command lowRetract() {
+        return Commands.runOnce(() -> setPivot(kLowRetractSetpoint));
+    }
+
+    public Command highRetract() {
+        return Commands.runOnce(() -> setPivot(kHighRetractSetpoint));
+    }
+
+    // Note for future self: don't run the transition on this because it will eat cable
+    public Command stow() {
+        return Commands.runOnce(() -> setPivot(kStowSetpoint));
+    }
+
+    public Command jiggle() {
+        return new SequentialCommandGroup(
+            highRetract(),
+            new WaitCommand(0.25),
+            lowRetract(),
+            new WaitCommand(0.25)
+        ).repeatedly();
+        
     }
 
 }

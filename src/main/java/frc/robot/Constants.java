@@ -41,10 +41,26 @@ public final class Constants {
     public static final int kPivotMotorID = 0;
     public static final double kPivotMotorSpeed = 1.0;    
 
+    public static final double kPivotkS = 0;
+    public static final double kPivotkV = 0;
+    public static final double kPivotkA = 0;
+    public static final double kPivotkP = 36;
+    public static final double kPivotkI = 0;
+    public static final double kPivotkD = 0;
+
+    public static final double kPivotMMCruiseVelocity = 7;
+    public static final double kPivotMMAcceleration = 14;
+    public static final double kPivotMMJerk = 140;
+    
+    public static final double kDeploySetpoint = 0.573486328125;
+    public static final double kLowRetractSetpoint = 0.65;
+    public static final double kHighRetractSetpoint = 0.75;
+    public static final double kStowSetpoint = 0.96;
+
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-.033)
-        .withAbsoluteSensorDiscontinuityPoint(1)
+        .withMagnetOffset(0.10)
+        .withAbsoluteSensorDiscontinuityPoint(0)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
 

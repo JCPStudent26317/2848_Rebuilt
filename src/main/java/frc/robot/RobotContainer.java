@@ -106,7 +106,7 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
+        drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
@@ -152,7 +152,16 @@ public class RobotContainer {
         // driverJoystick.x().onFalse(magazine.stop());
 
         climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
+
+        testingJoystick.a().onTrue(intake.deploy());
+        testingJoystick.b().onTrue(intake.lowRetract());
+        testingJoystick.x().onTrue(intake.highRetract());
+        testingJoystick.y().onTrue(intake.stow());
+
+        testingJoystick.leftBumper().onTrue(intake.intake());
+        testingJoystick.leftBumper().onFalse(intake.stop());
         
+        testingJoystick.rightBumper().onTrue(intake.jiggle()); // Not being interrupted by the other commands for some reason
     }
 
   /**

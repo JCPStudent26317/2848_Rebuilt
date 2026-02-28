@@ -12,20 +12,20 @@ import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.RangerHelpers.setupTalonFx;
 
 public class HopperTransition extends SubsystemBase {
-    private final TalonFX sidewaysBeltMotor = new TalonFX(kSidewaysBeltMotorID);
+    private final TalonFX m_SidewaysBelt = new TalonFX(kSidewaysBeltMotorID);
     private final TalonFXConfiguration sidewaysBeltMotorConfig = new TalonFXConfiguration();
-    private final DutyCycleOut sidewaysBeltOut = new DutyCycleOut(0.0);
+    private final DutyCycleOut m_SidewaysBeltOut = new DutyCycleOut(0.0);
     
-    private final TalonFX forwardBeltMotor = new TalonFX(kForwardBeltMotorID);
+    private final TalonFX m_ForwardBelt = new TalonFX(kForwardBeltMotorID);
     private final TalonFXConfiguration forwardBeltMotorConfig = new TalonFXConfiguration();
-    @Getter private final DutyCycleOut forwardBeltOut = new DutyCycleOut(0.0);
+    @Getter private final DutyCycleOut m_ForwardBeltOut = new DutyCycleOut(0.0);
 
 
     public HopperTransition() {
         // Apply things to the configurations here
 
-        setupTalonFx(sidewaysBeltMotor, sidewaysBeltMotorConfig);
-        setupTalonFx(forwardBeltMotor, forwardBeltMotorConfig);
+        setupTalonFx(m_SidewaysBelt, sidewaysBeltMotorConfig);
+        setupTalonFx(m_ForwardBelt, forwardBeltMotorConfig);
 
         this.register();
 
@@ -34,8 +34,8 @@ public class HopperTransition extends SubsystemBase {
     public Command holdState() {
         // setControl needs to run periodically at all times or the motor will disable I think
         return Commands.run(() -> {
-            sidewaysBeltMotor.setControl(sidewaysBeltOut);
-            forwardBeltMotor.setControl(forwardBeltOut);
+            m_SidewaysBelt.setControl(m_SidewaysBeltOut);
+            m_ForwardBelt.setControl(m_ForwardBeltOut);
         },this);
     }    
 
@@ -45,8 +45,8 @@ public class HopperTransition extends SubsystemBase {
     }
 
     public void setMotorsOutput(double sidewaysBeltOutput, double kForwardBeltOutput) {
-        sidewaysBeltOut.Output = sidewaysBeltOutput;
-        forwardBeltOut.Output = kForwardBeltOutput;
+        m_SidewaysBeltOut.Output = sidewaysBeltOutput;
+        m_ForwardBeltOut.Output = kForwardBeltOutput;
     }
 
     public Command forward() {
