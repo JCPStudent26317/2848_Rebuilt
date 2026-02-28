@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -79,18 +80,18 @@ public class RobotContainer {
 
         //all subsystems are registered in their constructor
 
-
         intake.setDefaultCommand(intake.holdState());
         hopper.setDefaultCommand(hopper.holdState());
         shooter.setDefaultCommand(shooter.holdState());
 
-
-
         driverJoystick.rightBumper().onTrue(new InstantCommand(()->shooter.flyWheelOn()));
         driverJoystick.rightBumper().onFalse(new InstantCommand(()->shooter.flyWheelOff()));
 
-        driverJoystick.b().onTrue(hopper.forward().andThen(shooter.runMagazine()));
-        driverJoystick.b().onFalse(hopper.stop().andThen(shooter.stopMagazine()));
+        driverJoystick.b().onTrue(intake.intake().andThen(hopper.forward()).andThen(shooter.runMagazine()));
+        driverJoystick.b().onFalse(intake.stop().andThen(hopper.stop()).andThen(shooter.stopMagazine()));
+
+        driverJoystick.leftTrigger().onTrue(intake.jiggle());
+        driverJoystick.leftTrigger().onFalse(intake.deploy());
 
         driverJoystick.leftBumper().onTrue(intake.intake());
         driverJoystick.leftBumper().onFalse(intake.stop());
@@ -151,17 +152,16 @@ public class RobotContainer {
         // driverJoystick.x().onTrue(magazine.run());
         // driverJoystick.x().onFalse(magazine.stop());
 
-        climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
+        // testingJoystick.a().onTrue(intake.deploy());
+        // testingJoystick.b().onTrue(intake.lowRetract());
+        // testingJoystick.x().onTrue(intake.highRetract());
+        // testingJoystick.y().onTrue(intake.stow());
 
-        testingJoystick.a().onTrue(intake.deploy());
-        testingJoystick.b().onTrue(intake.lowRetract());
-        testingJoystick.x().onTrue(intake.highRetract());
-        testingJoystick.y().onTrue(intake.stow());
-
-        testingJoystick.leftBumper().onTrue(intake.intake());
-        testingJoystick.leftBumper().onFalse(intake.stop());
+        // testingJoystick.leftBumper().onTrue(intake.intake());
+        // testingJoystick.leftBumper().onFalse(intake.stop());
         
-        testingJoystick.rightBumper().onTrue(intake.jiggle()); // Not being interrupted by the other commands for some reason
+        // testingJoystick.rightBumper().onTrue(intake.jiggle()); // Not being interrupted by the other commands for some reason
+        
     }
 
   /**

@@ -31,18 +31,17 @@ public class HopperTransition extends SubsystemBase {
 
     }
 
-    public Command holdState() {
-        // setControl needs to run periodically at all times or the motor will disable I think
-        return Commands.run(() -> {
-            m_SidewaysBelt.setControl(m_SidewaysBeltOut);
-            m_ForwardBelt.setControl(m_ForwardBeltOut);
-        },this);
-    }    
-
-
     @Override
-    public void periodic(){ 
+    public void periodic() {
+       
+        m_SidewaysBelt.setControl(m_SidewaysBeltOut);
+        m_ForwardBelt.setControl(m_ForwardBeltOut);
+         
     }
+
+    public Command holdState() {
+        return Commands.idle(this);
+    }    
 
     public void setMotorsOutput(double sidewaysBeltOutput, double kForwardBeltOutput) {
         m_SidewaysBeltOut.Output = sidewaysBeltOutput;
