@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
