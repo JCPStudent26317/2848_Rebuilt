@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase {
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
     //flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
-    m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+    m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
     TalonFXConfiguration turretConfig = new TalonFXConfiguration();
     turretConfig.Slot0.kS = kTurretkS;
@@ -129,7 +129,7 @@ public class Shooter extends SubsystemBase {
     targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
 
-    m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
+    //sm_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo());
 
     
     setTurretAngle(targetTheta,false);
@@ -178,6 +178,8 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("Shooter hub theta",
       ()-> targetTheta,
       null);
+    builder.addDoubleProperty("Distance",()->targetDist,
+    null);
 
 
 
@@ -187,16 +189,17 @@ public class Shooter extends SubsystemBase {
   /** Sets the turret angle to aim the shooter at the target.*/
   public Command setTurret() {
     return Commands.runOnce(
-      () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection())), 
+      () -> {},//m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection())), 
       this);
   }
 
 
 public void init(){
-  //CommandScheduler.getInstance().schedule(setFlywheel());
-  SmartDashboard.putNumber("turret setpoint",turretSetpoint);
-  SmartDashboard.putNumber("Distance",targetDist);
+  //CommandScheduler.getInstance().schedule(setFlywheel());`
+  
   this.register();
+
+  CommandScheduler.getInstance().schedule(idleFlywheel());
 }
 
 /**
@@ -205,7 +208,7 @@ public void init(){
  */
 private double getExitVelo(){
       return RobotContainer.getDrivetrain().getPolarVelocity().getX() * 0.66516439
-      + targetDist * 0.71612605
+      + targetDist * 4.18
       +5.3496863293326635;
 }
 /**
@@ -221,7 +224,7 @@ public double getTurretTangentOffset(){
  * @return
  */
 private double getVeloRPM(double velo){
-  return (velo*60)/(2*Math.PI*kFlywheelRadius) * kFlywheelRPMMult;
+  return MathUtil.clamp((velo*60)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,0,6000);
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
@@ -254,7 +257,7 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
    */
   private Command setFlywheel() {
     return Commands.runOnce(
-      () -> m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
+      () ->{});// m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
   }
 
   public Command idleFlywheel(){

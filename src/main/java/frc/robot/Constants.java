@@ -30,6 +30,8 @@ public final class Constants {
   /**Xbox Controller IDs here.*/
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+
+    public static final double kTriggerThreshhold = .2;
   }
 
   public static class IntakeConstants {
@@ -82,11 +84,11 @@ public final class Constants {
 
     public static final double kTurretOffset = -.033;
 
-    public static final double kFlywheelRPMMult = 1.5; //multiplier on flywheel speed to account for slipping between flywheel and fuel
+    public static final double kFlywheelRPMMult = 1; //multiplier on flywheel speed to account for slipping between flywheel and fuel
 
     public static final double kFlywheelRadius = .05; //meters
 
-    public static final double kFlywheelIdleSpeed = 200;
+    public static final double kFlywheelIdleSpeed = 500;
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(-0.009)
@@ -95,8 +97,8 @@ public final class Constants {
 
     public static final double kFlywheelkS = 0.0005;
     public static final double kFlywheelkV = 0.002;
-    public static final double kFlywheelkP = .0001;  
-    public static final double kFlywheelkI = 0.0;
+    public static final double kFlywheelkP = .001;  
+    public static final double kFlywheelkI = 0.0005;
     public static final double kFlywheelkD = 0.000;
     public static final double kFlywheelkA = .0005;
     // the order of the pid values is different between these two !!
@@ -122,6 +124,15 @@ public final class Constants {
 
     public static final double kFlywheelRPMTolerance = 50;
     public static final double kTurretPositionTolerance = .01;
+
+    public static final Translation2d redHubPose = new Translation2d(11.9,4);
+    public static final Translation2d blueHubPose = new Translation2d(5,4);
+
+    public static final Translation2d redOutpostCornerPose = new Translation2d(14, 7);
+    public static final Translation2d redDepotCornerPose = new Translation2d(14,1);
+
+    public static final Translation2d blueOutpostCornerPose = new Translation2d(2,1);
+    public static final Translation2d blueDepotCornerPose = new Translation2d(2,7);
 
   }
 

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.VisionConstants.kFieldLength;
+import static frc.robot.Constants.VisionConstants.kFieldWidth;
 
 import java.util.function.Supplier;
 
@@ -75,7 +77,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private @Setter Translation2d targetPos;
+    private Translation2d targetPos = new Translation2d();
+    private Translation2d hubPos = new Translation2d();
+
+    private boolean redAlliance = false;
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -190,14 +195,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
         if (DriverStation.getAlliance().get() == Alliance.Red){
-            targetPos = new Translation2d(11.9,4);
+            targetPos = Constants.ShooterConstants.redHubPose;
             redAutoAlign =-1;
+            redAlliance = true;
         } else{
-            targetPos = new Translation2d(5,4);
+            targetPos = Constants.ShooterConstants.blueHubPose;
             redAutoAlign = 1;
+            redAlliance = false;
         }
+        hubPos = targetPos;
         SmartDashboard.putString("TargetPos",targetPos.toString());
 
+    }
+
+
+
+    public void setTarget(boolean aimAtHub){
+        Pose2d pos = this.getState().Pose;
+        if(aimAtHub){
+            targetPos = hubPos;
+        } else if(redAlliance && pos.getY()>kFieldWidth/2){
+            targetPos = Constants.ShooterConstants.redOutpostCornerPose;
+        } else if(redAlliance && pos.getY()<=kFieldWidth/2){
+            targetPos = Constants.ShooterConstants.redDepotCornerPose;
+        } else{
+            if(pos.getY()>kFieldWidth/2){
+                targetPos = Constants.ShooterConstants.blueDepotCornerPose;
+            } else{
+                targetPos = Constants.ShooterConstants.blueOutpostCornerPose;
+            }
+        }
     }
 
     /**
@@ -337,8 +364,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double ry = r.getY() / dist;
 
         // Unit tangential vector (90° CCW rotation)
-        double tx = -ry;
-        double ty = rx;
+        double tx = ry;
+        double ty = -rx;
 
         // Robot velocity components
         double vx = getFieldOrientedSpeeds().vxMetersPerSecond;
@@ -376,6 +403,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());
+        SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
+        SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
+        SmartDashboard.putNumber("field velocity",Math.sqrt(getFieldOrientedSpeeds().vxMetersPerSecond * getFieldOrientedSpeeds().vxMetersPerSecond + getFieldOrientedSpeeds().vyMetersPerSecond* getFieldOrientedSpeeds().vyMetersPerSecond));
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }
