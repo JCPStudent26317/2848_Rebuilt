@@ -34,14 +34,19 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.4158808933002414,
+      "waypointRelativePos": 0.247146401985116,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 2.666,
-    "maxAcceleration": 2.666,
+    "maxAcceleration": 1.666,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
