@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -89,17 +90,23 @@ public class Intake extends SubsystemBase {
         
         m_RollersL.setControl(lRollersOut);
         m_Pivot.setControl(pivotOut);
-        SmartDashboard.putNumber("Pivot Motor Voltage", m_Pivot.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot RPM", m_Pivot.getVelocity().getValueAsDouble() * 60);
-        SmartDashboard.putNumber("Pivot Motor Temperature", m_Pivot.getDeviceTemp().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot Supply Current", m_Pivot.getSupplyCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot get()", m_Pivot.get());
-        SmartDashboard.putNumber("Pivot Error", m_Pivot.getClosedLoopError().getValueAsDouble());
+    }
+    
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
 
-        SmartDashboard.putNumber("CANcoder Absolute Position", m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition().getValueAsDouble());        
-        SmartDashboard.putNumber("Pivot Motor Encoder Position",m_Pivot.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Setpoint", pivotSetpoint);
+        builder.addDoubleProperty("Pivot Motor Voltage", m_Pivot.getMotorVoltage()::getValueAsDouble, null);
+        builder.addDoubleProperty("Pivot RPM", () -> m_Pivot.getVelocity().getValueAsDouble() * 60, null);
+        builder.addDoubleProperty("Pivot Motor Temperature", m_Pivot.getDeviceTemp()::getValueAsDouble, null);
+        builder.addDoubleProperty("Pivot Supply Current", m_Pivot.getSupplyCurrent()::getValueAsDouble, null);
+        builder.addDoubleProperty("Pivot get()", m_Pivot::get, null);
+        builder.addDoubleProperty("Pivot Error", m_Pivot.getClosedLoopError()::getValueAsDouble, null);
+
+        builder.addDoubleProperty("CANcoder Absolute Position", m_IntakeCANcoder.getAbsolutePosition()::getValueAsDouble, null);
+        builder.addDoubleProperty("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition()::getValueAsDouble, null);        
+        builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
+        builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
     }
 
     public Command holdState() {
