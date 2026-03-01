@@ -11,8 +11,8 @@
         "x": 2.74592771084337,
         "y": 2.0461566265060243
       },
-      "isLocked": false,
-      "linkedName": null
+      "isLocked": true,
+      "linkedName": "BumpStart"
     },
     {
       "anchor": {

@@ -80,6 +80,8 @@ public final class Constants {
     public static final int kMagazineMotorID = 27;
     public static final double kMagazineMotorSpeed = .5;
 
+    public static final boolean kDisableShooter = true; // For testing purposes; in competition, this should be false
+
     public static final double kTurretOffset = -.033;
 
     public static final double kFlywheelRPMMult = 1.5; //multiplier on flywheel speed to account for slipping between flywheel and fuel

@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake Run Rollers"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NeutralHalfSweepPastLine"

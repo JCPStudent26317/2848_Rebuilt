@@ -40,9 +40,9 @@ public class Intake extends SubsystemBase {
 
     private final CANcoder m_IntakeCANcoder = new CANcoder(kIntakePivotCANcoderID);
 
-    private MotionMagicVoltage pivotOut = new MotionMagicVoltage(kDeploySetpoint);
+    private double pivotSetpoint = kStowSetpoint;
+    private MotionMagicVoltage pivotOut = new MotionMagicVoltage(pivotSetpoint);
 
-    private double pivotSetpoint = kDeploySetpoint;
     // Pivot motor would use PID, maybe feedforward with arm angle
 
     public Intake() {

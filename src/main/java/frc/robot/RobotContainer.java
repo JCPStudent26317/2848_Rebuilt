@@ -68,10 +68,16 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("Intake Deploy", intake.deploy());
+        NamedCommands.registerCommand("Intake Low Retract", intake.lowRetract());
+        NamedCommands.registerCommand("Intake Stow", intake.lowRetract());
         NamedCommands.registerCommand("Intake Run Rollers", intake.intake());
         NamedCommands.registerCommand("Intake Stop Rollers", intake.stop());
+        NamedCommands.registerCommand("Intake Jiggle", intake.jiggle());
+        
+        NamedCommands.registerCommand("Transition Run Belts", hopper.forward());
+        NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
-        autoChooser = AutoBuilder.buildAutoChooser("DoNothing");
+        autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();
