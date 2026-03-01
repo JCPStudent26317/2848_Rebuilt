@@ -80,8 +80,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.addOption("NeutralPastLine (Depot Side)", new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
-        
+        autoChooser.addOption("NeutralPastLine (Depot Side)",
+            new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
+        autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
+            new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
+
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         
