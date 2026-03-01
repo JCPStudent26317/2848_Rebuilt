@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,7 +79,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
         autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser.addOption("NeutralPastLine (Depot Side)", new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
+        
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        
 
         configureBindings();
 
