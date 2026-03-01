@@ -186,7 +186,7 @@ public class Shooter extends SubsystemBase {
 
   /** Sets the turret angle to aim the shooter at the target.*/
   public Command setTurret() {
-    if(kDisableShooter) return Commands.none();
+    if(kDisableTurret) return Commands.none();
     return Commands.runOnce(
       () -> m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection())), 
       this);
@@ -254,7 +254,7 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
    * @param vel desired flywheel velocity (units defined by motor configuration)
    */
   private Command setFlywheel() {
-    if(kDisableShooter) return Commands.none();
+    if(kDisableFlywheel) return Commands.none();
     return Commands.runOnce(
       () -> m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
   }

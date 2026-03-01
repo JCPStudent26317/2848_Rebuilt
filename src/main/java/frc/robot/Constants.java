@@ -80,7 +80,9 @@ public final class Constants {
     public static final int kMagazineMotorID = 27;
     public static final double kMagazineMotorSpeed = .5;
 
-    public static final boolean kDisableShooter = true; // For testing purposes; in competition, this should be false
+    public static final boolean kDisableTurret = true; 
+    public static final boolean kDisableFlywheel = true;
+    // For testing purposes; in competition, these should be false
 
     public static final double kTurretOffset = -.033;
 
