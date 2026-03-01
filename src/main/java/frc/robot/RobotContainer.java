@@ -119,6 +119,10 @@ public class RobotContainer {
         driverJoystick.rightBumper().whileTrue(shooter.shoot()
         .beforeStarting(()->drivetrain.setTarget(true)));
 
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
+        
+        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
+
 
         //CLIMBER CONTROLS
 

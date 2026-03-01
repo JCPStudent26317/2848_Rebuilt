@@ -274,7 +274,7 @@ public void setFilterTagID(boolean val){
             poseError = visionPoseEstimate.pose.minus(RobotContainer.getDrivetrain().getState().Pose);
             
             // Check to ensure there is a valid pose estimate
-            if (visionPoseEstimate == null || visionPoseEstimate.rawFiducials.length == 0) {
+            if (visionPoseEstimate == null || visionPoseEstimate.rawFiducials.length ==0) {
                 rejectUpdate = true;
             }
             // Reject update if our angular velocity is greater than a threshold degrees per second
@@ -282,7 +282,7 @@ public void setFilterTagID(boolean val){
                 rejectUpdate = true;
             }
             // Reject update if there are no visible tags (Redundant?)
-            else if (visionPoseEstimate.tagCount == 0) {
+            else if (visionPoseEstimate.tagCount <2) {
                 rejectUpdate = true;
             }
             // Reject update if the translational error magnitude is larger than the threshold
