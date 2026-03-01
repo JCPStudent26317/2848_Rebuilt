@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -66,6 +67,10 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        NamedCommands.registerCommand("Intake Deploy", intake.deploy());
+        NamedCommands.registerCommand("Intake Run Rollers", intake.intake());
+        NamedCommands.registerCommand("Intake Stop Rollers", intake.stop());
+
         autoChooser = AutoBuilder.buildAutoChooser("DoNothing");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
