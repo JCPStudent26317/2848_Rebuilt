@@ -116,8 +116,6 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
-
-    init();
   }
 
   @Override
@@ -194,21 +192,13 @@ public class Shooter extends SubsystemBase {
   }
 
 
-public void init(){
-  //CommandScheduler.getInstance().schedule(setFlywheel());`
-  
-  this.register();
-
-  CommandScheduler.getInstance().schedule(idleFlywheel());
-}
-
 /**
  * gets the needed exit velocity of the ball to reach the goal
  * @return velocity in m/s
  */
 private double getExitVelo(){
       return RobotContainer.getDrivetrain().getPolarVelocity().getX() * 0.66516439
-      + targetDist * 4.18
+      + targetDist * 2
       +5.3496863293326635;
 }
 /**
@@ -223,8 +213,8 @@ public double getTurretTangentOffset(){
  * @param velo
  * @return
  */
-private double getVeloRPM(double velo){
-  return MathUtil.clamp((velo*60)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,0,6000);
+private double getVeloRPS(double velo){
+  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,0,100);
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
@@ -257,7 +247,7 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
    */
   private Command setFlywheel() {
     return Commands.runOnce(
-      () ->{});// m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle)),this);
+      () -> m_FlywheelLeftLeader.setControl(new VelocityVoltage(m_FlywheelOutputDutyCycle).withSlot(0)),this);
   }
 
   public Command idleFlywheel(){
@@ -265,7 +255,7 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
     
   }
   public Command runFlywheel(){
-    return new InstantCommand(()->m_FlywheelOutputDutyCycle = getVeloRPM(getExitVelo()), this);
+    return new InstantCommand(()->m_FlywheelOutputDutyCycle = getVeloRPS(getExitVelo()), this);
   }
   // /** Set the target for the shooter. */
   // public void setTarget() {
@@ -274,15 +264,14 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
 
   /** Sets the flywheel and hood angle to their shot velocity and shot position. */
   public Command shoot() {
-      return runFlywheel().andThen(runMagazine().onlyIf(()->readyToShoot()).repeatedly());
+      return (runFlywheel().andThen(setFlywheel().andThen(runMagazine()))).repeatedly(); //.onlyIf(()->readyToShoot())
   }
 
 
 
   /** Hold the current shooting state. */
   public Command holdState() {
-    return Commands.run(()->{CommandScheduler.getInstance().schedule(setFlywheel());
-    CommandScheduler.getInstance().schedule(setTurret());},this);
+    return setFlywheel().andThen(setTurret());
   }
 
   /** Run magazine */

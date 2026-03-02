@@ -93,6 +93,10 @@ public class RobotContainer {
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
         );
+
+        shooter.setDefaultCommand(shooter.holdState());
+
+
         // Small adjustments code
         driverJoystick.pov(90)
                 .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(0).withVelocityY(-0.2))); //right
@@ -121,7 +125,7 @@ public class RobotContainer {
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
         
-        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
+        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()));
 
 
         //CLIMBER CONTROLS

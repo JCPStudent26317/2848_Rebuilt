@@ -95,12 +95,12 @@ public final class Constants {
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
-    public static final double kFlywheelkS = 0.0005;
-    public static final double kFlywheelkV = 0.002;
-    public static final double kFlywheelkP = .001;  
-    public static final double kFlywheelkI = 0.0005;
-    public static final double kFlywheelkD = 0.000;
-    public static final double kFlywheelkA = .0005;
+    public static final double kFlywheelkS = 0.0;
+    public static final double kFlywheelkV = 0.12;//0.002
+    public static final double kFlywheelkP = 3;  
+    public static final double kFlywheelkI = 0.0;
+    public static final double kFlywheelkD = 0.0;
+    public static final double kFlywheelkA = 0.0;
     // the order of the pid values is different between these two !!
     public static final double kTurretkS = 0.05;
     public static final double kTurretkV = 5;
