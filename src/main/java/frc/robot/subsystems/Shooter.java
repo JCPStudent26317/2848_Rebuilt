@@ -271,7 +271,7 @@ public void setTurretAngle(double angle,boolean tanjentAdjust){
 
   /** Hold the current shooting state. */
   public Command holdState() {
-    return setFlywheel().andThen(setTurret());
+    return setFlywheel().alongWith(setTurret());
   }
 
   /** Run magazine */
