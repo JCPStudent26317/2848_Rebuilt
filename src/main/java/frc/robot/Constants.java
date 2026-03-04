@@ -88,17 +88,17 @@ public final class Constants {
 
     public static final double kFlywheelRadius = .05; //meters
 
-    public static final double kFlywheelIdleSpeed = 500;
+    public static final double kFlywheelIdleSpeed = 10; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-0.009)
+        .withMagnetOffset(-0.01)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
     public static final double kFlywheelkS = 0.0;
-    public static final double kFlywheelkV = 0.12;//0.002
-    public static final double kFlywheelkP = 3;  
-    public static final double kFlywheelkI = 0.0;
+    public static final double kFlywheelkV = 0.13;//12;//0.002
+    public static final double kFlywheelkP = .4;//3;  
+    public static final double kFlywheelkI = 0.1;
     public static final double kFlywheelkD = 0.0;
     public static final double kFlywheelkA = 0.0;
     // the order of the pid values is different between these two !!
@@ -119,11 +119,11 @@ public final class Constants {
     public static final double kTurretMMAcceleration = 28;
     public static final double kTurretMMJerk = 280;
 
-    public static final double kTurretSwitchForwardLimit = 0.25;
-    public static final double kTurretSwitchReverseLimit = -0.44;
+    public static final double kTurretSwitchForwardLimit = 0.24;
+    public static final double kTurretSwitchReverseLimit = -0.26;
 
-    public static final double kFlywheelRPMTolerance = 50;
-    public static final double kTurretPositionTolerance = .01;
+    public static final double kFlywheelRPMTolerance = 5;
+    public static final double kTurretPositionTolerance = .05;
 
     public static final Translation2d redHubPose = new Translation2d(11.9,4);
     public static final Translation2d blueHubPose = new Translation2d(5,4);

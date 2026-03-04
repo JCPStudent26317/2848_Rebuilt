@@ -94,7 +94,7 @@ public class RobotContainer {
             )
         );
 
-        shooter.setDefaultCommand(shooter.holdState());
+        //shooter.setDefaultCommand(shooter.holdState());
 
 
         // Small adjustments code
@@ -121,17 +121,21 @@ public class RobotContainer {
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
         .beforeStarting(()->drivetrain.setTarget(false)));
         driverJoystick.rightBumper().whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(true)));
+        .beforeStarting(()->drivetrain.setTarget(true))
+        .beforeStarting(hopper.forward()));
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
         
-        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()));
+        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()).andThen(shooter.stopMagazine()).andThen(hopper.stop()));
 
 
         //CLIMBER CONTROLS
 
-        driverJoystick.y().whileTrue(climber.raise());
-        driverJoystick.a().whileFalse(climber.lower());
+        // driverJoystick.y().whileTrue(climber.raise());
+        // driverJoystick.a().whileFalse(climber.lower());
+
+        driverJoystick.a().onTrue(hopper.forward().andThen(shooter.runMagazine()).andThen(shooter.runFlywheel()));
+         driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
         //left is back right is start
         //DRIVETRAIN RESETS
