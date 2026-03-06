@@ -134,7 +134,7 @@ public class RobotContainer {
         // driverJoystick.y().whileTrue(climber.raise());
         // driverJoystick.a().whileFalse(climber.lower());
 
-        driverJoystick.a().onTrue(hopper.forward().andThen(shooter.runMagazine()).andThen(shooter.runFlywheel()));
+        driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
          driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
         //left is back right is start

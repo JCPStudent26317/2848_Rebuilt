@@ -91,7 +91,7 @@ public final class Constants {
     public static final double kFlywheelIdleSpeed = 10; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-0.01)
+        .withMagnetOffset(-0.247)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
@@ -123,7 +123,7 @@ public final class Constants {
     public static final double kTurretSwitchReverseLimit = -0.26;
 
     public static final double kFlywheelRPMTolerance = 5;
-    public static final double kTurretPositionTolerance = .05;
+    public static final double kTurretPositionTolerance = .025;
 
     public static final Translation2d redHubPose = new Translation2d(11.9,4);
     public static final Translation2d blueHubPose = new Translation2d(5,4);
