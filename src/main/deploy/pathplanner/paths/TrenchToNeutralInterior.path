@@ -8,30 +8,53 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.5999219116020305,
-        "y": 0.6189727268200081
+        "x": 5.223610113871883,
+        "y": 0.5553927455536538
       },
       "isLocked": false,
       "linkedName": "TrenchStart"
     },
     {
       "anchor": {
-        "x": 0.5197432239657629,
-        "y": 0.6127246790299581
+        "x": 6.3938944365192585,
+        "y": 1.5572467902995721
       },
       "prevControl": {
-        "x": 0.1437432239657629,
-        "y": 0.6127246790299581
+        "x": 6.404822147362631,
+        "y": 1.1529214890947517
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NeutralZoneInterior"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.40243079000675436,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    },
+    {
+      "name": "Intake Run Rollers",
+      "waypointRelativePos": 0.49966239027684023,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Run Rollers"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.666,
     "maxAcceleration": 1.666,
@@ -41,8 +64,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.5,
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
