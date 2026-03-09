@@ -60,6 +60,7 @@ public class RobotContainer {
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
+    public static final Lights lights = new Lights();
 
     private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.25
                                                                 || Math.abs(driverJoystick.getRightX()) > 0.25;
