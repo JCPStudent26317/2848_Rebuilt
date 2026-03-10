@@ -40,6 +40,8 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    private double slowDownFactor = 1;
+
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -104,12 +106,17 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / slowDownFactor) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / slowDownFactor) // Drive left with negative X (left)
                     .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
         );
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
+        .onTrue(Commands.runOnce(()->slowDownFactor = 2));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
+        .onFalse(Commands.runOnce(()->slowDownFactor = 1));
 
         //shooter.setDefaultCommand(shooter.holdState());
 
