@@ -61,8 +61,8 @@ public class RobotContainer {
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
 
-    private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.25
-                                                                || Math.abs(driverJoystick.getRightX()) > 0.25;
+    private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.15
+                                                                || Math.abs(driverJoystick.getRightX()) > 0.15;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -119,10 +119,14 @@ public class RobotContainer {
         //SHOOTER CONTROLS
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(false)));
+        .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        .beforeStarting(hopper.forward()));
+        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
+
         driverJoystick.rightBumper().whileTrue(shooter.shoot()
         .beforeStarting(()->drivetrain.setTarget(true))
         .beforeStarting(hopper.forward()));
+        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
         

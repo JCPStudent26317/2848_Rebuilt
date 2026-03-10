@@ -492,6 +492,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return autoAlignXController.atGoal() && autoAlignYController.atGoal() && autoAlignRotationController.atGoal();
     }
 
+/**
+ * finds the correct set of auto align commands to climb based on field position
+ * @return the sequential command group of auto align commands which drive the robot to the climb spot
+ */
+    public Command autoAlignClimb(){
+        if(redAlliance && this.getState().Pose.getY()>Constants.VisionConstants.kFieldWidth/2){
+            return autoAlignTo(Constants.drivePoints.redOutpostClimbLineup).andThen(autoAlignTo(Constants.drivePoints.redOutpostClimb));
+        } else if (redAlliance && this.getState().Pose.getY()<Constants.VisionConstants.kFieldWidth/2){
+            return autoAlignTo(Constants.drivePoints.redDepotClimbLineup).andThen(autoAlignTo(Constants.drivePoints.redDepotClimb));
+        }else if (!redAlliance && this.getState().Pose.getY()>Constants.VisionConstants.kFieldWidth/2){
+            return autoAlignTo(Constants.drivePoints.blueDepotClimbLineup).andThen(autoAlignTo(Constants.drivePoints.blueDepotClimb));
+        } else{
+            return autoAlignTo(Constants.drivePoints.blueOutpostClimbLineup).andThen(autoAlignTo(Constants.drivePoints.blueOutpostClimb));
+        }
+    }
+
 
 
     private void configureAutoBuilder() {

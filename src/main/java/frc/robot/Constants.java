@@ -71,6 +71,7 @@ public final class Constants {
     public static final double kSidewaysBeltSpeed = 1.0;    
     public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = 1.0;    
+    public static final int kCANRangeID = 0;
   }
 
   /**Constant values for the Shooter subsystem.*/
@@ -122,7 +123,7 @@ public final class Constants {
     public static final double kTurretSwitchForwardLimit = 0.24;
     public static final double kTurretSwitchReverseLimit = -0.26;
 
-    public static final double kFlywheelRPMTolerance = 5;
+    public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
 
     public static final Translation2d redHubPose = new Translation2d(11.9,4);
@@ -138,7 +139,17 @@ public final class Constants {
 
   public static class drivePoints {
     public static final Pose2d redOutpostClimb = new Pose2d(15.4,5,new Rotation2d(Math.toRadians(90)));
-    public static final Pose2d redOutpostClimbLineup = new Pose2d(15.4,5.852,new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d redOutpostClimbLineup = new Pose2d(15.4,5.8,new Rotation2d(Math.toRadians(90)));
+
+    public static final Pose2d redDepotClimb = new Pose2d(15.4,3.7,new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d redDepotClimbLineup = new Pose2d(15,2.9,new Rotation2d(Math.toRadians(-90)));
+
+
+    public static final Pose2d blueDepotClimb = new Pose2d(1.11,4.33,new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d blueDepotClimbLineup = new Pose2d(1.11,5.13,new Rotation2d(Math.toRadians(-90)));
+
+    public static final Pose2d blueOutpostClimb = new Pose2d(1.11,3.13,new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d blueOutpostClimbLineup = new Pose2d(1.11,2.33,new Rotation2d(Math.toRadians(90)));
 
   }
 

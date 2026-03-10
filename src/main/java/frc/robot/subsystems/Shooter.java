@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.RangerHelpers.*;
 
+import java.util.regex.Matcher;
+
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.*;
@@ -137,7 +139,7 @@ public class Shooter extends SubsystemBase {
   
   private double lastTargetTheta = 0;
   private double getTurretFFCorrection(){
-    double omegaFF = (targetTheta - lastTargetTheta) / .02;
+    double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
     return kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF);
   }
@@ -232,7 +234,7 @@ public double getTurretAngle(){
 }
 /**
  * sets the turret setpoint
- * @param angle in radians
+ * @param angle in radians [-pi,pi]
  * @param tangentAdjust whether or not to include tangential velocity adjustments
  */
 public void setTurretAngle(double angle,boolean tangentAdjust){
@@ -284,6 +286,6 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
    */
  public boolean readyToShoot() {
     return m_TurretCANcoder.getAbsolutePosition().isNear(turretSetpoint,kTurretPositionTolerance) &&
-    m_FlywheelLeftLeader.getVelocity().isNear(flyWheelVelocityVoltage.Velocity ,kFlywheelRPMTolerance);
+    m_FlywheelLeftLeader.getVelocity().isNear(flyWheelVelocityVoltage.Velocity ,kFlywheelRPSTolerance);
   }
 }
