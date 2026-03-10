@@ -30,15 +30,6 @@ public class Shooter extends SubsystemBase {
 
   private double targetDist =0;
 
-  //private final TalonFX m_Hood;
-
-  // private final VelocityVoltage m_FlywheelVV = new VelocityVoltage(0).withSlot(0);
-  // private final DutyCycleOut m_FlywheelOut = new DutyCycleOut(0.0);
-
-  // private final PositionVoltage m_TurretPV = new PositionVoltage(0).withSlot(0);
-
-  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
-
   private double turretSetpoint = 0;
 
   private double targetTheta = 0;
@@ -58,7 +49,8 @@ public class Shooter extends SubsystemBase {
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
   private final VelocityVoltage flyWheelVelocityVoltage = new VelocityVoltage(0);
-
+  private final VelocityVoltage magazineVelocityVoltage = new VelocityVoltage(0);
+  private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
 
   /** Shooter Subsystem. */
   public Shooter() {
@@ -68,7 +60,6 @@ public class Shooter extends SubsystemBase {
     m_TurretCANcoder = new CANcoder(kTurretCANcoderID);
     m_Magazine = new TalonFX(kMagazineMotorID);
 
-    // All the FF and PID constants should be moved to constants once they are determined
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Slot0.kS = kFlywheelkS;
     flywheelConfig.Slot0.kV = kFlywheelkV;
@@ -79,7 +70,6 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Voltage
         .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
-    //flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
@@ -106,7 +96,6 @@ public class Shooter extends SubsystemBase {
     //retryConfigApply(() -> turretCANcoderConfigurator.apply(kTurretCANcoderMagnetSensorConfigs)); 
     setupTalonFx(m_Turret, turretConfig);
 
-
     SoftwareLimitSwitchConfigs turretSwitchConfigs = new SoftwareLimitSwitchConfigs();
     turretSwitchConfigs.ForwardSoftLimitThreshold = kTurretSwitchForwardLimit;
     turretSwitchConfigs.ReverseSoftLimitThreshold = kTurretSwitchReverseLimit;
@@ -120,6 +109,15 @@ public class Shooter extends SubsystemBase {
     
 
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
+    magazineConfig.Slot0.kS = kMagazinekS;
+    magazineConfig.Slot0.kV = kMagazinekV;
+    magazineConfig.Slot0.kA = kMagazinekA;
+    magazineConfig.Slot0.kP = kMagazinekP;  
+    magazineConfig.Slot0.kI = kMagazinekI;
+    magazineConfig.Slot0.kD = kMagazinekD;
+    magazineConfig.Voltage
+        .withPeakForwardVoltage(Volts.of(kMagazinePeakVoltage))
+        .withPeakReverseVoltage(Volts.of(-1 * kMagazinePeakVoltage));
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
   }
@@ -133,6 +131,7 @@ public class Shooter extends SubsystemBase {
 
     //m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection()));
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
+    m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
     setTurretAngle(targetTheta,false);
   }
@@ -191,6 +190,8 @@ public class Shooter extends SubsystemBase {
      builder.addDoubleProperty("magazine output",
      ()->m_Magazine.get(),
      null);
+    builder.addDoubleProperty("magazine rps",
+    this::getMagazineRPS, null);
 
 
 
@@ -272,13 +273,21 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
 
   /** Run magazine */
   public Command runMagazine() {
-    return Commands.runOnce(() -> m_Magazine.set(1.0), this);
+    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 75, this);
   }
 
   /** Stop magazine */
   public Command stopMagazine() {
-    return Commands.runOnce(() -> m_Magazine.set(0.0), this);
+    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 0.0, this);
   }
+  
+/**
+ * gets flywheel rps
+ * @return velocity of flywheel in rps
+ */
+  public double getMagazineRPS(){
+    return m_Magazine.getVelocity().getValueAsDouble();
+  }  
 
   /**
    * Checks whether the shooter has reached its target aiming state.
