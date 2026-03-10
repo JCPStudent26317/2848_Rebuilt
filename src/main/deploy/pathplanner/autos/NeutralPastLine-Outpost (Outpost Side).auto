@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchToNeutral"
+            "pathName": "TrenchToNeutralPastLine"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NeutralHalfSweep"
+            "pathName": "NeutralHalfSweepPastLine"
           }
         },
         {
@@ -21,17 +21,11 @@
           "data": {
             "pathName": "TrenchToOutpost"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OutpostToTower"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Old autos",
+  "folder": null,
   "choreoAuto": false
 }

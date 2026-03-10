@@ -196,6 +196,7 @@ public class Shooter extends SubsystemBase {
 
     
   } 
+
 /**
  * gets the needed exit velocity of the ball to reach the goal
  * @return velocity in m/s
@@ -247,8 +248,8 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
 }
 
 /**
- * gets flywheel rpm
- * @return velocity of flywheel in rpm
+ * gets flywheel rps
+ * @return velocity of flywheel in rps
  */
   public double getFlywheelRPS(){
     return m_FlywheelLeftLeader.getVelocity().getValueAsDouble();

@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToNeutralPastLine"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralHalfSweepPastLine"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToShootingPosition"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootingPositionToTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToNeutralInterior"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralHalfSweepInterior"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToShootingPosition"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

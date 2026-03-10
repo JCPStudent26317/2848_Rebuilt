@@ -3,38 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9873038516405135,
-        "y": 0.613
+        "x": 4.35,
+        "y": 0.6127246790299581
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.987303851640513,
-        "y": 0.613
+        "x": 5.223610113871883,
+        "y": 0.5553927455536538
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "TrenchStart"
     },
     {
       "anchor": {
-        "x": 8.488554216867472,
-        "y": 0.9533855421686745
+        "x": 8.477626506024098,
+        "y": 1.204722891566264
       },
       "prevControl": {
-        "x": 7.488554216867472,
-        "y": 0.9533855421686748
+        "x": 8.48855421686747,
+        "y": 0.8003975903614435
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NeutralZonePastLine"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.25,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    },
+    {
+      "name": "Intake Run Rollers",
+      "waypointRelativePos": 0.3523573200992563,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Run Rollers"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.666,
-    "maxAcceleration": 2.666,
+    "maxAcceleration": 1.666,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
