@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Map;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,6 +32,8 @@ public final class Constants {
   /**Xbox Controller IDs here.*/
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+
+    public static final double kTriggerThreshhold = .2;
   }
 
   public static class IntakeConstants {
@@ -69,6 +73,7 @@ public final class Constants {
     public static final double kSidewaysBeltSpeed = 1.0;    
     public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = 1.0;    
+    public static final int kCANRangeID = 0;
   }
 
   /**Constant values for the Shooter subsystem.*/
@@ -86,23 +91,23 @@ public final class Constants {
 
     public static final double kTurretOffset = -.033;
 
-    public static final double kFlywheelRPMMult = 1.5; //multiplier on flywheel speed to account for slipping between flywheel and fuel
+    public static final double kFlywheelRPMMult = 1; //multiplier on flywheel speed to account for slipping between flywheel and fuel
 
     public static final double kFlywheelRadius = .05; //meters
 
-    public static final double kFlywheelIdleSpeed = 200;
+    public static final double kFlywheelIdleSpeed = 10; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-0.009)
+        .withMagnetOffset(-0.247)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
-    public static final double kFlywheelkS = 0.0005;
-    public static final double kFlywheelkV = 0.002;
-    public static final double kFlywheelkP = .0001;  
-    public static final double kFlywheelkI = 0.0;
-    public static final double kFlywheelkD = 0.000;
-    public static final double kFlywheelkA = .0005;
+    public static final double kFlywheelkS = 0.0;
+    public static final double kFlywheelkV = 0.13;//12;//0.002
+    public static final double kFlywheelkP = .4;//3;  
+    public static final double kFlywheelkI = 0.1;
+    public static final double kFlywheelkD = 0.0;
+    public static final double kFlywheelkA = 0.0;
     // the order of the pid values is different between these two !!
     public static final double kTurretkS = 0.05;
     public static final double kTurretkV = 5;
@@ -121,17 +126,36 @@ public final class Constants {
     public static final double kTurretMMAcceleration = 28;
     public static final double kTurretMMJerk = 280;
 
-    public static final double kTurretSwitchForwardLimit = 0.25;
-    public static final double kTurretSwitchReverseLimit = -0.44;
+    public static final double kTurretSwitchForwardLimit = 0.24;
+    public static final double kTurretSwitchReverseLimit = -0.26;
 
-    public static final double kFlywheelRPMTolerance = 50;
-    public static final double kTurretPositionTolerance = .01;
+    public static final double kFlywheelRPSTolerance = 5;
+    public static final double kTurretPositionTolerance = .025;
+
+    public static final Translation2d redHubPose = new Translation2d(11.9,4);
+    public static final Translation2d blueHubPose = new Translation2d(5,4);
+
+    public static final Translation2d redOutpostCornerPose = new Translation2d(14, 7);
+    public static final Translation2d redDepotCornerPose = new Translation2d(14,1);
+
+    public static final Translation2d blueOutpostCornerPose = new Translation2d(2,1);
+    public static final Translation2d blueDepotCornerPose = new Translation2d(2,7);
 
   }
 
   public static class drivePoints {
     public static final Pose2d redOutpostClimb = new Pose2d(15.4,5,new Rotation2d(Math.toRadians(90)));
-    public static final Pose2d redOutpostClimbLineup = new Pose2d(15.4,5.852,new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d redOutpostClimbLineup = new Pose2d(15.4,5.8,new Rotation2d(Math.toRadians(90)));
+
+    public static final Pose2d redDepotClimb = new Pose2d(15.4,3.7,new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d redDepotClimbLineup = new Pose2d(15,2.9,new Rotation2d(Math.toRadians(-90)));
+
+
+    public static final Pose2d blueDepotClimb = new Pose2d(1.11,4.33,new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d blueDepotClimbLineup = new Pose2d(1.11,5.13,new Rotation2d(Math.toRadians(-90)));
+
+    public static final Pose2d blueOutpostClimb = new Pose2d(1.11,3.13,new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d blueOutpostClimbLineup = new Pose2d(1.11,2.33,new Rotation2d(Math.toRadians(90)));
 
   }
 
@@ -215,5 +239,10 @@ public final class Constants {
     public static final double kClimberMotorSpeed = 1;    
   }
 
+  public static class LightsConstants {
+    public static final int kStartIndex = 1;
+    public static final int kEndIndex = 2;
+    public static final SolidColor kSolidBlue = new SolidColor(kStartIndex, kEndIndex).withColor(new RGBWColor(0, 0, 255));
+  }
 
 }

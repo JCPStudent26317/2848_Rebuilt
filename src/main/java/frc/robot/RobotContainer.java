@@ -62,9 +62,10 @@ public class RobotContainer {
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
+    public static final Lights lights = new Lights();
 
-    private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.25
-                                                                || Math.abs(driverJoystick.getRightX()) > 0.25;
+    private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.15
+                                                                || Math.abs(driverJoystick.getRightX()) > 0.15;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -98,28 +99,6 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        //all subsystems are registered in their constructor
-
-
-        intake.setDefaultCommand(intake.holdState());
-        hopper.setDefaultCommand(hopper.holdState());
-        shooter.setDefaultCommand(shooter.holdState());
-
-        driverJoystick.rightBumper().onTrue(shooter.shoot());
-        driverJoystick.rightBumper().onFalse(shooter.idleFlywheel());
-
-        driverJoystick.b().onTrue(hopper.forward().andThen(shooter.runMagazine()));
-        driverJoystick.b().onFalse(hopper.stop().andThen(shooter.stopMagazine()));
-
-        driverJoystick.leftBumper().onTrue(intake.intake());
-        driverJoystick.leftBumper().onFalse(intake.stop());
-
-        //driverJoystick.y().onTrue(new InstantCommand(()->hopper.hopperBackwards()));
-
-        driverJoystick.y().onTrue(shooter.setTurret());
-        
-
-
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -132,21 +111,8 @@ public class RobotContainer {
             )
         );
 
+        //shooter.setDefaultCommand(shooter.holdState());
 
-        //driverJoystick.leftBumper().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
-
-        // driverJoystick.rightBumper().whileTrue(drivetrain.applyRequest(() ->
-        //         drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-        //             .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-        //             .withRotationalRate(-drivetrain.getPIDTurn()) // Drive counterclockwise with negative X (left)
-        //     ));
-
-        /*
-        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driverJoystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driverJoystick.getLeftY(), -driverJoystick.getLeftX()))
-        ));
-        */
 
         // Small adjustments code
         driverJoystick.pov(90)
@@ -158,31 +124,51 @@ public class RobotContainer {
         driverJoystick.pov(180)
                 .whileTrue(drivetrain.applyRequest(() -> preciseAdjustments.withVelocityX(-0.2).withVelocityY(0)));
 
-        // reset the field-centric heading on back press
-        driverJoystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //INTAKE CONTROLS
+        driverJoystick.leftTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(intake.jiggle());
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        driverJoystick.leftBumper().onTrue(intake.intake());
+        driverJoystick.leftBumper().onFalse(intake.stop());
 
-        // driverJoystick.a().onTrue(intake.intake());
-        // driverJoystick.a().onFalse(intake.stop());
+        driverJoystick.x().onTrue(intake.deploy());
+        driverJoystick.b().onTrue(intake.stow());
 
-        // driverJoystick.b().onTrue(hopper.forward());
-        // driverJoystick.b().onFalse(hopper.stop());
+        //SHOOTER CONTROLS
 
-        // driverJoystick.x().onTrue(magazine.run());
-        // driverJoystick.x().onFalse(magazine.stop());
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
+        .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        .beforeStarting(hopper.forward()));
+        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
-        climber.setDefaultCommand(climber.directControl(() -> (driverJoystick.getLeftTriggerAxis()-driverJoystick.getRightTriggerAxis())));
+        driverJoystick.rightBumper().whileTrue(shooter.shoot()
+        .beforeStarting(()->drivetrain.setTarget(true))
+        .beforeStarting(hopper.forward()));
+        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
-        testingJoystick.a().onTrue(intake.deploy());
-        testingJoystick.b().onTrue(intake.lowRetract());
-        testingJoystick.x().onTrue(intake.highRetract());
-        testingJoystick.y().onTrue(intake.stow());
-
-        testingJoystick.leftBumper().onTrue(intake.intake());
-        testingJoystick.leftBumper().onFalse(intake.stop());
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
         
-        testingJoystick.rightBumper().onTrue(intake.jiggle()); // Not being interrupted by the other commands for some reason
+        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()).andThen(shooter.stopMagazine()).andThen(hopper.stop()));
+
+
+        //CLIMBER CONTROLS
+
+        // driverJoystick.y().whileTrue(climber.raise());
+        // driverJoystick.a().whileFalse(climber.lower());
+
+        driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
+         driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
+
+        //left is back right is start
+        //DRIVETRAIN RESETS
+        driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
+        driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+
+
+
+
+
+        // reset the field-centric heading on back press
+        
     }
 
   /**
