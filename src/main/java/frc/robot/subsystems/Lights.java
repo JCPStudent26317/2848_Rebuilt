@@ -1,32 +1,39 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.util.Color;
+import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.Enable5VRailValue;
+import com.ctre.phoenix6.signals.StripTypeValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.LightsConstants.*;
+
 public class Lights extends SubsystemBase {
     
-    private final AddressableLED led = new AddressableLED(0);    
-    private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(20);
+    private final CANdle candle = new CANdle(0);
+    private final CANdleConfiguration candleconfig = new CANdleConfiguration();
+
+    private ControlRequest candleRequest = kSolidBlue; 
 
     public Lights() {
-        led.setLength(ledBuffer.getLength());
-        led.start();
-
-        setDefaultCommand(runPattern(LEDPattern.solid(Color.kBlack)));
+        candleconfig.LED.StripType = StripTypeValue.RGB;
+        candleconfig.LED.BrightnessScalar = 1.0;
+        candleconfig.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
+        
+        candle.getConfigurator().apply(candleconfig);
     }
 
     @Override
     public void periodic() {
-        led.setData(ledBuffer);
+        candle.setControl(candleRequest);
     }
 
-    public Command runPattern(LEDPattern pattern) {
-        return Commands.runOnce(() -> pattern.applyTo(ledBuffer), this);
+    public Command runPattern(ControlRequest request) {
+        return Commands.runOnce(() -> candleRequest = request, this);
     }
 
 }
