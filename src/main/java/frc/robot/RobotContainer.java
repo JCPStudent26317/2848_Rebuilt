@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.security.spec.NamedParameterSpec;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -71,6 +72,22 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
+    private final Command startShoot = shooter.shoot()
+    .beforeStarting(()->drivetrain.setTarget(true)).repeatedly()
+        .beforeStarting(hopper.forward());
+    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
+    .andThen(shooter.idleFlywheel())
+    .andThen(shooter.stopMagazine())
+    .andThen(hopper.stop());
+
+    private final Command startPass = shooter.shoot()
+    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        .beforeStarting(hopper.forward());
+    private final Command stopPass = new InstantCommand(()->drivetrain.setTarget(true))
+    .andThen(shooter.idleFlywheel())
+    .andThen(shooter.stopMagazine())
+    .andThen(hopper.stop());
+
     public RobotContainer() {
         NamedCommands.registerCommand("Intake Deploy", intake.deploy());
         NamedCommands.registerCommand("Intake Low Retract", intake.lowRetract());
@@ -81,6 +98,16 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("Transition Run Belts", hopper.forward());
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
+
+        NamedCommands.registerCommand("Start Shoot",startShoot);
+        NamedCommands.registerCommand("Start Pass",startPass);
+
+        NamedCommands.registerCommand("Stop Shoot",stopShoot);
+        NamedCommands.registerCommand("Stop Pass",stopPass);
+
+        
+
+        NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.addOption("NeutralPastLine (Depot Side)",
@@ -142,19 +169,13 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward()));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(startPass);
+        driverJoystick.rightBumper().whileTrue(startShoot);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
-        driverJoystick.rightBumper().whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(true))
-        .beforeStarting(hopper.forward()));
-        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
-
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(stopPass);
         
-        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()).andThen(shooter.stopMagazine()).andThen(hopper.stop()));
+        driverJoystick.rightBumper().onFalse(stopShoot);
 
 
         //CLIMBER CONTROLS

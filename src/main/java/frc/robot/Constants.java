@@ -73,7 +73,8 @@ public final class Constants {
     public static final double kSidewaysBeltSpeed = 1.0;    
     public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = 1.0;    
-    public static final int kCANRangeID = 0;
+    public static final int kCANRangeID = 30;
+    public static final double kShotInterrupt = 3; //seconds
   }
 
   /**Constant values for the Shooter subsystem.*/

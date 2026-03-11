@@ -21,6 +21,12 @@
           "data": {
             "pathName": "TrenchToShootingPosition"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Start Shoot"
+          }
         }
       ]
     }

@@ -48,7 +48,7 @@ public class Shooter extends SubsystemBase {
   //private @Getter double m_FlywheelOutputDutyCycle = 0;
   private @Getter long m_TurretAngle = 0; // Use Radians, 0 is from the front of the robot
 
-  private final VelocityVoltage flyWheelVelocityVoltage = new VelocityVoltage(0);
+  private final VelocityVoltage flyWheelVelocityVoltage = new VelocityVoltage(10);
   private final VelocityVoltage magazineVelocityVoltage = new VelocityVoltage(0);
   private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
 
