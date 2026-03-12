@@ -73,7 +73,8 @@ public final class Constants {
     public static final double kSidewaysBeltSpeed = 1.0;    
     public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = 1.0;    
-    public static final int kCANRangeID = 0;
+    public static final int kCANRangeID = 30;
+    public static final double kShotInterrupt = 3; //seconds
   }
 
   /**Constant values for the Shooter subsystem.*/
@@ -104,23 +105,31 @@ public final class Constants {
 
     public static final double kFlywheelkS = 0.0;
     public static final double kFlywheelkV = 0.13;//12;//0.002
+    public static final double kFlywheelkA = 0.0;
     public static final double kFlywheelkP = .4;//3;  
     public static final double kFlywheelkI = 0.1;
     public static final double kFlywheelkD = 0.0;
-    public static final double kFlywheelkA = 0.0;
-    // the order of the pid values is different between these two !!
+
     public static final double kTurretkS = 0.05;
     public static final double kTurretkV = 5;
     public static final double kTurretkA = .1;
     public static final double kTurretkP = 30;//30;
     public static final double kTurretkI = 1;//0.01;
-    public static final double kTurretkD = 0.00;    
+    public static final double kTurretkD = 0.00; 
+
+    public static final double kMagazinekS = 0.0;
+    public static final double kMagazinekV = 0.0;
+    public static final double kMagazinekA = 0.0;
+    public static final double kMagazinekP = .33;  
+    public static final double kMagazinekI = 0.0;
+    public static final double kMagazinekD = 0.0;
 
     public static final double kTurretCorrectionkV = .5;
     public static final double kTurretCorrectionkS =.1;
     
     public static final double kFlywheelPeakVoltage = 16;
     public static final double kTurretPeakVoltage = 6;
+    public static final double kMagazinePeakVoltage = 16;
 
     public static final double kTurretMMCruiseVelocity = 14;
     public static final double kTurretMMAcceleration = 28;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.security.spec.NamedParameterSpec;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -40,6 +42,8 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    private double slowDownFactor = 1;
+
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -52,7 +56,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driverJoystick = new CommandXboxController(0);
-    private final CommandXboxController testingJoystick = new CommandXboxController(5);
+    private final CommandGenericHID keypad = new CommandGenericHID(1);
 
 
 
@@ -69,6 +73,22 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
+    private final Command startShoot = shooter.shoot()
+    .beforeStarting(()->drivetrain.setTarget(true)).repeatedly()
+        .beforeStarting(hopper.forward());
+    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
+    .andThen(shooter.idleFlywheel())
+    .andThen(shooter.stopMagazine())
+    .andThen(hopper.stop());
+
+    private final Command startPass = shooter.shoot()
+    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        .beforeStarting(hopper.forward());
+    private final Command stopPass = new InstantCommand(()->drivetrain.setTarget(true))
+    .andThen(shooter.idleFlywheel())
+    .andThen(shooter.stopMagazine())
+    .andThen(hopper.stop());
+
     public RobotContainer() {
         NamedCommands.registerCommand("Intake Deploy", intake.deploy());
         NamedCommands.registerCommand("Intake Low Retract", intake.lowRetract());
@@ -79,6 +99,16 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("Transition Run Belts", hopper.forward());
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
+
+        NamedCommands.registerCommand("Start Shoot",startShoot);
+        NamedCommands.registerCommand("Start Pass",startPass);
+
+        NamedCommands.registerCommand("Stop Shoot",stopShoot);
+        NamedCommands.registerCommand("Stop Pass",stopPass);
+
+        
+
+        NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.addOption("NeutralPastLine (Depot Side)",
@@ -104,12 +134,17 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / slowDownFactor) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / slowDownFactor) // Drive left with negative X (left)
                     .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
         );
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
+        .onTrue(Commands.runOnce(()->slowDownFactor = 2));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
+        .onFalse(Commands.runOnce(()->slowDownFactor = 1));
 
         //shooter.setDefaultCommand(shooter.holdState());
 
@@ -135,19 +170,14 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward()));
-        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
-
-        driverJoystick.rightBumper().whileTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(true))
-        .beforeStarting(hopper.forward()));
-        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
-
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(new InstantCommand(()->drivetrain.setTarget(true)));
         
-        driverJoystick.rightBumper().onFalse(new InstantCommand(()->drivetrain.setTarget(true)).andThen(shooter.idleFlywheel()).andThen(shooter.stopMagazine()).andThen(hopper.stop()));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(startPass);
+        driverJoystick.rightBumper().whileTrue(startShoot);
+        //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(stopPass);
+        
+        driverJoystick.rightBumper().onFalse(stopShoot);
 
 
         //CLIMBER CONTROLS
@@ -156,12 +186,20 @@ public class RobotContainer {
         // driverJoystick.a().whileFalse(climber.lower());
 
         driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
-         driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
+        driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
         //left is back right is start
         //DRIVETRAIN RESETS
         driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
         driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+
+        //KEYPAD TRIMS
+        keypad.button(1).onTrue(Commands.runOnce(()->shooter.resetDistanceTrim()));
+        keypad.button(2).onTrue(Commands.runOnce(()->shooter.trimLeft()));
+        keypad.button(3).onTrue(Commands.runOnce(()->shooter.trimFurther()));
+        keypad.button(4).onTrue(Commands.runOnce(()->shooter.trimCloser()));
+        keypad.button(5).onTrue(Commands.runOnce(()->shooter.resetAngularTrim()));
+        keypad.button(6).onTrue(Commands.runOnce(()->shooter.trimRight()));
 
 
 

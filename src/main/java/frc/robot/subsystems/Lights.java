@@ -14,7 +14,7 @@ import static frc.robot.Constants.LightsConstants.*;
 
 public class Lights extends SubsystemBase {
     
-    private final CANdle candle = new CANdle(0);
+    private final CANdle candle = new CANdle(35);
     private final CANdleConfiguration candleconfig = new CANdleConfiguration();
 
     private ControlRequest candleRequest = kSolidBlue; 

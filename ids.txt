@@ -53,3 +53,7 @@ Shooter (+magazine, to be integrated into shooter subsystem)
 
 Climber
 33 Kraken Climber
+34 Limit Switch
+
+LEDS
+35 Candle

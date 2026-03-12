@@ -60,7 +60,12 @@
       "linkedName": "TrenchStart"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7100213219616252,
+      "rotationDegrees": 105.00000000000001
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [

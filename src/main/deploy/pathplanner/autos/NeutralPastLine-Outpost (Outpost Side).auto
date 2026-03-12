@@ -21,6 +21,12 @@
           "data": {
             "pathName": "TrenchToOutpost"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Start Shoot"
+          }
         }
       ]
     }
