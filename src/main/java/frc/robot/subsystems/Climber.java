@@ -51,7 +51,7 @@ public class Climber extends SubsystemBase {
 
     public Command directControl(DoubleSupplier input) {
         return Commands.run(() -> m_Climber.set(
-            Math.abs(input.getAsDouble()) < 0.1 ? 0 : input.getAsDouble()), this);
+            Math.abs(input.getAsDouble()) < 0.066 ? 0 : input.getAsDouble()), this);
     }
 
 }
