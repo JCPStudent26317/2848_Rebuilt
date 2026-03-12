@@ -33,6 +33,9 @@ public class Shooter extends SubsystemBase {
   private double turretSetpoint = 0;
 
   private double targetTheta = 0;
+
+  private double distanceTrim = 0;
+  private double angularTrim = 0;
   
   private enum flywheelStates {
     IDLE,
@@ -234,6 +237,28 @@ public double getTurretAngle(){
 
     return wrapped;
 }
+
+  
+public void trimRight(){
+  angularTrim +=.05;
+}
+public void trimLeft(){
+  angularTrim -=.05;
+}
+public void resetAngularTrim(){
+  angularTrim =0;
+}
+
+public void trimFurther(){
+  distanceTrim +=.1;
+}
+public void trimCloser(){
+  distanceTrim -=.1;
+}
+public void resetDistanceTrim(){
+  distanceTrim =0;
+}
+
 /**
  * sets the turret setpoint
  * @param angle in radians [-pi,pi]
@@ -244,8 +269,8 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   // 1. Offset for turret encoder zero (pi/2 left)
     double desiredAngle =angle - Math.PI / 2;
     // 2. Wrap math cleanly (optional)
-    desiredAngle = MathUtil.angleModulus(desiredAngle + (tangentAdjust ? getTurretTangentOffset() : 0));
-    turretSetpoint = desiredAngle / (2*Math.PI);
+    desiredAngle = MathUtil.angleModulus(desiredAngle + (tangentAdjust ? getTurretTangentOffset() : 0) + angularTrim);
+    turretSetpoint = desiredAngle / (2*Math.PI) + angularTrim;
 }
 
 /**
@@ -261,7 +286,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
     return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = kFlywheelIdleSpeed, this);
   }
   public Command runFlywheel(){
-    return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = getVeloRPS(getExitVelo()), this);
+    return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = getVeloRPS(getExitVelo())+distanceTrim, this);
   }
 
   /** Sets the flywheel and hood angle to their shot velocity and shot position. */

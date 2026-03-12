@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -55,7 +56,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driverJoystick = new CommandXboxController(0);
-    private final CommandXboxController testingJoystick = new CommandXboxController(5);
+    private final CommandGenericHID keypad = new CommandGenericHID(1);
 
 
 
@@ -191,6 +192,14 @@ public class RobotContainer {
         //DRIVETRAIN RESETS
         driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
         driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+
+        //KEYPAD TRIMS
+        keypad.button(1).onTrue(Commands.runOnce(()->shooter.resetDistanceTrim()));
+        keypad.button(2).onTrue(Commands.runOnce(()->shooter.trimLeft()));
+        keypad.button(3).onTrue(Commands.runOnce(()->shooter.trimFurther()));
+        keypad.button(4).onTrue(Commands.runOnce(()->shooter.trimCloser()));
+        keypad.button(5).onTrue(Commands.runOnce(()->shooter.resetAngularTrim()));
+        keypad.button(6).onTrue(Commands.runOnce(()->shooter.trimRight()));
 
 
 
