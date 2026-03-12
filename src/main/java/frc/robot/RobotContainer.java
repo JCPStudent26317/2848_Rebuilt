@@ -169,6 +169,7 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
+        
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(startPass);
         driverJoystick.rightBumper().whileTrue(startShoot);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
@@ -184,7 +185,7 @@ public class RobotContainer {
         // driverJoystick.a().whileFalse(climber.lower());
 
         driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
-         driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
+        driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
         //left is back right is start
         //DRIVETRAIN RESETS
