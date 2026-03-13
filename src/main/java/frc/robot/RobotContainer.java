@@ -161,6 +161,7 @@ public class RobotContainer {
 
         //INTAKE CONTROLS
         driverJoystick.leftTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(intake.jiggle());
+        driverJoystick.leftTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(intake.deploy());
 
         driverJoystick.leftBumper().onTrue(intake.intake());
         driverJoystick.leftBumper().onFalse(intake.stop());
@@ -182,11 +183,11 @@ public class RobotContainer {
 
         //CLIMBER CONTROLS
 
-        // driverJoystick.y().whileTrue(climber.raise());
-        // driverJoystick.a().whileFalse(climber.lower());
+        driverJoystick.y().whileTrue(climber.raise());
+        driverJoystick.a().whileTrue(climber.lower());
 
-        driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
-        driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
+        //driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
+        //driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
         //left is back right is start
         //DRIVETRAIN RESETS

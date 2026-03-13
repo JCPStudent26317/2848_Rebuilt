@@ -27,11 +27,13 @@ public class Climber extends SubsystemBase {
     }
 
     public boolean atTop() {
-        return m_Climber.getPosition().getValueAsDouble() >= 10;
+        //return m_Climber.getPosition().getValueAsDouble() >= 10;
+        return false;
     }
 
     public boolean atBottom() {
-        return m_Climber.getPosition().getValueAsDouble() <= 0;
+        //return m_Climber.getPosition().getValueAsDouble() <= 0;
+        return false;
     }
 
 

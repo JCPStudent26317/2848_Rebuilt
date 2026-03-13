@@ -32,7 +32,7 @@ public class HopperTransition extends SubsystemBase {
     public HopperTransition() {
         // Apply things to the configurations here
 
-        magazineSensorConfig.ProximityParams.ProximityThreshold =.05;
+        magazineSensorConfig.ProximityParams.ProximityThreshold =.085;
 
         m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
 
