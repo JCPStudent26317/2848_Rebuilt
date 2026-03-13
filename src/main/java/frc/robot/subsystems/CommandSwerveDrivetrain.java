@@ -393,6 +393,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        if (getVelocityMag()<1 && Math.abs(this.getState().Speeds.omegaRadiansPerSecond)<1){
+            PoseEstimate poseEstimate = RobotContainer.getVision().getVisionPoseEstimate();
+            if (poseEstimate != null){
+                this.resetPose(poseEstimate.pose);
+            }
+        }
+
         m_field.setRobotPose(this.getState().Pose);
       
         SmartDashboard.putData("Field",m_field);
