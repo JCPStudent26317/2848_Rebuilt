@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Map;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -245,13 +246,16 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final int kClimberMotorID = 33;
-    public static final double kClimberMotorSpeed = 1;    
+    public static final double kClimberMotorSpeed = 1;
+    public static final int kLimitSwitchID = 34;    
   }
 
   public static class LightsConstants {
-    public static final int kStartIndex = 1;
-    public static final int kEndIndex = 2;
+    public static final int kCANdleID = 35;
+    public static final int kStartIndex = 0;
+    public static final int kEndIndex = 58;
     public static final SolidColor kSolidBlue = new SolidColor(kStartIndex, kEndIndex).withColor(new RGBWColor(0, 0, 255));
+        public static final RainbowAnimation kRainbow = new RainbowAnimation(kStartIndex, kEndIndex);
   }
 
 }
