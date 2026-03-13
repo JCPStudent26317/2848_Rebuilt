@@ -14,14 +14,14 @@ import static frc.robot.Constants.LightsConstants.*;
 
 public class Lights extends SubsystemBase {
     
-    private final CANdle candle = new CANdle(35);
+    private final CANdle candle = new CANdle(kCANdleID);
     private final CANdleConfiguration candleconfig = new CANdleConfiguration();
 
-    private ControlRequest candleRequest = kSolidBlue; 
+    private ControlRequest candleRequest = kRainbow; 
 
     public Lights() {
         candleconfig.LED.StripType = StripTypeValue.RGB;
-        candleconfig.LED.BrightnessScalar = 1.0;
+        candleconfig.LED.BrightnessScalar = 1;
         candleconfig.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
         
         candle.getConfigurator().apply(candleconfig);
