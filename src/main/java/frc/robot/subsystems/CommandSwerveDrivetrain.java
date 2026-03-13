@@ -329,12 +329,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * gets the theta between robot front and target translation
  * @return angle in radians
  */
-    // public double getTargetTheta(){
-    //     SmartDashboard.putNumber("Target X", getState().Pose.getTranslation().minus(targetPos).getX());
-    //     SmartDashboard.putNumber("Target Y", getState().Pose.getTranslation().minus(targetPos).getY());
-
-    //     return targetPos.minus(getState().Pose.getTranslation()).getAngle().getRadians();  
-    // }
         public double getTargetTheta() {
         Pose2d robotPose = getState().Pose;
 
@@ -405,9 +399,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("hub theta",getTargetTheta());
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
         SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
-        SmartDashboard.putNumber("field velocity",Math.sqrt(getFieldOrientedSpeeds().vxMetersPerSecond * getFieldOrientedSpeeds().vxMetersPerSecond + getFieldOrientedSpeeds().vyMetersPerSecond* getFieldOrientedSpeeds().vyMetersPerSecond));
+        SmartDashboard.putNumber("field velocity",getVelocityMag());
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
+    }
+
+
+
+/**
+ * 
+ * @return magnitude of the translational velocity in m/s
+ */
+    public double getVelocityMag(){
+       return Math.hypot(this.getState().Speeds.vxMetersPerSecond,this.getState().Speeds.vyMetersPerSecond);
     }
 
     private void startSimThread() {
