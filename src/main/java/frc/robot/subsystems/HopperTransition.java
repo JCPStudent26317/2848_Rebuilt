@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,6 +29,8 @@ public class HopperTransition extends SubsystemBase {
     private final TalonFXConfiguration forwardBeltMotorConfig = new TalonFXConfiguration();
     @Getter private final DutyCycleOut m_ForwardBeltOut = new DutyCycleOut(0.0);
 
+    private double forwardBeltSpeed = kForwardBeltSpeed;
+    private double sidewaysBeltSpeed = kSidewaysBeltSpeed;
 
     public HopperTransition() {
         // Apply things to the configurations here
@@ -45,12 +48,20 @@ public class HopperTransition extends SubsystemBase {
 
     @Override
     public void periodic() {
-       
         m_SidewaysBelt.setControl(m_SidewaysBeltOut);
         m_ForwardBelt.setControl(m_ForwardBeltOut);
 
         SmartDashboard.putNumber("CANRange detection",m_MagazineSensor.getIsDetected().getValueAsDouble());
-         
+        
+        SmartDashboard.putData(this);
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+
+        builder.addDoubleProperty("Sideways Belt Speed", () -> sidewaysBeltSpeed, (next) -> sidewaysBeltSpeed = next);
+        builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
     }
 
     public Command holdState() {
@@ -63,11 +74,11 @@ public class HopperTransition extends SubsystemBase {
     }
 
     public Command forward() {
-        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed, kForwardBeltSpeed), this);
+        return Commands.runOnce(() -> setMotorsOutput(sidewaysBeltSpeed, forwardBeltSpeed), this);
     }
 
     public Command backward() {
-        return Commands.runOnce(() -> setMotorsOutput(kSidewaysBeltSpeed * -1, kForwardBeltSpeed * -1), this);
+        return Commands.runOnce(() -> setMotorsOutput(sidewaysBeltSpeed * -1, forwardBeltSpeed * -1), this);
     }
 
     public Command stop() {

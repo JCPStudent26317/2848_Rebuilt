@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,6 +31,8 @@ public class Lights extends SubsystemBase {
     @Override
     public void periodic() {
         candle.setControl(candleRequest);
+
+        
     }
 
     public Command runPattern(ControlRequest request) {
