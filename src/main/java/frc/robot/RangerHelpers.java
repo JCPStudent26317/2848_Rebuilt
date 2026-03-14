@@ -72,12 +72,10 @@ public class RangerHelpers {
   /** 
    * Returns true when our alliance's hub is active.
    * Copied from WPILib docs: https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
-   * Note: from my understanding of DriverStation's getMatchTime() this might behave differently between
-   * the driver station and the real field
-   * 
+   *  
    * @return If our alliance's hub is active
   */
-  public boolean isHubActive() {
+  public static boolean isHubActive() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // If we have no alliance, we cannot be enabled, therefore no hub.
     if (alliance.isEmpty()) {
@@ -136,7 +134,7 @@ public class RangerHelpers {
     }
   }
 
-  public enum ActiveAlliance {
+  public static enum ActiveAlliance {
     RED,
     BLUE,
     BOTH,
@@ -146,12 +144,10 @@ public class RangerHelpers {
   /** 
    * Returns the active alliance.
    * Copied and modified from WPILib docs: https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
-   * Note: from my understanding of DriverStation's getMatchTime() this might behave differently between
-   * the driver station and the real field
    * 
    * @return Active alliance state
   */
-  public ActiveAlliance getActiveAlliance() {
+  public static ActiveAlliance getActiveAlliance() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // If we have no alliance, we cannot be enabled, therefore no hub.
     if (alliance.isEmpty()) {
@@ -203,5 +199,48 @@ public class RangerHelpers {
       return ActiveAlliance.BOTH;
     }
   }
+
+  /** 
+   * Returns the number of seconds remaining in the shift, as an integer, during DS practice matches or on the real field.
+   * Returns -1 if the robot is not enabled or if there is no hub.
+   * Will behave differently during DS teleop or auto modes.
+   * 
+   * @return Number of seconds reamining in the shift
+  */  
+  public static int getRemainingShiftTime() {
+    // getMatchTime() returns an integer on the real field and a floating point number outside of the real field
+    // This is to standardize it.
+    int matchTime = (int) Math.floor(DriverStation.getMatchTime() + 0.0001);
+    
+    if (DriverStation.getAlliance().isEmpty()) {
+      return -1;
+    }
+    // Autonomous
+    if (DriverStation.isAutonomousEnabled()) {
+      return matchTime;
+    }
+    if (!DriverStation.isTeleopEnabled()) {
+      return -1;
+    }
+    
+    // If there is no game data we will assume it is the start of the transition phase.
+    if (DriverStation.getGameSpecificMessage().isEmpty()) {
+      return 10;
+    }
+
+    // Transition shift
+    if (matchTime > 130) {
+      return matchTime - 10;
+    }
+
+    // Shifts 1-4
+    if (matchTime > 30) {
+      int mod = (matchTime - 30) % 25;
+      return mod == 0 ? 25 : mod;
+    }
+
+    // Endgame
+    return matchTime;
+  }  
 
 }

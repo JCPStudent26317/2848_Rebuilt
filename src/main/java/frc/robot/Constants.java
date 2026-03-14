@@ -256,22 +256,8 @@ public final class Constants {
     public static final RGBWColor kRed = new RGBWColor(255, 0, 0);
     public static final RGBWColor kGreen = new RGBWColor(0, 255, 0);
     public static final RGBWColor kBlue = new RGBWColor(0, 0, 255);
-
-    public static final SolidColor kSolidRed = new SolidColor(kStartIndex, kEndIndex).withColor(kRed);
-    public static final SolidColor kSolidGreen = new SolidColor(kStartIndex, kEndIndex).withColor(kGreen);
-    public static final SolidColor kSolidBlue = new SolidColor(kStartIndex, kEndIndex).withColor(kBlue);
-    
-    public static final StrobeAnimation kSlowStrobeRed = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kRed).withFrameRate(4);
-    public static final StrobeAnimation kSlowStrobeGreen = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kGreen).withFrameRate(4);
-    public static final StrobeAnimation kSlowStrobeBlue = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kBlue).withFrameRate(4);
-
-    public static final StrobeAnimation kFastStrobeRed = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kRed).withFrameRate(8);
-    public static final StrobeAnimation kFastStrobeGreen = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kGreen).withFrameRate(8);
-    public static final StrobeAnimation kFastStrobeBlue = new StrobeAnimation(kStartIndex, kEndIndex).withColor(kBlue).withFrameRate(8);    
-
-    public static final TwinkleAnimation kTwinkleRed = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(kRed).withFrameRate(10).withMaxLEDsOnProportion(0.5);
-    public static final TwinkleAnimation kTwinkleGreen = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(kRed).withFrameRate(10).withMaxLEDsOnProportion(0.5);
-    public static final TwinkleAnimation kTwinkleBlue = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(kRed).withFrameRate(10).withMaxLEDsOnProportion(0.5);
+    public static final RGBWColor kWhite = new RGBWColor(255, 255, 255);
+    public static final RGBWColor kBlack = new RGBWColor(0, 0, 0);
 
     public static final RainbowAnimation kRainbow = new RainbowAnimation(kStartIndex, kEndIndex);
   }

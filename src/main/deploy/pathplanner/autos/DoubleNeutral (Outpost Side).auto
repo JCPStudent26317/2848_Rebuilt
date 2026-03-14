@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchToShootingPosition"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -44,12 +38,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootingPositionToTrench"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "TrenchToNeutralInterior"
           }
         },
@@ -57,12 +45,6 @@
           "type": "path",
           "data": {
             "pathName": "NeutralHalfSweepInterior"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchToShootingPosition"
           }
         }
       ]

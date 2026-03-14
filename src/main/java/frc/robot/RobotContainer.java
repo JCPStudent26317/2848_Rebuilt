@@ -113,8 +113,8 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.addOption("NeutralPastLine (Depot Side)",
             new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
-        autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
-            new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
+        autoChooser.addOption("DoubleNeutral (Depot Side)",
+            new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -148,6 +148,7 @@ public class RobotContainer {
 
         //shooter.setDefaultCommand(shooter.holdState());
 
+        lights.setDefaultCommand(lights.signalActiveAlliance());
 
         // Small adjustments code
         driverJoystick.pov(90)
