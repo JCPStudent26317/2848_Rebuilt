@@ -74,17 +74,9 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     private final Command startShoot = shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget(true)).repeatedly()
+    .beforeStarting(()->drivetrain.setTarget()).repeatedly()
         .beforeStarting(hopper.forward());
-    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
-    .andThen(shooter.idleFlywheel())
-    .andThen(shooter.stopMagazine())
-    .andThen(hopper.stop());
-
-    private final Command startPass = shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward());
-    private final Command stopPass = new InstantCommand(()->drivetrain.setTarget(true))
+    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget())
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
@@ -101,10 +93,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
         NamedCommands.registerCommand("Start Shoot",startShoot);
-        NamedCommands.registerCommand("Start Pass",startPass);
-
         NamedCommands.registerCommand("Stop Shoot",stopShoot);
-        NamedCommands.registerCommand("Stop Pass",stopPass);
 
         
 
@@ -171,13 +160,9 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(startPass);
         driverJoystick.rightBumper().whileTrue(startShoot);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(stopPass);
-        
         driverJoystick.rightBumper().onFalse(stopShoot);
 
 

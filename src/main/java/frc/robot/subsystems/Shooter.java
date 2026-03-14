@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
@@ -140,9 +141,11 @@ public class Shooter extends SubsystemBase {
   }
   
   private double lastTargetTheta = 0;
+  private double lastTimeStamp = Timer.getFPGATimestamp();
   private double getTurretFFCorrection(){
-    double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
+    double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / Timer.getFPGATimestamp()-lastTimeStamp;
     lastTargetTheta = targetTheta;
+    lastTimeStamp = Timer.getFPGATimestamp();
     return kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF);
   }
 
@@ -238,7 +241,6 @@ public double getTurretAngle(){
     return wrapped;
 }
 
-  
 public void trimRight(){
   angularTrim +=.05;
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -177,6 +178,7 @@ public void setFilterTagID(boolean val){
                     RobotContainer.getDrivetrain().addVisionMeasurement(visionPoseEstimate.pose, 
                         Utils.fpgaToCurrentTime(visionPoseEstimate.timestampSeconds), 
                         visionStandardDeviation);
+                        SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
                 }
             }
         }
@@ -313,6 +315,8 @@ public void setFilterTagID(boolean val){
         }
     }
 
+    private double lastForceUpdate = 0;
+
     /**
      * Updated the Translational and Rotational Standard Deviations for the measurement from the best limelight
      */
@@ -354,10 +358,25 @@ public void setFilterTagID(boolean val){
             rotationStdDev = kMinimumRotationalStandardDeviation;
         }
 
+        double currentTime = Timer.getFPGATimestamp();
+
+        if (RobotContainer.getDrivetrain().getTranslationVelocityMag()<kHardResetMaxTranslational
+         && Math.abs(RobotContainer.getDrivetrain().getState().Speeds.omegaRadiansPerSecond)<kHardResetMaxAngular){
+            PoseEstimate poseEstimate = getVisionPoseEstimate();
+            if (poseEstimate != null && poseEstimate.rawFiducials[0].ambiguity<kHardResetMaxAmbiguity && currentTime-lastForceUpdate>2.0){
+                visionStandardDeviation = VecBuilder.fill(0, 0, kInvalidStandardDeviation);
+                lastForceUpdate = currentTime;
+            }
+        } else{
+            visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
+        }
+
+
+
         SmartDashboard.putNumber("Old Standard Deviation", (visionPoseEstimate.avgTagArea * (-18.3)) + 11.34);
 
         // Fill out Standard deviation matrix for drivebase
-        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
+       
     }
 
     /**

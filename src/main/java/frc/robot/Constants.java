@@ -111,9 +111,9 @@ public final class Constants {
     public static final double kFlywheelkI = 0.1;
     public static final double kFlywheelkD = 0.0;
 
-    public static final double kTurretkS = 0.05;
-    public static final double kTurretkV = 5;
-    public static final double kTurretkA = .1;
+    public static final double kTurretkS = 0.0;
+    public static final double kTurretkV = .12;
+    public static final double kTurretkA = 0;
     public static final double kTurretkP = 30;//30;
     public static final double kTurretkI = 1;//0.01;
     public static final double kTurretkD = 0.00; 
@@ -125,7 +125,7 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .5;
+    public static final double kTurretCorrectionkV = .12;
     public static final double kTurretCorrectionkS =.1;
     
     public static final double kFlywheelPeakVoltage = 16;
@@ -236,6 +236,10 @@ public final class Constants {
     // Can also be grabbed from WPI AprilTag class
     public static final double kFieldWidth = 8.042656;
     public static final double kFieldLength = 16.513048;
+
+    public static final double kHardResetMaxTranslational = 1;
+    public static final double kHardResetMaxAngular = 1;
+    public static final double kHardResetMaxAmbiguity = .1;
 
     // Standard Deviation 
     public static final double kInvalidStandardDeviation = 9999999;

@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +48,7 @@ import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -57,6 +59,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    @Getter @Setter private boolean aimOverride = false;
 
     private FieldCentric autoAlignRequest = new SwerveRequest.FieldCentric();
 
@@ -210,9 +214,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-    public void setTarget(boolean aimAtHub){
+    public boolean aimAtHub(){
+        if (aimOverride){
+            return true;
+        }
+
+        if (redAlliance && this.getState().Pose.getX()<10.77){
+            return false;
+        } else if (redAlliance && this.getState().Pose.getX()>10.77){
+            return true;
+        } else if (!redAlliance && this.getState().Pose.getX()>5.73){
+            return false;
+        } else if(!redAlliance && this.getState().Pose.getX()<5.73){
+            return true;
+        }
+
+
+
+        return true;
+    }
+
+
+
+    public void setTarget(){
         Pose2d pos = this.getState().Pose;
-        if(aimAtHub){
+        if(aimAtHub()){
             targetPos = hubPos;
         } else if(redAlliance && pos.getY()>kFieldWidth/2){
             targetPos = Constants.ShooterConstants.redOutpostCornerPose;
@@ -374,6 +400,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     }
 
+
+
+
+    private double lastForceUpdate = 0;
     @Override
     public void periodic() {
         /*
@@ -394,12 +424,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        if (getVelocityMag()<1 && Math.abs(this.getState().Speeds.omegaRadiansPerSecond)<1){
-            PoseEstimate poseEstimate = RobotContainer.getVision().getVisionPoseEstimate();
-            if (poseEstimate != null){
-                this.resetPose(poseEstimate.pose);
-            }
-        }
+        
 
         m_field.setRobotPose(this.getState().Pose);
       
@@ -407,7 +432,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("hub theta",getTargetTheta());
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
         SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
-        SmartDashboard.putNumber("field velocity",getVelocityMag());
+        SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }
@@ -418,8 +443,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * 
  * @return magnitude of the translational velocity in m/s
  */
-    public double getVelocityMag(){
+    public double getTranslationVelocityMag(){
        return Math.hypot(this.getState().Speeds.vxMetersPerSecond,this.getState().Speeds.vyMetersPerSecond);
+    }
+    /**
+     * 
+     * @return magnitude of the angular velocity in rad/s
+     */
+    public double getAngularVelocityMag(){
+        return Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
     }
 
     private void startSimThread() {
