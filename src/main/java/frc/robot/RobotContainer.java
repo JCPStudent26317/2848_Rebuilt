@@ -62,7 +62,7 @@ public class RobotContainer {
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
-    public static final Intake intake = new Intake();
+    @Getter public static final Intake intake = new Intake();
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
@@ -73,18 +73,12 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
-    private final Command startShoot = shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget(true)).repeatedly()
-        .beforeStarting(hopper.forward());
-    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
-    .andThen(shooter.idleFlywheel())
-    .andThen(shooter.stopMagazine())
-    .andThen(hopper.stop());
+    private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
-    private final Command startPass = shooter.shoot()
+    private final Command startShoot = shooter.shoot()
     .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward());
-    private final Command stopPass = new InstantCommand(()->drivetrain.setTarget(true))
+        .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
+    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
@@ -101,10 +95,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
         NamedCommands.registerCommand("Start Shoot",startShoot);
-        NamedCommands.registerCommand("Start Pass",startPass);
-
         NamedCommands.registerCommand("Stop Shoot",stopShoot);
-        NamedCommands.registerCommand("Stop Pass",stopPass);
 
         
 
@@ -115,6 +106,13 @@ public class RobotContainer {
         //     new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
         // autoChooser.addOption("DoubleNeutral (Depot Side)",
         //     new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
+
+        intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
+        intakeChooser.addOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
+        intakeChooser.setDefaultOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
+
+
+        SmartDashboard.putData("Intake Position Chooser",intakeChooser);
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -142,9 +140,9 @@ public class RobotContainer {
         );
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onTrue(Commands.runOnce(()->slowDownFactor = 2));
+        .onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onFalse(Commands.runOnce(()->slowDownFactor = 1));
+        .onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
         //shooter.setDefaultCommand(shooter.holdState());
 
@@ -172,14 +170,11 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(startPass);
         driverJoystick.rightBumper().whileTrue(startShoot);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(stopPass);
-        
         driverJoystick.rightBumper().onFalse(stopShoot);
+        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
 
 
         //CLIMBER CONTROLS
@@ -218,5 +213,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+  public double getIntakeStartPoint(){
+    return intakeChooser.getSelected();
   }
 }

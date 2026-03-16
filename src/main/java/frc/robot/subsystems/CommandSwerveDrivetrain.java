@@ -19,6 +19,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +49,7 @@ import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -57,6 +60,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    @Getter @Setter private boolean aimOverride = false;
 
     private FieldCentric autoAlignRequest = new SwerveRequest.FieldCentric();
 
@@ -69,6 +74,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final ProfiledPIDController autoAlignRotationController = new ProfiledPIDController(TunerConstants.autoAlign_Rotation_P, TunerConstants.autoAlign_Rotation_I, TunerConstants.autoAlign_Rotation_D, 
                                                                                     new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Rotation_maxV, TunerConstants.autoAlign_Rotation_MaxA));
     private int redAutoAlign = 1;
+
+    @Getter @Setter private double slowDownFactor =1;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -210,9 +217,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-    public void setTarget(boolean aimAtHub){
+    public boolean aimAtHub(){
+        if (aimOverride){
+            return true;
+        }
+
+        if (redAlliance && this.getState().Pose.getX()<10.77){
+            return false;
+        } else if (redAlliance && this.getState().Pose.getX()>10.77){
+            return true;
+        } else if (!redAlliance && this.getState().Pose.getX()>5.73){
+            return false;
+        } else if(!redAlliance && this.getState().Pose.getX()<5.73){
+            return true;
+        }
+
+
+
+        return true;
+    }
+
+
+
+    public void setTarget(boolean forceHub){
         Pose2d pos = this.getState().Pose;
-        if(aimAtHub){
+        if(aimAtHub() || forceHub){
             targetPos = hubPos;
         } else if(redAlliance && pos.getY()>kFieldWidth/2){
             targetPos = Constants.ShooterConstants.redOutpostCornerPose;
@@ -294,7 +323,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return run(() -> {{ SwerveRequest request = requestSupplier.get();
+
+            if (request instanceof SwerveRequest.FieldCentric req) {
+                request = req.withVelocityX(req.VelocityX /slowDownFactor)
+                .withVelocityY(req.VelocityY /slowDownFactor);
+            }
+
+            this.setControl(request);}});
     }
 
     /**
@@ -323,7 +359,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * @return distance in meters
  */
     public double getTargetDist(){
-        return targetPos.minus(this.getState().Pose.getTranslation()).getNorm();
+        return targetPos.minus(this.getState().Pose.getTranslation().minus(Constants.VisionConstants.kRobotToTurretTranslation.rotateBy(this.getState().Pose.getRotation().plus(new Rotation2d(Math.PI))))).getNorm();
     }
 /**
  * gets the theta between robot front and target translation
@@ -374,8 +410,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     }
 
+
+
+
     @Override
     public void periodic() {
+
+        
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -393,13 +434,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        
+
         m_field.setRobotPose(this.getState().Pose);
       
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
         SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
-        SmartDashboard.putNumber("field velocity",getVelocityMag());
+        SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
+        SmartDashboard.putNumber("gyro rotation",this.getPigeon2().getYaw().getValueAsDouble());
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }
@@ -410,8 +455,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * 
  * @return magnitude of the translational velocity in m/s
  */
-    public double getVelocityMag(){
+    public double getTranslationVelocityMag(){
        return Math.hypot(this.getState().Speeds.vxMetersPerSecond,this.getState().Speeds.vyMetersPerSecond);
+    }
+    /**
+     * 
+     * @return magnitude of the angular velocity in rad/s
+     */
+    public double getAngularVelocityMag(){
+        return Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
     }
 
     private void startSimThread() {

@@ -91,6 +91,10 @@ public class Intake extends SubsystemBase {
         m_RollersL.setControl(lRollersOut);
         m_Pivot.setControl(pivotOut);
     }
+
+    public void changeStartPoint(double val){
+        setPivot(val);
+    }
     
     @Override
     public void initSendable(SendableBuilder builder) {

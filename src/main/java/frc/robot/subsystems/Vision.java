@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -175,10 +176,10 @@ public void setFilterTagID(boolean val){
 
                 if(addToPoseEstimator){
                     RobotContainer.getDrivetrain().addVisionMeasurement(visionPoseEstimate.pose, 
-                        Utils.fpgaToCurrentTime(visionPoseEstimate.timestampSeconds), 
-                        visionStandardDeviation);
+                    Timer.getFPGATimestamp(), 
+                    visionStandardDeviation);
+                    SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
                 }
-            }
         }
 
             for(String camera :cameraList){
@@ -193,6 +194,7 @@ public void setFilterTagID(boolean val){
 
         SmartDashboard.putData(this);
     }
+}
 
     /**
      * Resets all stored variables for best camera and pose estimate readings
@@ -267,6 +269,7 @@ public void setFilterTagID(boolean val){
             // Using Megatag1 
             if (bestLimeLight.equals("limelight-turret")){
                 visionPoseEstimate = getTurretToRobotPose();
+                SmartDashboard.putNumber("Last turret localize",Timer.getFPGATimestamp());
             }
             else{
                 visionPoseEstimate = visionPoseEstimateMT1;
@@ -313,6 +316,8 @@ public void setFilterTagID(boolean val){
         }
     }
 
+    private double lastForceUpdate = 0;
+
     /**
      * Updated the Translational and Rotational Standard Deviations for the measurement from the best limelight
      */
@@ -354,10 +359,17 @@ public void setFilterTagID(boolean val){
             rotationStdDev = kMinimumRotationalStandardDeviation;
         }
 
+
+       
+        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        
+
+
+
         SmartDashboard.putNumber("Old Standard Deviation", (visionPoseEstimate.avgTagArea * (-18.3)) + 11.34);
 
         // Fill out Standard deviation matrix for drivebase
-        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
+       
     }
 
     /**
@@ -400,7 +412,7 @@ public void setFilterTagID(boolean val){
         PoseEstimate robotPose = turretCameraPose;
 
         Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getTurretAngle());
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() + RobotContainer.getShooter().getTurretAngle());
         
         robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
         

@@ -73,9 +73,9 @@ public final class Constants {
 
   public static class HopperConstants {
     public static final int kSidewaysBeltMotorID = 21;
-    public static final double kSidewaysBeltSpeed = 1.0;    
+    public static final double kSidewaysBeltSpeed = .85;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = 1.0;    
+    public static final double kForwardBeltSpeed = .85;    
     public static final int kCANRangeID = 30;
     public static final double kShotInterrupt = 3; //seconds
   }
@@ -98,7 +98,7 @@ public final class Constants {
     public static final double kFlywheelIdleSpeed = 10; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-0.247)
+        .withMagnetOffset(.494)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
@@ -109,9 +109,9 @@ public final class Constants {
     public static final double kFlywheelkI = 0.1;
     public static final double kFlywheelkD = 0.0;
 
-    public static final double kTurretkS = 0.05;
-    public static final double kTurretkV = 5;
-    public static final double kTurretkA = .1;
+    public static final double kTurretkS = 0.0;
+    public static final double kTurretkV = .12;
+    public static final double kTurretkA = 0;
     public static final double kTurretkP = 30;//30;
     public static final double kTurretkI = 1;//0.01;
     public static final double kTurretkD = 0.00; 
@@ -123,24 +123,24 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .5;
-    public static final double kTurretCorrectionkS =.1;
+    public static final double kTurretCorrectionkV = .2;
+    public static final double kTurretCorrectionkS =.01;
     
     public static final double kFlywheelPeakVoltage = 16;
-    public static final double kTurretPeakVoltage = 6;
+    public static final double kTurretPeakVoltage = 16;
     public static final double kMagazinePeakVoltage = 16;
 
-    public static final double kTurretMMCruiseVelocity = 14;
-    public static final double kTurretMMAcceleration = 28;
-    public static final double kTurretMMJerk = 280;
+    public static final double kTurretMMCruiseVelocity = 14;//14;
+    public static final double kTurretMMAcceleration = 28;//28;
+    public static final double kTurretMMJerk = 280;//280;
 
-    public static final double kTurretSwitchForwardLimit = 0.24;
-    public static final double kTurretSwitchReverseLimit = -0.26;
+    public static final double kTurretSwitchForwardLimit = 0.39;
+    public static final double kTurretSwitchReverseLimit = -0.43;
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
 
-    public static final Translation2d redHubPose = new Translation2d(11.9,4);
+    public static final Translation2d redHubPose = new Translation2d(11.901424,4.02);
     public static final Translation2d blueHubPose = new Translation2d(5,4);
 
     public static final Translation2d redOutpostCornerPose = new Translation2d(14, 7);
@@ -198,7 +198,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-back","limelight-left","limelight-right","limelight-turret"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-back","limelight-left","limelight-right"}; // ,
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
@@ -222,7 +222,7 @@ public final class Constants {
 
     //TODO: update the translations
     public static final Translation2d kRobotToTurretTranslation = new Translation2d(-0.178, .178); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
-    public static final double kTurretToCameraMagnitude = .1; // The distance from the center of the turret to the Limelight
+    public static final double kTurretToCameraMagnitude = .15; // The distance from the center of the turret to the Limelight
 
     // Filters
     public static final boolean kApplyFilters = true;
@@ -235,9 +235,13 @@ public final class Constants {
     public static final double kFieldWidth = 8.042656;
     public static final double kFieldLength = 16.513048;
 
+    public static final double kHardResetMaxTranslational = 1;
+    public static final double kHardResetMaxAngular = 1;
+    public static final double kHardResetMaxAmbiguity = .1;
+
     // Standard Deviation 
     public static final double kInvalidStandardDeviation = 9999999;
-    public static final double kMinimumTranslationalStandardDeviation = 0.5;
+    public static final double kMinimumTranslationalStandardDeviation = 0.7;
     public static final double kMinimumRotationalStandardDeviation = Math.toRadians(5); // rad
     public static final double kAddSkewDataDistanceThreshold = 2; //m
     }

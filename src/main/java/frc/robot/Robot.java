@@ -75,6 +75,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.getIntake().changeStartPoint(m_robotContainer.getIntakeStartPoint());
   }
 
   /** This function is called periodically during operator control. */
