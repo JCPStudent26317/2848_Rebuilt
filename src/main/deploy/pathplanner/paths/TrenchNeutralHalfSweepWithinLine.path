@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.35,
+        "x": 4.35787951807229,
         "y": 0.6127246790299581
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.35,
+        "x": 5.35787951807229,
         "y": 0.6127246790299576
       },
       "isLocked": false,
@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 4.35,
+        "x": 4.35787951807229,
         "y": 0.6127246790299581
       },
       "prevControl": {
-        "x": 4.051767001067009,
+        "x": 4.0596465191392985,
         "y": 0.6127246790299581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "TrenchStart"
     }
   ],
   "rotationTargets": [
@@ -131,12 +131,17 @@
       "name": "Intake Stop Rollers",
       "waypointRelativePos": 3.836228287841142,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Stop Rollers"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.666,
-    "maxAcceleration": 1.666,
+    "maxVelocity": 2.667,
+    "maxAcceleration": 1.25,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,

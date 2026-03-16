@@ -86,8 +86,9 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // setControl needs to run periodically at all times or the motor will disable I think
-        
+        SmartDashboard.putData(this);
+
+        // setControl needs to run periodically at all times or the motor will disable I think        
         m_RollersL.setControl(lRollersOut);
         m_Pivot.setControl(pivotOut);
     }

@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.35,
+        "x": 4.35787951807229,
         "y": 0.6127246790299581
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.35,
+        "x": 5.35787951807229,
         "y": 0.6127246790299576
       },
       "isLocked": false,
@@ -32,64 +32,64 @@
     },
     {
       "anchor": {
-        "x": 8.466698795180722,
-        "y": 2.756457831325301
+        "x": 8.488554216867469,
+        "y": 3.2591325301204814
       },
       "prevControl": {
-        "x": 8.45950272806133,
-        "y": 2.198762629572599
+        "x": 8.481358149748077,
+        "y": 2.701437328367779
       },
       "nextControl": {
-        "x": 8.48855421686747,
-        "y": 4.450253012048194
+        "x": 8.510409638554217,
+        "y": 4.952927710843372
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.6580481927710835,
-        "y": 2.4941927710843377
+        "x": 7.264650602409638,
+        "y": 2.4504819277108436
       },
       "prevControl": {
-        "x": 7.843819277108432,
-        "y": 2.9313012048192775
+        "x": 7.450421686746987,
+        "y": 2.8875903614457834
       },
       "nextControl": {
-        "x": 7.451728777825528,
-        "y": 2.0087353241536166
+        "x": 7.058331187464082,
+        "y": 1.9650244807801225
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.871253012048193,
-        "y": 1.161012048192772
+        "x": 6.499710843373493,
+        "y": 1.040807228915662
       },
       "prevControl": {
-        "x": 7.406710843373493,
-        "y": 1.5981204819277115
+        "x": 7.035168674698793,
+        "y": 1.4779156626506016
       },
       "nextControl": {
-        "x": 6.109143278129805,
-        "y": 0.5388816531573529
+        "x": 5.737601109455105,
+        "y": 0.418676833880243
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.35,
+        "x": 4.106542168674698,
         "y": 0.6127246790299581
       },
       "prevControl": {
-        "x": 4.051767001067009,
+        "x": 3.8083091697417073,
         "y": 0.6127246790299581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "TrenchStartOffset"
     }
   ],
   "rotationTargets": [
@@ -103,6 +103,10 @@
     },
     {
       "waypointRelativePos": 2.477178423236506,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 2.9170124481327804,
       "rotationDegrees": -135.0
     }
   ],
@@ -135,12 +139,17 @@
       "name": "Intake Stop Rollers",
       "waypointRelativePos": 4.243176178660035,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Stop Rollers"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.666,
-    "maxAcceleration": 1.666,
+    "maxVelocity": 2.667,
+    "maxAcceleration": 1.25,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
