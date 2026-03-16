@@ -153,6 +153,10 @@ public class Shooter extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
+    builder.addDoubleProperty("tangent offset",
+    this::getTurretTangentOffset,
+    null);
+
     builder.addDoubleProperty("Feedforward correct",
     this::getTurretFFCorrection,
     null
@@ -218,7 +222,7 @@ private double getExitVelo(){
  * @return the angle needed to add ccw positive, radians
  */
 public double getTurretTangentOffset(){
-  return Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
+  return 2 * Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
 }
 /**
  * turns the needed exit velocity in m/s to rps for motor control, added multiplier to account for slip
