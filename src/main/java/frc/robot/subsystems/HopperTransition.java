@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import lombok.Getter;
 
@@ -72,6 +73,16 @@ public class HopperTransition extends SubsystemBase {
 
     public Command stop() {
         return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
+    }
+    
+    public Command jiggle(){
+        return new SequentialCommandGroup(
+        forward()
+        ,Commands.waitSeconds(.5)
+        ,backward()
+        ,Commands.waitSeconds(.25)
+        ).repeatedly();
+
     }
 
 }

@@ -62,7 +62,7 @@ public class RobotContainer {
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
-    public static final Intake intake = new Intake();
+    @Getter public static final Intake intake = new Intake();
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     public static final Climber climber = new Climber();
@@ -73,9 +73,11 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
+    private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
+
     private final Command startShoot = shooter.shoot()
     .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward());
+        .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
     private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
@@ -105,6 +107,13 @@ public class RobotContainer {
         autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
             new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
 
+        intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
+        intakeChooser.addOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
+        intakeChooser.setDefaultOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
+
+
+        SmartDashboard.putData("Intake Position Chooser",intakeChooser);
+
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -131,9 +140,9 @@ public class RobotContainer {
         );
 
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onTrue(Commands.runOnce(()->slowDownFactor = 2));
+        .onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onFalse(Commands.runOnce(()->slowDownFactor = 1));
+        .onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
         //shooter.setDefaultCommand(shooter.holdState());
 
@@ -203,5 +212,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+  public double getIntakeStartPoint(){
+    return intakeChooser.getSelected();
   }
 }

@@ -74,6 +74,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                                                                                     new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Rotation_maxV, TunerConstants.autoAlign_Rotation_MaxA));
     private int redAutoAlign = 1;
 
+    @Getter @Setter private double slowDownFactor =1;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -320,7 +322,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return run(() -> {{ SwerveRequest request = requestSupplier.get();
+
+            if (request instanceof SwerveRequest.FieldCentric req) {
+                request = req.withVelocityX(req.VelocityX /slowDownFactor)
+                .withVelocityY(req.VelocityY /slowDownFactor);
+            }
+
+            this.setControl(request);}});
     }
 
     /**
