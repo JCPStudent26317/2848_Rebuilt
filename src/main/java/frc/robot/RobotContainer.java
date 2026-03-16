@@ -111,10 +111,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.addOption("NeutralPastLine (Depot Side)",
-            new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
-        autoChooser.addOption("DoubleNeutral (Depot Side)",
-            new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
+        // autoChooser.addOption("NeutralPastLine (Depot Side)",
+        //     new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
+        // autoChooser.addOption("DoubleNeutral (Depot Side)",
+        //     new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);

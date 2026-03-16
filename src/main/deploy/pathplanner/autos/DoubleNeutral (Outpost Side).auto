@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchToNeutralPastLine"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NeutralHalfSweepPastLine"
+            "pathName": "TrenchNeutralHalfSweepPastLine"
           }
         },
         {
