@@ -230,7 +230,7 @@ public double getTurretTangentOffset(){
  * @return
  */
 private double getVeloRPS(double velo){
-  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,85);
+  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,90);
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
