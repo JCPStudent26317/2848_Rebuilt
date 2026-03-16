@@ -133,17 +133,17 @@ public class Shooter extends SubsystemBase {
     targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
 
-    //m_Turret.setControl(turretOut.withPosition(turretSetpoint).withFeedForward(getTurretFFCorrection()));
+    m_Turret.setControl(turretOut.withPosition(MathUtil.clamp(turretSetpoint,kTurretSwitchReverseLimit,kTurretSwitchForwardLimit)).withFeedForward(getTurretFFCorrection()));
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
-    setTurretAngle(targetTheta,false);
+    setTurretAngle(targetTheta,true);
   }
   
   private double lastTargetTheta = 0;
   private double lastTimeStamp = Timer.getFPGATimestamp();
   private double getTurretFFCorrection(){
-    double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / Timer.getFPGATimestamp()-lastTimeStamp;
+    double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
     lastTimeStamp = Timer.getFPGATimestamp();
     return kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF);
@@ -210,15 +210,15 @@ public class Shooter extends SubsystemBase {
  */
 private double getExitVelo(){
       return RobotContainer.getDrivetrain().getPolarVelocity().getX() * 0.66516439
-      + targetDist * 1.9
-      +5.5;
+      + targetDist * 2
+      +5.35;
 }
 /**
  * gets the angle needed to add to the turret setpoint to account for tangential velocity around the target
  * @return the angle needed to add ccw positive, radians
  */
 public double getTurretTangentOffset(){
-  return Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3))/(2*Math.PI);
+  return Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
 }
 /**
  * turns the needed exit velocity in m/s to rps for motor control, added multiplier to account for slip
@@ -226,7 +226,7 @@ public double getTurretTangentOffset(){
  * @return
  */
 private double getVeloRPS(double velo){
-  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,80);
+  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,85);
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]

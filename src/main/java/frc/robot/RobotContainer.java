@@ -74,9 +74,9 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     private final Command startShoot = shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget()).repeatedly()
+    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
         .beforeStarting(hopper.forward());
-    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget())
+    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
@@ -164,6 +164,7 @@ public class RobotContainer {
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightBumper().onFalse(stopShoot);
+        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
 
 
         //CLIMBER CONTROLS

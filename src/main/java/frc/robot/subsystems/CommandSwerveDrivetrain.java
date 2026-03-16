@@ -236,9 +236,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-    public void setTarget(){
+    public void setTarget(boolean forceHub){
         Pose2d pos = this.getState().Pose;
-        if(aimAtHub()){
+        if(aimAtHub() || forceHub){
             targetPos = hubPos;
         } else if(redAlliance && pos.getY()>kFieldWidth/2){
             targetPos = Constants.ShooterConstants.redOutpostCornerPose;
@@ -403,9 +403,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-    private double lastForceUpdate = 0;
     @Override
     public void periodic() {
+
+        
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.

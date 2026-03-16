@@ -100,7 +100,7 @@ public final class Constants {
     public static final double kFlywheelIdleSpeed = 10; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(-0.247)
+        .withMagnetOffset(.494)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
@@ -125,24 +125,24 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .12;
-    public static final double kTurretCorrectionkS =.1;
+    public static final double kTurretCorrectionkV = .06;
+    public static final double kTurretCorrectionkS =.01;
     
     public static final double kFlywheelPeakVoltage = 16;
     public static final double kTurretPeakVoltage = 6;
     public static final double kMagazinePeakVoltage = 16;
 
-    public static final double kTurretMMCruiseVelocity = 14;
-    public static final double kTurretMMAcceleration = 28;
-    public static final double kTurretMMJerk = 280;
+    public static final double kTurretMMCruiseVelocity = 4;//14;
+    public static final double kTurretMMAcceleration = 8;//28;
+    public static final double kTurretMMJerk = 80;//280;
 
-    public static final double kTurretSwitchForwardLimit = 0.24;
-    public static final double kTurretSwitchReverseLimit = -0.26;
+    public static final double kTurretSwitchForwardLimit = 0.42;
+    public static final double kTurretSwitchReverseLimit = -0.308105;
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
 
-    public static final Translation2d redHubPose = new Translation2d(11.9,4);
+    public static final Translation2d redHubPose = new Translation2d(11.901424,4.02);
     public static final Translation2d blueHubPose = new Translation2d(5,4);
 
     public static final Translation2d redOutpostCornerPose = new Translation2d(14, 7);

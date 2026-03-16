@@ -174,10 +174,11 @@ public void setFilterTagID(boolean val){
             if (visionPoseEstimate != null) {
                 setStandardDeviation();
 
-                if(addToPoseEstimator){
-                    RobotContainer.getDrivetrain().addVisionMeasurement(visionPoseEstimate.pose, 
-                        Utils.fpgaToCurrentTime(visionPoseEstimate.timestampSeconds), 
-                        visionStandardDeviation);
+                if(true == true){//addtoPoseEstimator
+                    // visionStandardDeviation = VecBuilder.fill(.2,.2,kInvalidStandardDeviation);
+                    // RobotContainer.getDrivetrain().addVisionMeasurement(new Pose2d(5,5,new Rotation2d(0)), 
+                    //     Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), 
+                    //     visionStandardDeviation);
                         SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
                 }
             }
@@ -363,8 +364,9 @@ public void setFilterTagID(boolean val){
         if (RobotContainer.getDrivetrain().getTranslationVelocityMag()<kHardResetMaxTranslational
          && Math.abs(RobotContainer.getDrivetrain().getState().Speeds.omegaRadiansPerSecond)<kHardResetMaxAngular){
             PoseEstimate poseEstimate = getVisionPoseEstimate();
-            if (poseEstimate != null && poseEstimate.rawFiducials[0].ambiguity<kHardResetMaxAmbiguity && currentTime-lastForceUpdate>2.0){
+            if (poseEstimate != null && poseEstimate.rawFiducials[0].ambiguity<kHardResetMaxAmbiguity && currentTime-lastForceUpdate>0){
                 visionStandardDeviation = VecBuilder.fill(0, 0, kInvalidStandardDeviation);
+                //RobotContainer.getDrivetrain().visionOdoReset();
                 lastForceUpdate = currentTime;
             }
         } else{
