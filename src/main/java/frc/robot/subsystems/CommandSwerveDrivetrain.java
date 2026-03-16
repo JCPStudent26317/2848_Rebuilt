@@ -19,6 +19,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -358,7 +359,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * @return distance in meters
  */
     public double getTargetDist(){
-        return targetPos.minus(this.getState().Pose.getTranslation()).getNorm();
+        return targetPos.minus(this.getState().Pose.getTranslation().minus(Constants.VisionConstants.kRobotToTurretTranslation.rotateBy(this.getState().Pose.getRotation().plus(new Rotation2d(Math.PI))))).getNorm();
     }
 /**
  * gets the theta between robot front and target translation
@@ -443,6 +444,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
         SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
         SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
+        SmartDashboard.putNumber("gyro rotation",this.getPigeon2().getYaw().getValueAsDouble());
         // Print whether the pathplanner auto should be flipped
         SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }

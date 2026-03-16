@@ -125,19 +125,19 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .06;
+    public static final double kTurretCorrectionkV = .2;
     public static final double kTurretCorrectionkS =.01;
     
     public static final double kFlywheelPeakVoltage = 16;
-    public static final double kTurretPeakVoltage = 6;
+    public static final double kTurretPeakVoltage = 16;
     public static final double kMagazinePeakVoltage = 16;
 
-    public static final double kTurretMMCruiseVelocity = 4;//14;
-    public static final double kTurretMMAcceleration = 8;//28;
-    public static final double kTurretMMJerk = 80;//280;
+    public static final double kTurretMMCruiseVelocity = 14;//14;
+    public static final double kTurretMMAcceleration = 28;//28;
+    public static final double kTurretMMJerk = 280;//280;
 
-    public static final double kTurretSwitchForwardLimit = 0.42;
-    public static final double kTurretSwitchReverseLimit = -0.308105;
+    public static final double kTurretSwitchForwardLimit = 0.39;
+    public static final double kTurretSwitchReverseLimit = -0.43;
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
@@ -200,7 +200,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-back","limelight-left","limelight-right","limelight-turret"}; // limelight-left
+    public static final String[] kCameraList = {"limelight-back","limelight-left","limelight-right"}; // ,
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings
@@ -224,7 +224,7 @@ public final class Constants {
 
     //TODO: update the translations
     public static final Translation2d kRobotToTurretTranslation = new Translation2d(-0.178, .178); // The position of the center of the turret fron the center of the robot with +x towards the front of the robot and +y towards the left of the robot
-    public static final double kTurretToCameraMagnitude = .1; // The distance from the center of the turret to the Limelight
+    public static final double kTurretToCameraMagnitude = .15; // The distance from the center of the turret to the Limelight
 
     // Filters
     public static final boolean kApplyFilters = true;
@@ -243,7 +243,7 @@ public final class Constants {
 
     // Standard Deviation 
     public static final double kInvalidStandardDeviation = 9999999;
-    public static final double kMinimumTranslationalStandardDeviation = 0.5;
+    public static final double kMinimumTranslationalStandardDeviation = 0.7;
     public static final double kMinimumRotationalStandardDeviation = Math.toRadians(5); // rad
     public static final double kAddSkewDataDistanceThreshold = 2; //m
     }

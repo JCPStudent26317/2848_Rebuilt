@@ -174,14 +174,12 @@ public void setFilterTagID(boolean val){
             if (visionPoseEstimate != null) {
                 setStandardDeviation();
 
-                if(true == true){//addtoPoseEstimator
-                    // visionStandardDeviation = VecBuilder.fill(.2,.2,kInvalidStandardDeviation);
-                    // RobotContainer.getDrivetrain().addVisionMeasurement(new Pose2d(5,5,new Rotation2d(0)), 
-                    //     Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), 
-                    //     visionStandardDeviation);
-                        SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
+                if(addToPoseEstimator){
+                    RobotContainer.getDrivetrain().addVisionMeasurement(visionPoseEstimate.pose, 
+                    Timer.getFPGATimestamp(), 
+                    visionStandardDeviation);
+                    SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
                 }
-            }
         }
 
             for(String camera :cameraList){
@@ -196,6 +194,7 @@ public void setFilterTagID(boolean val){
 
         SmartDashboard.putData(this);
     }
+}
 
     /**
      * Resets all stored variables for best camera and pose estimate readings
@@ -270,6 +269,7 @@ public void setFilterTagID(boolean val){
             // Using Megatag1 
             if (bestLimeLight.equals("limelight-turret")){
                 visionPoseEstimate = getTurretToRobotPose();
+                SmartDashboard.putNumber("Last turret localize",Timer.getFPGATimestamp());
             }
             else{
                 visionPoseEstimate = visionPoseEstimateMT1;
@@ -359,19 +359,10 @@ public void setFilterTagID(boolean val){
             rotationStdDev = kMinimumRotationalStandardDeviation;
         }
 
-        double currentTime = Timer.getFPGATimestamp();
 
-        if (RobotContainer.getDrivetrain().getTranslationVelocityMag()<kHardResetMaxTranslational
-         && Math.abs(RobotContainer.getDrivetrain().getState().Speeds.omegaRadiansPerSecond)<kHardResetMaxAngular){
-            PoseEstimate poseEstimate = getVisionPoseEstimate();
-            if (poseEstimate != null && poseEstimate.rawFiducials[0].ambiguity<kHardResetMaxAmbiguity && currentTime-lastForceUpdate>0){
-                visionStandardDeviation = VecBuilder.fill(0, 0, kInvalidStandardDeviation);
-                //RobotContainer.getDrivetrain().visionOdoReset();
-                lastForceUpdate = currentTime;
-            }
-        } else{
-            visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
-        }
+       
+        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        
 
 
 
@@ -421,7 +412,7 @@ public void setFilterTagID(boolean val){
         PoseEstimate robotPose = turretCameraPose;
 
         Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() - RobotContainer.getShooter().getTurretAngle());
+        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() + RobotContainer.getShooter().getTurretAngle());
         
         robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
         
