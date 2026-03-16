@@ -71,7 +71,7 @@ public class RangerHelpers {
 
   /** 
    * Returns true when our alliance's hub is active.
-   * Copied from WPILib docs: https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
+   * Copied and slightly modified from WPILib docs: https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
    *  
    * @return If our alliance's hub is active
   */
@@ -91,7 +91,9 @@ public class RangerHelpers {
     }
 
     // We're teleop enabled, compute.
-    double matchTime = DriverStation.getMatchTime();
+    // getMatchTime() returns an integer on the real field and a floating point number outside of the real field
+    // This is to standardize it.
+    int matchTime = (int) Math.floor(DriverStation.getMatchTime() + 0.0001);
     String gameData = DriverStation.getGameSpecificMessage();
     // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
     if (gameData.isEmpty()) {
@@ -163,7 +165,9 @@ public class RangerHelpers {
     }
 
     // We're teleop enabled, compute.
-    double matchTime = DriverStation.getMatchTime();
+    // getMatchTime() returns an integer on the real field and a floating point number outside of the real field
+    // This is to standardize it.
+    int matchTime = (int) Math.floor(DriverStation.getMatchTime() + 0.0001);
     String gameData = DriverStation.getGameSpecificMessage();
     // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
     if (gameData.isEmpty()) {
@@ -230,7 +234,7 @@ public class RangerHelpers {
 
     // Transition shift
     if (matchTime > 130) {
-      return matchTime - 10;
+      return matchTime - 130;
     }
 
     // Shifts 1-4

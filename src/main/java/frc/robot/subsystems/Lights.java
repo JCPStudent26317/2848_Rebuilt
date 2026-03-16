@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
+import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.RGBWColor;
@@ -43,7 +44,7 @@ public class Lights extends SubsystemBase {
     }
 
     public Lights() {
-        candleconfig.LED.StripType = StripTypeValue.RGB;
+        candleconfig.LED.StripType = StripTypeValue.GRB;
         candleconfig.LED.BrightnessScalar = 1;
         candleconfig.CANdleFeatures.Enable5VRail = Enable5VRailValue.Enabled;
         
@@ -88,7 +89,9 @@ public class Lights extends SubsystemBase {
             ActiveAlliance nextActiveAlliance = RangerHelpers.getActiveAlliance();
             AnimationType nextAnimationType;
 
-            if (RangerHelpers.getRemainingShiftTime() <= 2) {
+            if (RangerHelpers.getRemainingShiftTime() == -1) {
+                nextAnimationType = AnimationType.SOLID;
+            } else if (RangerHelpers.getRemainingShiftTime() <= 2) {
                 nextAnimationType = AnimationType.STROBE_FAST;
             } else if (RangerHelpers.getRemainingShiftTime() <= 4) {
                 nextAnimationType = AnimationType.STROBE_SLOW;
@@ -120,19 +123,18 @@ public class Lights extends SubsystemBase {
 
                 switch(nextAnimationType) { 
                     case STROBE_FAST:
-                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(8).withColor(color);
+                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(8).withColor(color).withSlot(0);
                         break;
                     case STROBE_SLOW:
-                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(4).withColor(color);
+                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(4).withColor(color).withSlot(0);
                         break;
                     case SOLID:
                         request = new SolidColor(kStartIndex, kEndIndex).withColor(color);
                         break;
                     default:
-                        request = new SolidColor(kStartIndex, kEndIndex).withColor(color);
+                        request = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(color).withSlot(0);
                         break;
                 }
-            
                 clearAnimations();
                 candleRequest = request;
 
