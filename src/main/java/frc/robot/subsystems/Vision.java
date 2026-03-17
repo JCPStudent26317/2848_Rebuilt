@@ -268,7 +268,7 @@ public void setFilterTagID(boolean val){
         else {
             // Using Megatag1 
             if (bestLimeLight.equals("limelight-turret")){
-                visionPoseEstimate = getTurretToRobotPose();
+                visionPoseEstimate = getTurretToRobotPose(visionPoseEstimateMT1);
                 SmartDashboard.putNumber("Last turret localize",Timer.getFPGATimestamp());
             }
             else{
@@ -359,11 +359,14 @@ public void setFilterTagID(boolean val){
             rotationStdDev = kMinimumRotationalStandardDeviation;
         }
 
-
-       
-        visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        // becuase we use the gyro to figure out the pose from the turret ll we don't want to feed that back in
+        if (bestLimeLight.equals("limelight-turret")){
+            visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, kInvalidStandardDeviation);
+        }
+        else{
+            visionStandardDeviation = VecBuilder.fill(translationStdDev, translationStdDev, rotationStdDev);
+        }
         
-
 
 
         SmartDashboard.putNumber("Old Standard Deviation", (visionPoseEstimate.avgTagArea * (-18.3)) + 11.34);
@@ -407,14 +410,13 @@ public void setFilterTagID(boolean val){
      * Note: Might need to track the turret angle and match the position with the timestamp from the pose estimate (source of error if we don't)
      * @return the calculated robot pose
      */
-    public PoseEstimate getTurretToRobotPose(){
-        PoseEstimate turretCameraPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-turret");
+    public PoseEstimate getTurretToRobotPose(PoseEstimate turretCameraPose){
         PoseEstimate robotPose = turretCameraPose;
 
-        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle())));
-        Rotation2d robotThetaFromCamera = new Rotation2d(turretCameraPose.pose.getRotation().getRadians() + RobotContainer.getShooter().getTurretAngle());
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle()))); // Robot oriented
         
-        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(new Rotation2d( -1 * robotThetaFromCamera.getRadians()))), robotThetaFromCamera);
+        // Might need a plus pi for the red side
+        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(RobotContainer.getDrivetrain().getState().Pose.getRotation())), RobotContainer.getDrivetrain().getState().Pose.getRotation());
         
         return robotPose;
     }

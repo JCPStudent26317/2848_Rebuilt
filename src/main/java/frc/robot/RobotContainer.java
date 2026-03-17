@@ -20,11 +20,13 @@ import com.pathplanner.lib.path.EventMarker;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
@@ -72,6 +74,8 @@ public class RobotContainer {
                                                                 || Math.abs(driverJoystick.getRightX()) > 0.15;
 
     private final SendableChooser<Command> autoChooser;
+
+    private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
     private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
@@ -126,6 +130,9 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        distanceTrigger.onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 1)));
+        distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.

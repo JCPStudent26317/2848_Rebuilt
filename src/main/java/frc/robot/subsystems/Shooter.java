@@ -137,7 +137,7 @@ public class Shooter extends SubsystemBase {
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
-    setTurretAngle(targetTheta,true);
+    setTurretAngle(targetTheta,false);
   }
   
   private double lastTargetTheta = 0;
