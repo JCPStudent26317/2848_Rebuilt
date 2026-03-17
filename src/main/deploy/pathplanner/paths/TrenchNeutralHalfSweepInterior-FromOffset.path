@@ -3,77 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.35787951807229,
+        "x": 4.106542168674698,
         "y": 0.6127246790299581
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.35787951807229,
+        "x": 5.106542168674698,
         "y": 0.6127246790299576
       },
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartOffset"
     },
     {
       "anchor": {
-        "x": 8.106084337349397,
-        "y": 1.161012048192772
+        "x": 6.914963855421686,
+        "y": 1.0845180722891563
       },
       "prevControl": {
-        "x": 7.83289156626506,
-        "y": 0.7020481927710862
+        "x": 6.9040361445783125,
+        "y": 0.36328915662650485
       },
       "nextControl": {
-        "x": 8.446071086185759,
-        "y": 1.7321897862378555
+        "x": 6.928258649138996,
+        "y": 1.9619744576317004
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.489957203994294,
-        "y": 2.967560627674751
+        "x": 6.466927710843374,
+        "y": 3.4886144578313254
       },
       "prevControl": {
-        "x": 8.473052948737147,
-        "y": 2.4100752309205635
+        "x": 6.993911768478652,
+        "y": 3.4886144578313254
       },
       "nextControl": {
-        "x": 8.532265060240965,
-        "y": 4.3628313253012045
+        "x": 5.887759036144579,
+        "y": 3.4886144578313254
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.264650602409638,
-        "y": 2.4504819277108436
+        "x": 6.073530120481928,
+        "y": 1.2812168674698796
       },
       "prevControl": {
-        "x": 7.450421686746987,
-        "y": 2.8875903614457834
+        "x": 6.148798422996127,
+        "y": 1.9263737461630315
       },
       "nextControl": {
-        "x": 7.058331187464082,
-        "y": 1.9650244807801225
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.499710843373493,
-        "y": 1.040807228915662
-      },
-      "prevControl": {
-        "x": 7.035168674698793,
-        "y": 1.4779156626506016
-      },
-      "nextControl": {
-        "x": 5.737601109455105,
-        "y": 0.418676833880243
+        "x": 5.997036144578316,
+        "y": 0.6255542168674708
       },
       "isLocked": false,
       "linkedName": null
@@ -84,8 +68,8 @@
         "y": 0.6127246790299581
       },
       "prevControl": {
-        "x": 4.404775167607689,
-        "y": 0.6127246790299581
+        "x": 5.106542168674698,
+        "y": 0.612724679029958
       },
       "nextControl": null,
       "isLocked": false,
@@ -94,23 +78,27 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.1319502074688785,
+      "waypointRelativePos": 0.6207468879668029,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.1452282157676283,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 1.9626556016597776,
+      "waypointRelativePos": 1.6232365145228076,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 2.477178423236506,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 2.160995850622377,
+      "rotationDegrees": -91.0
     },
     {
-      "waypointRelativePos": 2.9170124481327804,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 2.8381742738589053,
+      "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 4.319502074688797,
+      "waypointRelativePos": 3.521991701244774,
       "rotationDegrees": 0.0
     }
   ],
@@ -119,7 +107,7 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.2630272952853504,
+      "waypointRelativePos": 0.2580645161290243,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -130,7 +118,7 @@
     },
     {
       "name": "Intake Run Rollers",
-      "waypointRelativePos": 0.5012406947890616,
+      "waypointRelativePos": 0.4406947890818753,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -141,7 +129,7 @@
     },
     {
       "name": "Intake Stop Rollers",
-      "waypointRelativePos": 4.243176178660035,
+      "waypointRelativePos": 3.140446650124046,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

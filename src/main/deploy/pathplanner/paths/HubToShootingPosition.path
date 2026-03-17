@@ -1,0 +1,66 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.54922891566265,
+        "y": 4.045927710843373
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.549228915662649,
+        "y": 4.045927710843373
+      },
+      "isLocked": false,
+      "linkedName": "HubStart"
+    },
+    {
+      "anchor": {
+        "x": 2.270686746987952,
+        "y": 4.045927710843373
+      },
+      "prevControl": {
+        "x": 3.270686746987952,
+        "y": 4.045927710843373
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HubShootingPosition"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.3821339950372145,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.667,
+    "maxAcceleration": 1.25,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 480.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 8.489957203994294,
-        "y": 2.967560627674751
+        "x": 8.488554216867469,
+        "y": 2.996867469879518
       },
       "prevControl": {
-        "x": 8.473052948737147,
-        "y": 2.4100752309205635
+        "x": 8.49362438577941,
+        "y": 2.4391488895657725
       },
       "nextControl": {
-        "x": 8.532265060240965,
-        "y": 4.3628313253012045
+        "x": 8.477626506024098,
+        "y": 4.198915662650602
       },
       "isLocked": false,
       "linkedName": null
@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 4.106542168674698,
+        "x": 4.35787951807229,
         "y": 0.6127246790299581
       },
       "prevControl": {
-        "x": 4.404775167607689,
+        "x": 4.60787951807229,
         "y": 0.6127246790299581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStartOffset"
+      "linkedName": "TrenchStart"
     }
   ],
   "rotationTargets": [
@@ -110,7 +110,7 @@
       "rotationDegrees": -135.0
     },
     {
-      "waypointRelativePos": 4.319502074688797,
+      "waypointRelativePos": 4.394190871369288,
       "rotationDegrees": 0.0
     }
   ],
@@ -160,7 +160,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.5,
     "rotation": 0.0
   },
   "reversed": false,
