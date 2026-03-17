@@ -76,6 +76,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getIntake().changeStartPoint(m_robotContainer.getIntakeStartPoint());
+
+    CommandScheduler.getInstance().schedule(m_robotContainer.getStopShoot());
   }
 
   /** This function is called periodically during operator control. */
