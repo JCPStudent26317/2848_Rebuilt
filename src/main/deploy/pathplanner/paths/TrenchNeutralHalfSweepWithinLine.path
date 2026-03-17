@@ -73,23 +73,23 @@
       },
       "nextControl": {
         "x": 5.715745687768358,
-        "y": 0.6044479182175932
+        "y": 0.6044479182175934
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.35787951807229,
+        "x": 4.106542168674698,
         "y": 0.6127246790299581
       },
       "prevControl": {
-        "x": 4.0596465191392985,
+        "x": 4.404775167607689,
         "y": 0.6127246790299581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartOffset"
     }
   ],
   "rotationTargets": [

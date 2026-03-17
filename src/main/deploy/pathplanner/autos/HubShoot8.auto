@@ -11,13 +11,13 @@
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 5.0
                 }
               },
               {
@@ -25,8 +25,20 @@
                 "data": {
                   "name": "Start Shoot"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Jiggle"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Deploy"
           }
         },
         {

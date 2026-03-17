@@ -82,7 +82,7 @@ public class RobotContainer {
     private final Command startShoot = shooter.shoot()
     .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
         .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
-    private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
+    @Getter private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
@@ -106,14 +106,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        // autoChooser.addOption("NeutralPastLine (Depot Side)",
-        //     new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
-        // autoChooser.addOption("DoubleNeutral (Depot Side)",
-        //     new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
+        autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
+            new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
 
+        intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
-        intakeChooser.addOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
-        intakeChooser.setDefaultOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
 
 
         SmartDashboard.putData("Intake Position Chooser",intakeChooser);
@@ -131,7 +128,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        distanceTrigger.onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 1)));
+        distanceTrigger.onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.8)));
         distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,
