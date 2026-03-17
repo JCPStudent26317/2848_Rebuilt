@@ -146,14 +146,16 @@ public class RobotContainer {
             )
         );
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).or(driverJoystick.rightBumper())
-        .onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
+        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
+        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
         //shooter.setDefaultCommand(shooter.holdState());
 
         lights.setDefaultCommand(lights.signalActiveAlliance());
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onTrue(hopper.jiggle());
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()));
 
         // Small adjustments code
         driverJoystick.pov(90)
@@ -177,7 +179,7 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        driverJoystick.rightBumper().whileTrue(startShoot);
+        driverJoystick.rightBumper().onTrue(startShoot);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightBumper().onFalse(stopShoot);
@@ -204,6 +206,10 @@ public class RobotContainer {
         keypad.button(4).onTrue(Commands.runOnce(()->shooter.trimCloser()));
         keypad.button(5).onTrue(Commands.runOnce(()->shooter.resetAngularTrim()));
         keypad.button(6).onTrue(Commands.runOnce(()->shooter.trimRight()));
+
+        keypad.button(7).onTrue(hopper.forward());
+        keypad.button(8).onTrue(hopper.stop());
+        keypad.button(9).onTrue(hopper.backward());
 
 
 

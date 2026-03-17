@@ -92,7 +92,7 @@ public class HopperTransition extends SubsystemBase {
         ,Commands.waitSeconds(.5)
         ,backward()
         ,Commands.waitSeconds(.25)
-        ).repeatedly();
+        ).repeatedly().andThen(forward());
 
     }
 
