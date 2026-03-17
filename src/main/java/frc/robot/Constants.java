@@ -73,7 +73,7 @@ public final class Constants {
     public static final int kSidewaysBeltMotorID = 21;
     public static final double kSidewaysBeltSpeed = .85;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = .85;    
+    public static final double kForwardBeltSpeed = .7;    
     public static final int kCANRangeID = 30;
     public static final double kShotInterrupt = 3; //seconds
   }
@@ -200,7 +200,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-back","limelight-left","limelight-right"}; // ,
+    public static final String[] kCameraList = {"limelight-turret","limelight-back","limelight-left","limelight-right"}; 
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings

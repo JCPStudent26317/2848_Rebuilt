@@ -466,6 +466,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
     }
 
+    public boolean outOfRange(){
+        if (redAlliance && this.getState().Pose.getX()>16.51-4.6 && (getTargetDist()>3.7 || getTargetDist()<1.5)){
+            return true;
+        } else if (!redAlliance && this.getState().Pose.getX()<4.6 && (getTargetDist() >3.7 || getTargetDist()<1.5)){
+            return true;
+        }
+
+        return false;
+    }
+
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
