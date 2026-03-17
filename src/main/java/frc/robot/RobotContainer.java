@@ -106,10 +106,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        // autoChooser.addOption("NeutralPastLine (Depot Side)",
-        //     new PathPlannerAuto("NeutralPastLine (Outpost Side)", true));
-        // autoChooser.addOption("DoubleNeutral (Depot Side)",
-        //     new PathPlannerAuto("DoubleNeutral (Outpost Side)", true));
+        autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
+            new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
 
         intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
