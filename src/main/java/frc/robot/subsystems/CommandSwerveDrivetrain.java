@@ -438,7 +438,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
 
         m_field.setRobotPose(this.getState().Pose);
-      
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());

@@ -202,6 +202,12 @@ public class Shooter extends SubsystemBase {
      null);
     builder.addDoubleProperty("magazine rps",
     this::getMagazineRPS, null);
+    builder.addDoubleProperty("distance trim",
+     ()->distanceTrim,
+      null);
+    builder.addDoubleProperty("angular trim",
+     ()->angularTrim,
+     null);
 
 
 
@@ -246,20 +252,20 @@ public double getTurretAngle(){
 }
 
 public void trimRight(){
-  angularTrim +=.05;
+  angularTrim -=.01;
 }
 public void trimLeft(){
-  angularTrim -=.05;
+  angularTrim +=.01;
 }
 public void resetAngularTrim(){
   angularTrim =0;
 }
 
 public void trimFurther(){
-  distanceTrim +=.1;
+  distanceTrim +=.5;
 }
 public void trimCloser(){
-  distanceTrim -=.1;
+  distanceTrim -=.5;
 }
 public void resetDistanceTrim(){
   distanceTrim =0;

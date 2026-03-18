@@ -73,9 +73,9 @@ public final class Constants {
 
   public static class HopperConstants {
     public static final int kSidewaysBeltMotorID = 21;
-    public static final double kSidewaysBeltSpeed = .85;    
+    public static final double kSidewaysBeltSpeed = .8;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = .7;    
+    public static final double kForwardBeltSpeed = .75;    
     public static final int kCANRangeID = 30;
     public static final double kShotInterrupt = 3; //seconds
   }

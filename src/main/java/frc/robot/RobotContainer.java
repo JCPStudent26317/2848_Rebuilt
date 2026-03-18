@@ -207,10 +207,11 @@ public class RobotContainer {
         keypad.button(6).onTrue(Commands.runOnce(()->shooter.trimRight()));
 
         keypad.button(7).onTrue(hopper.forward())
-        .onFalse(hopper.stop());
+        .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
         keypad.button(8).onTrue(hopper.stop());
         keypad.button(9).onTrue(hopper.backward())
-        .onFalse(hopper.stop());
+        .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()))
+        .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
 
 
         keypad.button(10).whileTrue(drivetrain.applyRequest(()->brake));
