@@ -143,6 +143,8 @@ public class RobotContainer {
             )
         );
 
+        
+
         driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
         driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
@@ -204,9 +206,17 @@ public class RobotContainer {
         keypad.button(5).onTrue(Commands.runOnce(()->shooter.resetAngularTrim()));
         keypad.button(6).onTrue(Commands.runOnce(()->shooter.trimRight()));
 
-        keypad.button(7).onTrue(hopper.forward());
+        keypad.button(7).onTrue(hopper.forward())
+        .onFalse(hopper.stop());
         keypad.button(8).onTrue(hopper.stop());
-        keypad.button(9).onTrue(hopper.backward());
+        keypad.button(9).onTrue(hopper.backward())
+        .onFalse(hopper.stop());
+
+
+        keypad.button(10).whileTrue(drivetrain.applyRequest(()->brake));
+
+        keypad.button(11).onTrue(intake.jiggle())
+        .onFalse(intake.deploy());
 
 
 
