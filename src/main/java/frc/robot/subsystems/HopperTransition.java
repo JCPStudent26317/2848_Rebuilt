@@ -82,6 +82,16 @@ public class HopperTransition extends SubsystemBase {
         return Commands.runOnce(() -> setMotorsOutput(sidewaysBeltSpeed * -1, forwardBeltSpeed * -1), this);
     }
 
+    public Command onlyForwardForward(){
+        return Commands.runOnce(()-> setMotorsOutput(m_SidewaysBeltOut.Output,forwardBeltSpeed));
+    }
+    public Command onlyForwardStop(){
+        return Commands.runOnce(()-> setMotorsOutput(m_SidewaysBeltOut.Output,0));
+    }
+    public Command onlyForwardReverse(){
+        return Commands.runOnce(()-> setMotorsOutput(m_SidewaysBeltOut.Output,forwardBeltSpeed *-1));
+    }
+
     public Command stop() {
         return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
     }

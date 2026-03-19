@@ -59,23 +59,23 @@ public final class Constants {
     public static final double kPivotMMAcceleration = 14;
     public static final double kPivotMMJerk = 140;
     
-    public static final double kDeploySetpoint = 0.573486328125;
-    public static final double kLowRetractSetpoint = 0.65;
-    public static final double kHighRetractSetpoint = 0.75;
-    public static final double kStowSetpoint = 0.96;
+    public static final double kDeploySetpoint = 0.473486328125;
+    public static final double kLowRetractSetpoint = 0.55;
+    public static final double kHighRetractSetpoint = 0.65;
+    public static final double kStowSetpoint = 0.86;
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(0.10)
+        .withMagnetOffset(1-0.067)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
 
   public static class HopperConstants {
     public static final int kSidewaysBeltMotorID = 21;
-    public static final double kSidewaysBeltSpeed = .9;    
+    public static final double kSidewaysBeltSpeed = .95;    
     public static final int kForwardBeltMotorID = 22;
-    public static final double kForwardBeltSpeed = .9;    
+    public static final double kForwardBeltSpeed = .95;    
     public static final int kCANRangeID = 30;
     public static final double kShotInterrupt = 3; //seconds
   }

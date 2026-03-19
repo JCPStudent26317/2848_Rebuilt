@@ -108,8 +108,8 @@ public class Intake extends SubsystemBase {
         builder.addDoubleProperty("Pivot get()", m_Pivot::get, null);
         builder.addDoubleProperty("Pivot Error", m_Pivot.getClosedLoopError()::getValueAsDouble, null);
 
-        builder.addDoubleProperty("CANcoder Absolute Position", m_IntakeCANcoder.getAbsolutePosition()::getValueAsDouble, null);
-        builder.addDoubleProperty("CANcoder Non-absolute Position", m_IntakeCANcoder.getPosition()::getValueAsDouble, null);        
+        builder.addDoubleProperty("CANcoder Absolute Position",() ->  m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble(), null);
+        builder.addDoubleProperty("CANcoder Non-absolute Position", () -> m_IntakeCANcoder.getPosition().getValueAsDouble(), null);        
         builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
         builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
     }

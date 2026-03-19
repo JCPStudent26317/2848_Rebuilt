@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
 import lombok.Getter;
+import lombok.Setter;
 
 /** Shooter Subsystem. */
 public class Shooter extends SubsystemBase {
@@ -45,6 +46,9 @@ public class Shooter extends SubsystemBase {
 
   private flywheelStates currentState = flywheelStates.IDLE;
   // create a Motion Magic request, voltage output
+
+  private boolean freezeTurret = false;
+  
 
 
   //private final PositionVoltage m_HoodVoltage = new PositionVoltage(0).withSlot(0);
@@ -136,8 +140,9 @@ public class Shooter extends SubsystemBase {
     m_Turret.setControl(turretOut.withPosition(MathUtil.clamp(turretSetpoint,kTurretSwitchReverseLimit,kTurretSwitchForwardLimit)).withFeedForward(getTurretFFCorrection()));
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
-    
-    setTurretAngle(targetTheta,false);
+    if (!freezeTurret){
+      setTurretAngle(targetTheta,false);
+    }
   }
   
   private double lastTargetTheta = 0;
@@ -208,11 +213,23 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("angular trim",
      ()->angularTrim,
      null);
+     builder.addBooleanProperty("Freeze Turret",
+     ()->freezeTurret,
+     null);
 
 
 
     
   } 
+
+
+
+  public void stopTurret(){
+    freezeTurret = true;
+  }
+  public void runTurret(){
+    freezeTurret = false;
+  }
 
 /**
  * gets the needed exit velocity of the ball to reach the goal
