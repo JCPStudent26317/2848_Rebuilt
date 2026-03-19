@@ -150,8 +150,6 @@ public class RobotContainer {
 
         //shooter.setDefaultCommand(shooter.holdState());
 
-        lights.setDefaultCommand(lights.signalActiveAlliance());
-
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onTrue(hopper.jiggle());
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
         driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()));

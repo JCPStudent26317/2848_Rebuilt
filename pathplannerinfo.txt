@@ -1,0 +1,9 @@
+PathPlanner Default Constraints
+
+At engineering lab floor:
+Max Velocity = 2.667 m/s
+Max Acceleration = 1.250 m/s2
+Max Angular Velocity = 360 deg/s
+Max Angular Accel = 480 deg/s2
+
+Testing on terry center carpet, upped acceleration to 1.350 m/s2.
