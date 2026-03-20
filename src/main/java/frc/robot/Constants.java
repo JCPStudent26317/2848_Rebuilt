@@ -141,7 +141,7 @@ public final class Constants {
     public static final double kTurretPositionTolerance = .025;
 
     public static final Translation2d redHubPose = new Translation2d(11.901424,4.02);
-    public static final Translation2d blueHubPose = new Translation2d(5,4);
+    public static final Translation2d blueHubPose = new Translation2d(4.61,4.02);
 
     public static final Translation2d redOutpostCornerPose = new Translation2d(14, 7);
     public static final Translation2d redDepotCornerPose = new Translation2d(14,1);
