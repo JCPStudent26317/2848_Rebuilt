@@ -82,6 +82,15 @@ public class RobotContainer {
     private final Command startShoot = shooter.shoot()
     .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
         .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
+    //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
+    private final Command startShootAuto = shooter.shoot().alongWith(
+        new SequentialCommandGroup(
+            hopper.backward().repeatedly().withDeadline(new WaitCommand(1)),
+            hopper.forward().repeatedly().withDeadline(new WaitCommand(3)).onlyIf(()->shooter.readyToShoot())
+        ).repeatedly()
+    )
+        .beforeStarting(()->drivetrain.setTarget(true));
+
     @Getter private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
     .andThen(shooter.idleFlywheel())
     .andThen(shooter.stopMagazine())
@@ -98,16 +107,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("Transition Run Belts", hopper.forward());
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
 
-        NamedCommands.registerCommand("Start Shoot",startShoot);
+        NamedCommands.registerCommand("Start Shoot",startShootAuto);
         NamedCommands.registerCommand("Stop Shoot",stopShoot);
 
+    
         
-
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.addOption("NeutralPastLine-ShootingPosition (Depot Side)",
             new PathPlannerAuto("NeutralPastLine-ShootingPosition (Outpost Side)", true));
+        autoChooser.addOption("NeutralWithinLine-ShootingPosition (Outpost Side)",
+            new PathPlannerAuto("NeutralWithinLine-ShootingPosition (Outpost Side)", true));            
 
         intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
@@ -207,9 +218,11 @@ public class RobotContainer {
         keypad.button(7).onTrue(hopper.forward())
         .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
         keypad.button(8).onTrue(hopper.stop());
-        keypad.button(9).onTrue(hopper.backward())
+        keypad.button(9).onTrue(hopper.backward().andThen(shooter.reverseMagazine()))
         .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()))
-        .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
+        .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()))
+        .onFalse(shooter.stopMagazine().onlyIf(()->!shooter.readyToShoot() || !driverJoystick.rightBumper().getAsBoolean()))
+        .onFalse(shooter.runMagazine().onlyIf(()->shooter.readyToShoot() && driverJoystick.rightBumper().getAsBoolean()));
 
 
         keypad.button(10).whileTrue(drivetrain.applyRequest(()->brake));

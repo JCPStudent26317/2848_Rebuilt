@@ -56,7 +56,7 @@ public final class Constants {
     public static final double kPivotkD = 0;
 
     public static final double kPivotMMCruiseVelocity = 7;
-    public static final double kPivotMMAcceleration = 14;
+    public static final double kPivotMMAcceleration = 20;//14;
     public static final double kPivotMMJerk = 140;
     
     public static final double kDeploySetpoint = 0.473486328125;
@@ -95,7 +95,7 @@ public final class Constants {
 
     public static final double kFlywheelRadius = .05; //meters
 
-    public static final double kFlywheelIdleSpeed = 10; // rps
+    public static final double kFlywheelIdleSpeed = 0; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
         .withMagnetOffset(.494)
