@@ -239,8 +239,8 @@ public class RobotContainer {
         .andThen(hopper.onlyForwardForward()))
         .onFalse(hopper.forward().onlyIf(driverJoystick.rightBumper()));
 
-        keypad.button(13).onTrue(Commands.runOnce(()->shooter.stopTurret()));
-        keypad.button(14).onTrue(Commands.runOnce(()->shooter.runTurret()));
+        //keypad.button(13).onTrue(Commands.runOnce(()->shooter.stopTurret()));
+        //keypad.button(14).onTrue(Commands.runOnce(()->shooter.runTurret()));
 
 
 
