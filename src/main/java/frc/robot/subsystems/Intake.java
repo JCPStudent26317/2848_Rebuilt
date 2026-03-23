@@ -112,6 +112,8 @@ public class Intake extends SubsystemBase {
         builder.addDoubleProperty("CANcoder Non-absolute Position", () -> m_IntakeCANcoder.getPosition().getValueAsDouble(), null);        
         builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
         builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
+        builder.addDoubleProperty("intake L", ()->m_RollersL.get(), null);
+        builder.addDoubleProperty("intake R", ()->m_RollersR.get(), null);
     }
 
     public Command holdState() {

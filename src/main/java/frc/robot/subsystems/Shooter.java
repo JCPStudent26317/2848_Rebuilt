@@ -78,6 +78,7 @@ public class Shooter extends SubsystemBase {
     flywheelConfig.Voltage
         .withPeakForwardVoltage(Volts.of(kFlywheelPeakVoltage))
         .withPeakReverseVoltage(Volts.of(-1 * kFlywheelPeakVoltage));
+    flywheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     setupTalonFx(m_FlywheelLeftLeader, flywheelConfig);
     m_FlywheelRightFollower.setControl(new Follower(m_FlywheelLeftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
@@ -151,7 +152,7 @@ public class Shooter extends SubsystemBase {
     double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
     lastTimeStamp = Timer.getFPGATimestamp();
-    return kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF);
+    return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-4,4);
   }
 
   @Override
@@ -333,6 +334,10 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   /** Stop magazine */
   public Command stopMagazine() {
     return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 0.0, this);
+  }
+
+  public Command reverseMagazine(){
+    return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -75);
   }
   
 /**
