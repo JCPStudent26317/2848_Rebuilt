@@ -18,11 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
 import lombok.Getter;
+import lombok.Setter;
 
 /** Shooter Subsystem. */
 public class Shooter extends SubsystemBase {
   private final TalonFX m_FlywheelLeftLeader;
   private final TalonFX m_FlywheelRightFollower;
+
+  @Getter @Setter private double tangentMultiplier = 1;
   
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
@@ -202,6 +205,9 @@ public class Shooter extends SubsystemBase {
      null);
     builder.addDoubleProperty("magazine rps",
     this::getMagazineRPS, null);
+    builder.addDoubleProperty("Tangent Multiplier",
+    this::getTangentMultiplier,
+    this::setTangentMultiplier);
 
 
 
@@ -222,7 +228,7 @@ private double getExitVelo(){
  * @return the angle needed to add ccw positive, radians
  */
 public double getTurretTangentOffset(){
-  return 2 * Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
+  return tangentMultiplier * Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
 }
 /**
  * turns the needed exit velocity in m/s to rps for motor control, added multiplier to account for slip
@@ -265,6 +271,8 @@ public void resetDistanceTrim(){
   distanceTrim =0;
 }
 
+//TODO: fix the double angular trim
+
 /**
  * sets the turret setpoint
  * @param angle in radians [-pi,pi]
@@ -278,6 +286,8 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
     desiredAngle = MathUtil.angleModulus(desiredAngle + (tangentAdjust ? getTurretTangentOffset() : 0) + angularTrim);
     turretSetpoint = desiredAngle / (2*Math.PI) + angularTrim;
 }
+
+
 
 /**
  * gets flywheel rps
