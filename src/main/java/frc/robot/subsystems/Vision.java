@@ -242,10 +242,14 @@ public void setFilterTagID(boolean val){
                     bestLimeLight = camera;
                     bestTagArea = tagArea;
                     bestTagCount = tagCount;
+                    try{
                     visionPoseEstimateMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimeLight);
                     visionPoseEstimateMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestLimeLight);
                     targetSkewDegrees = LimelightHelpers.getTargetPose_RobotSpace(bestLimeLight)[4];
                     adjustedSkewAngle = 1 / Math.cos(Math.toRadians(targetSkewDegrees)) - 1;
+                    } catch(Exception e) {
+                        System.out.println(e);
+                    }
                 }
             }
         }

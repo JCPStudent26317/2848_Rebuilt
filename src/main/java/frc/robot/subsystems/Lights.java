@@ -36,6 +36,7 @@ public class Lights extends SubsystemBase {
     private ControlRequest candleRequest = kRainbow;
     private ActiveAlliance previousActiveAlliance = ActiveAlliance.NONE;
     private AnimationType previousAnimationType = AnimationType.SOLID;
+    private boolean previousDisabledState = true;
 
     public void clearAnimations() {
         for (int i = 0; i < 8; ++i) {
@@ -55,9 +56,68 @@ public class Lights extends SubsystemBase {
 
     @Override
     public void periodic() {
+        ActiveAlliance nextActiveAlliance = RangerHelpers.getActiveAlliance();
+        AnimationType nextAnimationType;
+        boolean nextDisabledState = DriverStation.isDisabled();
+
+        if (RangerHelpers.getRemainingShiftTime() == -1 || nextDisabledState) {
+            nextAnimationType = AnimationType.SOLID;
+        } else if (RangerHelpers.getRemainingShiftTime() <= 2) {
+            nextAnimationType = AnimationType.STROBE_FAST;
+        } else if (RangerHelpers.getRemainingShiftTime() <= 4) {
+            nextAnimationType = AnimationType.STROBE_SLOW;
+        } else {
+            nextAnimationType = AnimationType.SOLID;
+        }
+        
+        if (nextActiveAlliance != previousActiveAlliance || nextAnimationType != previousAnimationType || (nextDisabledState != previousDisabledState)) {
+            ControlRequest request;
+            RGBWColor color;
+
+            if(nextDisabledState) {color = kWhite;}
+            else switch(nextActiveAlliance) {
+                case RED: 
+                    color = kRed;
+                    break;
+                case BLUE:
+                    color = kBlue;
+                    break;
+                case BOTH: 
+                    color = kGreen;
+                    break;
+                case NONE:
+                    color = kBlack;
+                    break;
+                default:
+                    color = kWhite;
+                    break;
+            }
+
+            switch(nextAnimationType) { 
+                case STROBE_FAST:
+                    request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(8).withColor(color).withSlot(0);
+                    break;
+                case STROBE_SLOW:
+                    request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(4).withColor(color).withSlot(0);
+                    break;
+                case SOLID:
+                    request = new SolidColor(kStartIndex, kEndIndex).withColor(color);
+                    break;
+                default:
+                    request = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(color).withSlot(0);
+                    break;
+            }
+            clearAnimations();
+            candleRequest = request;
+
+            previousActiveAlliance = nextActiveAlliance;
+            previousAnimationType = nextAnimationType;
+            previousDisabledState = nextDisabledState;
+        }
         candle.setControl(candleRequest);
 
         SmartDashboard.putData(this);
+        
     }
 
     @Override
@@ -75,73 +135,6 @@ public class Lights extends SubsystemBase {
                 default: return "???";
             }
         }, null);
-    }
-
-    public Command runPattern(ControlRequest request) {
-        return Commands.runOnce(() -> {
-            clearAnimations();
-            candleRequest = request;
-        }, this);
-    }
-
-    public Command signalActiveAlliance() {
-        return Commands.run(() -> {
-            ActiveAlliance nextActiveAlliance = RangerHelpers.getActiveAlliance();
-            AnimationType nextAnimationType;
-
-            if (RangerHelpers.getRemainingShiftTime() == -1) {
-                nextAnimationType = AnimationType.SOLID;
-            } else if (RangerHelpers.getRemainingShiftTime() <= 2) {
-                nextAnimationType = AnimationType.STROBE_FAST;
-            } else if (RangerHelpers.getRemainingShiftTime() <= 4) {
-                nextAnimationType = AnimationType.STROBE_SLOW;
-            } else {
-                nextAnimationType = AnimationType.SOLID;
-            }
-            
-            if (nextActiveAlliance != previousActiveAlliance || nextAnimationType != previousAnimationType) {
-                ControlRequest request;
-                RGBWColor color;
-
-                switch(nextActiveAlliance) {
-                    case RED: 
-                        color = kRed;
-                        break;
-                    case BLUE:
-                        color = kBlue;
-                        break;
-                    case BOTH: 
-                        color = kGreen;
-                        break;
-                    case NONE:
-                        color = kBlack;
-                        break;
-                    default:
-                        color = kWhite;
-                        break;
-                }
-
-                switch(nextAnimationType) { 
-                    case STROBE_FAST:
-                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(8).withColor(color).withSlot(0);
-                        break;
-                    case STROBE_SLOW:
-                        request = new StrobeAnimation(kStartIndex, kEndIndex).withFrameRate(4).withColor(color).withSlot(0);
-                        break;
-                    case SOLID:
-                        request = new SolidColor(kStartIndex, kEndIndex).withColor(color);
-                        break;
-                    default:
-                        request = new TwinkleAnimation(kStartIndex, kEndIndex).withColor(color).withSlot(0);
-                        break;
-                }
-                clearAnimations();
-                candleRequest = request;
-
-                previousActiveAlliance = nextActiveAlliance;
-                previousAnimationType = nextAnimationType;
-            }
-        }, this);
     }
 
 }

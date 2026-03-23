@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -65,7 +66,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private FieldCentric autoAlignRequest = new SwerveRequest.FieldCentric();
 
-    private Field2d m_field = new Field2d();
+    @Getter private Field2d m_field = new Field2d();
 
     private final ProfiledPIDController autoAlignXController = new ProfiledPIDController(TunerConstants.autoAlign_Translation_P, TunerConstants.autoAlign_Translation_I, TunerConstants.autoAlign_Translation_D, 
                                                                                     new TrapezoidProfile.Constraints(TunerConstants.autoAlign_Translation_maxVx, TunerConstants.autoAlign_Translation_MaxA));
@@ -438,7 +439,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
 
         m_field.setRobotPose(this.getState().Pose);
-      
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());
         SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());

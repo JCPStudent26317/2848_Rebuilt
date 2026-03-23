@@ -4,6 +4,16 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -49,7 +59,26 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    String newAutoName = m_robotContainer.getAutonomousCommand().getName();
+    String autoName = "";
+        if (autoName != newAutoName) {
+        autoName = newAutoName;
+        if (AutoBuilder.getAllAutoNames().contains(autoName)) {
+            //System.out.println("Displaying " + autoName);
+            try{
+            List<PathPlannerPath> pathPlannerPaths = PathPlannerAuto.getPathGroupFromAutoFile(autoName);
+            List<Pose2d> poses = new ArrayList<>();
+            for (PathPlannerPath path : pathPlannerPaths) {
+                poses.addAll(path.getAllPathPoints().stream().map(point -> new Pose2d(point.position.getX(), point.position.getY(), new Rotation2d())).collect(Collectors.toList()));
+            }
+            m_robotContainer.getDrivetrain().getM_field().getObject("path").setPoses(poses);
+          } catch (Exception e){
+            System.out.println(e);
+          }
+        }
+  }
+}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -78,6 +107,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.getIntake().changeStartPoint(m_robotContainer.getIntakeStartPoint());
 
     CommandScheduler.getInstance().schedule(m_robotContainer.getStopShoot());
+    //m_robotContainer.getDrivetrain().getM_field().getObject("path").close();
   }
 
   /** This function is called periodically during operator control. */
