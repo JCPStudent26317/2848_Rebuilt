@@ -104,6 +104,18 @@ public class HopperTransition extends SubsystemBase {
     public Command stop() {
         return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
     }
+
+    public Command noJamRun(){
+        return new SequentialCommandGroup(
+            this.forward(),
+            Commands.waitSeconds(.5),
+            this.onlyStopSideways(),
+            Commands.waitSeconds(1),
+            this.onlyBackwardSideways(),
+            Commands.waitSeconds(.5),
+            this.onlyForwardSideways()
+        ).repeatedly();
+    }
     
     public Command jiggle(){
         return new SequentialCommandGroup(

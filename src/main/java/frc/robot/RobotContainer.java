@@ -159,6 +159,11 @@ public class RobotContainer {
         driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
         driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
+    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        .beforeStarting(hopper.noJamRun()).onlyIf(()->shooter.readyToShoot()).repeatedly());
+
         //shooter.setDefaultCommand(shooter.holdState());
 
         // driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onTrue(hopper.jiggle());
@@ -229,15 +234,17 @@ public class RobotContainer {
 
         keypad.button(11).onTrue(intake.jiggle())
         .onFalse(intake.deploy());
-        keypad.button(12).or(driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold)).onTrue(shooter.shoot()
-        .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.onlyStopSideways())
-        .beforeStarting(hopper.onlyForwardForward()).onlyIf(()->shooter.readyToShoot()).repeatedly())
-        .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()).repeatedly());
+        // keypad.button(12).or(driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold)).onTrue(shooter.shoot()
+        // .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+        // .beforeStarting(hopper.onlyStopSideways())
+        // .beforeStarting(hopper.onlyForwardForward()).onlyIf(()->shooter.readyToShoot()).repeatedly())
+        // .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()).repeatedly());
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).and(driverJoystick.rightBumper()).onTrue(hopper.onlyStopSideways()
-        .andThen(hopper.onlyForwardForward()))
-        .onFalse(hopper.forward().onlyIf(driverJoystick.rightBumper()));
+    
+
+        // driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).and(driverJoystick.rightBumper()).onTrue(hopper.onlyStopSideways()
+        // .andThen(hopper.onlyForwardForward()))
+        // .onFalse(hopper.forward().onlyIf(driverJoystick.rightBumper()));
 
         //keypad.button(13).onTrue(Commands.runOnce(()->shooter.stopTurret()));
         //keypad.button(14).onTrue(Commands.runOnce(()->shooter.runTurret()));
