@@ -23,6 +23,8 @@ import lombok.Getter;
 public class Shooter extends SubsystemBase {
   private final TalonFX m_FlywheelLeftLeader;
   private final TalonFX m_FlywheelRightFollower;
+
+  @Getter private boolean reversing = false;
   
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
@@ -134,20 +136,41 @@ public class Shooter extends SubsystemBase {
     targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
 
-    m_Turret.setControl(turretOut.withPosition(MathUtil.clamp(turretSetpoint,kTurretSwitchReverseLimit,kTurretSwitchForwardLimit)).withFeedForward(getTurretFFCorrection()));
+    m_Turret.setControl(turretOut.withPosition(MathUtil.clamp(turretSetpoint,kTurretSwitchReverseLimit,kTurretSwitchForwardLimit)).withFeedForward(getTurretFFCorrection() + getTurretGyroFFCorrection()));
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
-    setTurretAngle(targetTheta,false);
+    setTurretAngle(targetTheta,true);
   }
   
   private double lastTargetTheta = 0;
-  private double lastTimeStamp = Timer.getFPGATimestamp();
   private double getTurretFFCorrection(){
     double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
-    lastTimeStamp = Timer.getFPGATimestamp();
     return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-4,4);
+  }
+  /**
+   * Gets the feedforward correction for the turret due to the angular momentum of the flywheels
+   * @return Feedfoward in volts
+   */
+  private double getTurretGyroFFCorrection(){
+    return MathUtil.clamp(kTurretGyroCorrection * getTurretVelocity() * getFlywheelRPS(),-4,4);
+  }
+
+  /**
+   * reads magazine current to detect a jam
+   * @return if its jammed or not
+   */
+
+  public boolean isJammed(){
+    return m_Magazine.getStatorCurrent().getValueAsDouble() > kMagazineJamThreshold;
+  }
+/**
+ * gets turret rps
+ * @return turret rps
+ */
+  private double getTurretVelocity(){
+    return m_Turret.getVelocity().getValueAsDouble();
   }
 
   @Override
@@ -203,6 +226,9 @@ public class Shooter extends SubsystemBase {
      null);
     builder.addDoubleProperty("magazine rps",
     this::getMagazineRPS, null);
+    builder.addDoubleProperty("magazine current",
+     ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
+      null);
 
 
 
@@ -214,7 +240,7 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return RobotContainer.getDrivetrain().getPolarVelocity().getX() * 0.66516439
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() *3,-.5,10)
       + targetDist * 2
       +5.35;
 }
@@ -223,7 +249,7 @@ private double getExitVelo(){
  * @return the angle needed to add ccw positive, radians
  */
 public double getTurretTangentOffset(){
-  return 2 * Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
+  return 2.5 * Math.atan2(RobotContainer.getDrivetrain().getPolarVelocity().getY(),getExitVelo()*Math.cos(Math.PI/3));
 }
 /**
  * turns the needed exit velocity in m/s to rps for motor control, added multiplier to account for slip
@@ -276,7 +302,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   // 1. Offset for turret encoder zero (pi/2 left)
     double desiredAngle =angle - Math.PI / 2;
     // 2. Wrap math cleanly (optional)
-    desiredAngle = MathUtil.angleModulus(desiredAngle + (tangentAdjust ? getTurretTangentOffset() : 0) + angularTrim);
+    desiredAngle = MathUtil.angleModulus(desiredAngle + (tangentAdjust ? getTurretTangentOffset() : 0));
     turretSetpoint = desiredAngle / (2*Math.PI) + angularTrim;
 }
 
@@ -305,15 +331,18 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
 
   /** Run magazine */
   public Command runMagazine() {
+    reversing = false;
     return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 75, this);
   }
 
   /** Stop magazine */
   public Command stopMagazine() {
+    reversing = false;
     return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 0.0, this);
   }
 
   public Command reverseMagazine(){
+    reversing = true;
     return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -75);
   }
   
@@ -332,6 +361,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
    */
  public boolean readyToShoot() {
     return m_TurretCANcoder.getAbsolutePosition().isNear(turretSetpoint,kTurretPositionTolerance) &&
-    m_FlywheelLeftLeader.getVelocity().isNear(flyWheelVelocityVoltage.Velocity ,kFlywheelRPSTolerance);
+    m_FlywheelLeftLeader.getVelocity().isNear(flyWheelVelocityVoltage.Velocity ,kFlywheelRPSTolerance)
+    && m_FlywheelLeftLeader.getVelocity().getValueAsDouble()>20;
   }
 }

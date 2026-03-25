@@ -240,8 +240,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-    public void setTarget(boolean forceHub){
-        Pose2d pos = this.getState().Pose;
+    public Command setTarget(boolean forceHub){
+        return Commands.runOnce(()->{
+            Pose2d pos = this.getState().Pose;
         if(aimAtHub() || forceHub){
             targetPos = hubPos;
         } else if(redAlliance && pos.getY()>kFieldWidth/2){
@@ -255,6 +256,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 targetPos = Constants.ShooterConstants.blueOutpostCornerPose;
             }
         }
+        });
+        
     }
 
     /**
@@ -328,7 +331,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             if (request instanceof SwerveRequest.FieldCentric req) {
                 request = req.withVelocityX(req.VelocityX /slowDownFactor)
-                .withVelocityY(req.VelocityY /slowDownFactor);
+                .withVelocityY(req.VelocityY /slowDownFactor)
+                .withRotationalRate(req.RotationalRate / slowDownFactor * 2);
             }
 
             this.setControl(request);}});
@@ -467,9 +471,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public boolean outOfRange(){
-        if (redAlliance && this.getState().Pose.getX()>16.51-4.6 && (getTargetDist()>3.7 || getTargetDist()<1.5)){
+        if (redAlliance && this.getState().Pose.getX()>16.51-4.6 && (getTargetDist()>4.7 || getTargetDist()<1.5)){
             return true;
-        } else if (!redAlliance && this.getState().Pose.getX()<4.6 && (getTargetDist() >3.7 || getTargetDist()<1.5)){
+        } else if (!redAlliance && this.getState().Pose.getX()<4.6 && (getTargetDist() >4.7 || getTargetDist()<1.5)){
             return true;
         }
 
