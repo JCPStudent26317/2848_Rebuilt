@@ -106,9 +106,11 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("Transition Run Belts", hopper.forward());
         NamedCommands.registerCommand("Transition Stop Belts", hopper.stop());
+        NamedCommands.registerCommand("Transition Reverse Belts", hopper.backward());
 
         NamedCommands.registerCommand("Start Shoot",startShootAuto);
         NamedCommands.registerCommand("Stop Shoot",stopShoot);
+        
 
     
         

@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.35787951807229,
-        "y": 0.6127246790299576
+        "y": 0.5499999999999996
       },
       "isLocked": false,
       "linkedName": "TrenchStartPerpendicular"
@@ -73,7 +73,7 @@
       },
       "nextControl": {
         "x": 7.791269614835947,
-        "y": 0.4848644793152652
+        "y": 0.48486447931526533
       },
       "isLocked": false,
       "linkedName": null
@@ -81,11 +81,11 @@
     {
       "anchor": {
         "x": 3.5473894436519258,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": {
         "x": 3.845622442584917,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "nextControl": null,
       "isLocked": false,
