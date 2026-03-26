@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 3.5473894436519258,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.547389443651926,
-        "y": 0.6127246790299576
+        "y": 0.5499999999999996
       },
       "isLocked": false,
-      "linkedName": "TrenchStartOffset"
+      "linkedName": "TrenchStartPerpendicularOffset"
     },
     {
       "anchor": {
@@ -65,22 +65,18 @@
     {
       "anchor": {
         "x": 3.5473894436519258,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": {
         "x": 4.547389443651926,
-        "y": 0.612724679029958
+        "y": 0.5499999999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStartOffset"
+      "linkedName": "TrenchStartPerpendicularOffset"
     }
   ],
   "rotationTargets": [
-    {
-      "waypointRelativePos": 0.6207468879668029,
-      "rotationDegrees": 0.0
-    },
     {
       "waypointRelativePos": 1.1452282157676283,
       "rotationDegrees": 90.0
@@ -98,8 +94,8 @@
       "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 3.521991701244774,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 3.420042643923243,
+      "rotationDegrees": 89.99
     }
   ],
   "constraintZones": [],
@@ -107,7 +103,7 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.2580645161290243,
+      "waypointRelativePos": 0.4429439567859489,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -118,7 +114,7 @@
     },
     {
       "name": "Intake Run Rollers",
-      "waypointRelativePos": 0.4406947890818753,
+      "waypointRelativePos": 0.48,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -149,13 +145,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

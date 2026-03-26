@@ -40,6 +40,12 @@
           "data": {
             "pathName": "TrenchNeutralHalfSweepInterior-FromOffset"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Start Shoot"
+          }
         }
       ]
     }

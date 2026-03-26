@@ -113,7 +113,7 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.39972991222146165,
+      "waypointRelativePos": 0.25928426738690574,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -130,17 +130,6 @@
         "type": "named",
         "data": {
           "name": "Intake Run Rollers"
-        }
-      }
-    },
-    {
-      "name": "Transition Reverse Belts",
-      "waypointRelativePos": 2.335570469798659,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Transition Reverse Belts"
         }
       }
     },

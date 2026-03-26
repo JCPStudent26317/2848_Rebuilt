@@ -89,10 +89,9 @@ public class RobotContainer {
         
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
-        new SequentialCommandGroup(
-            hopper.backward().repeatedly().withDeadline(new WaitCommand(1)),
-            hopper.forward().repeatedly().withDeadline(new WaitCommand(3)).onlyIf(()->shooter.readyToShoot())
-        ).repeatedly()
+        Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
+            hopper.forward().repeatedly()
+        )
     )
         .beforeStarting(()->drivetrain.setTarget(true));
 
@@ -122,12 +121,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.addOption("NeutralPastLine-ShootingPosition (Left Side)",
-            new PathPlannerAuto("NeutralPastLine-ShootingPosition (Right Side)", true));
-        autoChooser.addOption("NeutralWithinLine-ShootingPosition (Left Side)",
-            new PathPlannerAuto("NeutralWithinLine-ShootingPosition (Right Side)", true));            
+        autoChooser.addOption("NeutralPastLine (Left Side)",
+            new PathPlannerAuto("NeutralPastLine (Right Side)", true));
+        autoChooser.addOption("NeutralWithinLine (Left Side)",
+            new PathPlannerAuto("NeutralWithinLine (Right Side)", true));            
         autoChooser.addOption("NeutralDiagonal (Left Side)",
             new PathPlannerAuto("NeutralDiagonal (Right Side)", true));
+        autoChooser.addOption("DoubleNeutral (Left Side)",
+            new PathPlannerAuto("DoubleNeutral (Right Side)", true));            
         
         intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
