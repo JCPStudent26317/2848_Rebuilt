@@ -22,9 +22,6 @@ public class HopperTransition extends SubsystemBase {
     private final TalonFX m_SidewaysBelt = new TalonFX(kSidewaysBeltMotorID);
     private final TalonFXConfiguration sidewaysBeltMotorConfig = new TalonFXConfiguration();
     private final DutyCycleOut m_SidewaysBeltOut = new DutyCycleOut(0.0);
-
-    private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
-    private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
     
     private final TalonFX m_ForwardBelt = new TalonFX(kForwardBeltMotorID);
     private final TalonFXConfiguration forwardBeltMotorConfig = new TalonFXConfiguration();
@@ -35,10 +32,6 @@ public class HopperTransition extends SubsystemBase {
 
     public HopperTransition() {
         // Apply things to the configurations here
-
-        magazineSensorConfig.ProximityParams.ProximityThreshold =.085;
-
-        m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
 
         setupTalonFx(m_SidewaysBelt, sidewaysBeltMotorConfig);
         setupTalonFx(m_ForwardBelt, forwardBeltMotorConfig);
@@ -51,8 +44,6 @@ public class HopperTransition extends SubsystemBase {
     public void periodic() {
         m_SidewaysBelt.setControl(m_SidewaysBeltOut);
         m_ForwardBelt.setControl(m_ForwardBeltOut);
-
-        SmartDashboard.putNumber("CANRange detection",m_MagazineSensor.getIsDetected().getValueAsDouble());
         
         SmartDashboard.putData(this);
     }

@@ -76,7 +76,6 @@ public final class Constants {
     public static final double kSidewaysBeltSpeed = .95;    
     public static final int kForwardBeltMotorID = 22;
     public static final double kForwardBeltSpeed = .95;    
-    public static final int kCANRangeID = 30;
     public static final double kShotInterrupt = 3; //seconds
   }
 
@@ -87,6 +86,7 @@ public final class Constants {
     public static final int kTurretMotorID = 25;
     public static final int kTurretCANcoderID = 26;
     public static final int kMagazineMotorID = 27;
+    public static final int kCANRangeID = 30;
     public static final double kMagazineMotorSpeed = .5;
 
     public static final double kTurretOffset = -.033;

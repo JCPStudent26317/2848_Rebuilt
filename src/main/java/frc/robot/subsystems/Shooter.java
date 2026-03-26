@@ -27,6 +27,9 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
 
+  private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
+  private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
+
   private final TalonFX m_Magazine;
 
   private double targetDist =0;
@@ -125,6 +128,11 @@ public class Shooter extends SubsystemBase {
         .withPeakReverseVoltage(Volts.of(-1 * kMagazinePeakVoltage));
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
+
+    magazineSensorConfig.ProximityParams.ProximityThreshold =.085;
+    magazineSensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
+    magazineSensorConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
+    m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
   }
 
   @Override
@@ -204,9 +212,17 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("magazine rps",
     this::getMagazineRPS, null);
 
+    builder.addBooleanProperty("CANrange detection (w/o debouncer)",
+      () -> m_MagazineSensor.getIsDetected().getValue(),
+      null);
+    builder.addDoubleProperty("CANrange signal strength",
+      () -> m_MagazineSensor.getSignalStrength().getValue(),
+      null);
+    builder.addDoubleProperty("CANrange distance measurement",
+      ()-> m_MagazineSensor.getDistance().getValueAsDouble(),
+      null);
 
 
-    
   } 
 
 /**
