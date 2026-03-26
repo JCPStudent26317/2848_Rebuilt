@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.35787951807229,
-        "y": 0.6127246790299576
+        "y": 0.5499999999999996
       },
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartPerpendicular"
     },
     {
       "anchor": {
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": {
         "x": 4.656112517005281,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartPerpendicular"
     }
   ],
   "rotationTargets": [
@@ -111,7 +111,7 @@
     },
     {
       "waypointRelativePos": 4.319502074688797,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [
@@ -144,7 +144,7 @@
     },
     {
       "name": "Intake Run Rollers",
-      "waypointRelativePos": 0.5012406947890616,
+      "waypointRelativePos": 0.35,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -175,13 +175,13 @@
   },
   "goalEndState": {
     "velocity": 1.5,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

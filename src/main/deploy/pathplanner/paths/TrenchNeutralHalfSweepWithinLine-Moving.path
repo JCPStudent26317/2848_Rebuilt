@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.35787951807229,
-        "y": 0.6127246790299576
+        "y": 0.5499999999999996
       },
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartPerpendicular"
     },
     {
       "anchor": {
@@ -73,7 +73,7 @@
       },
       "nextControl": {
         "x": 7.791269614835947,
-        "y": 0.4848644793152651
+        "y": 0.4848644793152652
       },
       "isLocked": false,
       "linkedName": null
@@ -81,31 +81,18 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": {
         "x": 4.656112517005281,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartPerpendicular"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.1319502074688785,
-      "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 3.84861407249461,
-      "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 4.5095948827291465,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -138,7 +125,7 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.2630272952853504,
+      "waypointRelativePos": 0.24,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -180,13 +167,13 @@
   },
   "goalEndState": {
     "velocity": 1.5,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

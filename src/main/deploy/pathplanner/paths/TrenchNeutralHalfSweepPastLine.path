@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 4.35787951807229,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.35787951807229,
-        "y": 0.6127246790299576
+        "y": 0.5499999999999996
       },
       "isLocked": false,
-      "linkedName": "TrenchStart"
+      "linkedName": "TrenchStartPerpendicular"
     },
     {
       "anchor": {
@@ -65,15 +65,15 @@
     {
       "anchor": {
         "x": 6.499710843373493,
-        "y": 1.040807228915662
+        "y": 1.041
       },
       "prevControl": {
         "x": 7.035168674698793,
-        "y": 1.4779156626506016
+        "y": 1.4781084337349395
       },
       "nextControl": {
         "x": 5.737601109455105,
-        "y": 0.418676833880243
+        "y": 0.4188696049645809
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 3.5473894436519258,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "prevControl": {
         "x": 3.845622442584917,
-        "y": 0.6127246790299581
+        "y": 0.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchStartOffset"
+      "linkedName": "TrenchStartPerpendicularOffset"
     }
   ],
   "rotationTargets": [
@@ -111,7 +111,7 @@
     },
     {
       "waypointRelativePos": 4.319502074688797,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [
@@ -144,7 +144,7 @@
     },
     {
       "name": "Intake Run Rollers",
-      "waypointRelativePos": 0.5012406947890616,
+      "waypointRelativePos": 0.35,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -175,13 +175,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
