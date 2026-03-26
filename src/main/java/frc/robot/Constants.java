@@ -123,8 +123,10 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .2;
+    public static final double kTurretCorrectionkV = .28;
     public static final double kTurretCorrectionkS =.01;
+
+    public static final double kTurretGyroCorrection = .013;
     
     public static final double kFlywheelPeakVoltage = 16;
     public static final double kTurretPeakVoltage = 16;
@@ -139,6 +141,8 @@ public final class Constants {
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
+
+    public static final double kMagazineJamThreshold = 9999999; //TODO: update this value
 
     public static final Translation2d redHubPose = new Translation2d(11.901424,4.02);
     public static final Translation2d blueHubPose = new Translation2d(4.61,4.02);

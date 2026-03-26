@@ -20,6 +20,7 @@ import com.pathplanner.lib.path.EventMarker;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,11 +78,15 @@ public class RobotContainer {
 
     private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
+    private final Trigger magazineJam = new Trigger(()->shooter.isJammed());
+
     private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
+    private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
+
     private final Command startShoot = shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
+    .alongWith(drivetrain.setTarget(false)).repeatedly();
+        
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
         new SequentialCommandGroup(
@@ -143,7 +148,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        distanceTrigger.onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.8)));
+        distanceTrigger.and(()->DriverStation.isTeleop()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
         distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,
@@ -160,13 +165,18 @@ public class RobotContainer {
 
         
 
-        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(2)));
+        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(5)));
         driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
+        driverJoystick.rightBumper().onTrue(hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly());
 
-        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
-    .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
-        .beforeStarting(hopper.noJamRun()).onlyIf(()->shooter.readyToShoot()).repeatedly());
+        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->shooter.setShooting(true)));
+        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->shooter.setShooting(false)));
+
+
+    //     driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
+    // .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
+    //     .beforeStarting(hopper.noJamRun()).onlyIf(()->shooter.readyToShoot()).repeatedly());
 
         //shooter.setDefaultCommand(shooter.holdState());
 
@@ -208,6 +218,8 @@ public class RobotContainer {
         driverJoystick.y().whileTrue(climber.raise());
         driverJoystick.a().whileTrue(climber.lower());
 
+        //readyToShoot.onFalse(shooter.stopMagazine().onlyIf(()->!shooter.isReversing()));
+
         //driverJoystick.a().onTrue((shooter.runMagazine()).andThen(shooter.runFlywheel()));
         //driverJoystick.a().onFalse(hopper.stop().andThen(shooter.stopMagazine()).andThen(shooter.idleFlywheel()));
 
@@ -227,7 +239,7 @@ public class RobotContainer {
         keypad.button(7).onTrue(hopper.forward())
         .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
         keypad.button(8).onTrue(hopper.stop());
-        keypad.button(9).onTrue(hopper.backward().andThen(shooter.reverseMagazine()))
+        keypad.button(9).or(driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold)).onTrue(hopper.backward().andThen(shooter.reverseMagazine()))
         .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()))
         .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()))
         .onFalse(shooter.stopMagazine().onlyIf(()->!shooter.readyToShoot() || !driverJoystick.rightBumper().getAsBoolean()))
@@ -238,6 +250,13 @@ public class RobotContainer {
 
         keypad.button(11).onTrue(intake.jiggle())
         .onFalse(intake.deploy());
+
+        magazineJam.whileTrue(hopper.backward()
+        .andThen(shooter.reverseMagazine())
+        .andThen(Commands.waitSeconds(.5))
+        .andThen((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot()))).repeatedly())
+        .onFalse((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot())))
+        .onFalse((shooter.stopMagazine().andThen(hopper.stop()).onlyIf(()->!shooter.readyToShoot())));
         // keypad.button(12).or(driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold)).onTrue(shooter.shoot()
         // .beforeStarting(()->drivetrain.setTarget(false)).repeatedly()
         // .beforeStarting(hopper.onlyStopSideways())
