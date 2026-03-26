@@ -18,11 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
 import lombok.Getter;
+import lombok.Setter;
 
 /** Shooter Subsystem. */
 public class Shooter extends SubsystemBase {
   private final TalonFX m_FlywheelLeftLeader;
   private final TalonFX m_FlywheelRightFollower;
+
+
+  @Getter @Setter private boolean shooting = false;
 
   @Getter private boolean reversing = false;
   
@@ -140,7 +144,7 @@ public class Shooter extends SubsystemBase {
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
-    setTurretAngle(targetTheta,true);
+    setTurretAngle(targetTheta,shooting);
   }
   
   private double lastTargetTheta = 0;

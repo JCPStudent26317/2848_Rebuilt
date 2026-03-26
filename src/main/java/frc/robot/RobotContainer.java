@@ -20,6 +20,7 @@ import com.pathplanner.lib.path.EventMarker;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -143,7 +144,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        distanceTrigger.onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
+        distanceTrigger.and(()->DriverStation.isTeleop()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
         distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,
@@ -164,6 +165,9 @@ public class RobotContainer {
         driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
         driverJoystick.rightBumper().onTrue(hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly());
+
+        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->shooter.setShooting(true)));
+        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->shooter.setShooting(false)));
 
 
     //     driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).whileTrue(shooter.shoot()
