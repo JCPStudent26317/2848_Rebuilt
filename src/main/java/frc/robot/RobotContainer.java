@@ -84,11 +84,9 @@ public class RobotContainer {
         .beforeStarting(hopper.forward()).onlyIf(()->shooter.readyToShoot()).repeatedly();
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
-        Commands.waitUntil(()->shooter.readyToShoot()).andThen(
-        new SequentialCommandGroup(
-            hopper.onlyForwardForward().repeatedly().withDeadline(new WaitCommand(4)),
+        Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
             hopper.forward().repeatedly()
-        ))
+        )
     )
         .beforeStarting(()->drivetrain.setTarget(true));
 
