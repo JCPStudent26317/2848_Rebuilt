@@ -12,6 +12,8 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +37,7 @@ public class Shooter extends SubsystemBase {
 
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
+  private final Debouncer magazineSensorDebouncer = new Debouncer(0.25, DebounceType.kFalling);
 
   private final TalonFX m_Magazine;
 
@@ -251,7 +254,9 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("CANrange distance measurement",
       ()-> m_MagazineSensor.getDistance().getValueAsDouble(),
       null);
-
+    builder.addBooleanProperty("CANrange detection",
+      ()-> magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue()),
+      null);
 
   } 
 
