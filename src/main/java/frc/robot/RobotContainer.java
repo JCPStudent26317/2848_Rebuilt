@@ -45,7 +45,7 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    private double slowDownFactor = 1;
+
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -157,17 +157,18 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / slowDownFactor) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / slowDownFactor) // Drive left with negative X (left)
-                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive left with negative X (left)
+                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate)
+                     // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
         );
 
         
 
-        driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(5)));
-        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
+        // driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(5)));
+        // driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
         driverJoystick.rightBumper().onTrue(hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly());
 
@@ -247,7 +248,7 @@ public class RobotContainer {
         .onFalse(shooter.runMagazine().onlyIf(()->shooter.readyToShoot() && driverJoystick.rightBumper().getAsBoolean()));
 
 
-        keypad.button(10).whileTrue(drivetrain.applyRequest(()->brake));
+        keypad.button(10).or(driverJoystick.a()).whileTrue(drivetrain.applyRequest(()->brake));
 
         keypad.button(11).onTrue(intake.jiggle())
         .onFalse(intake.deploy());

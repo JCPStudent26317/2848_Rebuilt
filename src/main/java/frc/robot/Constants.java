@@ -123,7 +123,7 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .28;
+    public static final double kTurretCorrectionkV = .33;//.28;
     public static final double kTurretCorrectionkS =.01;
 
     public static final double kTurretGyroCorrection = .013;
@@ -202,7 +202,7 @@ public final class Constants {
     }
 
     // List of camera names published to the network tables (set in the limelight browser config tool)
-    public static final String[] kCameraList = {"limelight-turret","limelight-back","limelight-left","limelight-right"}; 
+    public static final String[] kCameraList = {"limelight-right","limelight-back","limelight-left","limelight-turret"}; //,
     public static final boolean kAddToPoseEstimator = true;
 
     // Camera settings

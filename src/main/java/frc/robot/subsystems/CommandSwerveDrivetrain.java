@@ -329,11 +329,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> {{ SwerveRequest request = requestSupplier.get();
 
-            if (request instanceof SwerveRequest.FieldCentric req) {
-                request = req.withVelocityX(req.VelocityX /slowDownFactor)
-                .withVelocityY(req.VelocityY /slowDownFactor)
-                .withRotationalRate(req.RotationalRate / slowDownFactor * 2);
-            }
+            // if (request instanceof SwerveRequest.FieldCentric req) {
+            //     request = req.withVelocityX(req.VelocityX /slowDownFactor)
+            //     .withVelocityY(req.VelocityY /slowDownFactor)
+            //     .withRotationalRate(req.RotationalRate / slowDownFactor * 2);
+            // }
 
             this.setControl(request);}});
     }
