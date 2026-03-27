@@ -266,8 +266,8 @@ public class Shooter extends SubsystemBase {
  */
 private double getExitVelo(){
       return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() *3,-.5,10)
-      + targetDist * 2
-      +5.35;
+      + targetDist * 1.88//2
+      +5.35;//5.35
 }
 /**
  * gets the angle needed to add to the turret setpoint to account for tangential velocity around the target

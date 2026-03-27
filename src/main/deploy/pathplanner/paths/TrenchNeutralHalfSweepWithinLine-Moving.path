@@ -73,7 +73,7 @@
       },
       "nextControl": {
         "x": 7.791269614835947,
-        "y": 0.4848644793152652
+        "y": 0.48486447931526533
       },
       "isLocked": false,
       "linkedName": null
@@ -110,7 +110,7 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 1.0533423362592917,
-      "maxWaypointRelativePos": 3.9702903443618123,
+      "maxWaypointRelativePos": 2.7,
       "constraints": {
         "maxVelocity": 1.2,
         "maxAcceleration": 1.3,

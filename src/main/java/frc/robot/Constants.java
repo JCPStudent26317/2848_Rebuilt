@@ -113,7 +113,7 @@ public final class Constants {
     public static final double kTurretkV = .12;
     public static final double kTurretkA = 0;
     public static final double kTurretkP = 30;//30;
-    public static final double kTurretkI = 1;//0.01;
+    public static final double kTurretkI = 3;//1;
     public static final double kTurretkD = 0.00; 
 
     public static final double kMagazinekS = 0.0;
@@ -123,7 +123,7 @@ public final class Constants {
     public static final double kMagazinekI = 0.0;
     public static final double kMagazinekD = 0.0;
 
-    public static final double kTurretCorrectionkV = .33;//.28;
+    public static final double kTurretCorrectionkV = .28;//.28;
     public static final double kTurretCorrectionkS =.01;
 
     public static final double kTurretGyroCorrection = .013;
