@@ -52,8 +52,8 @@ public class HopperTransition extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
 
-        builder.addDoubleProperty("Sideways Belt Speed", () -> sidewaysBeltSpeed, (next) -> sidewaysBeltSpeed = next);
-        builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
+        // builder.addDoubleProperty("Sideways Belt Speed", () -> sidewaysBeltSpeed, (next) -> sidewaysBeltSpeed = next);
+        // builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
     }
 
     public Command holdState() {

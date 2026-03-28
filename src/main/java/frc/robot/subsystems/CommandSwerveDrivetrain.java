@@ -450,7 +450,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
         SmartDashboard.putNumber("gyro rotation",this.getPigeon2().getYaw().getValueAsDouble());
         // Print whether the pathplanner auto should be flipped
-        SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
+        // SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }
 
 
