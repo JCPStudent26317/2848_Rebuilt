@@ -298,10 +298,10 @@ public double getTurretAngle(){
 }
 
 public void trimRight(){
-  angularTrim +=.05;
+  angularTrim -=.01;
 }
 public void trimLeft(){
-  angularTrim -=.05;
+  angularTrim +=.01;
 }
 public void resetAngularTrim(){
   angularTrim =0;
