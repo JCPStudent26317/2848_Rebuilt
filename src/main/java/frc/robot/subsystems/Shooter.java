@@ -123,7 +123,7 @@ public class Shooter extends SubsystemBase {
     m_Turret.getConfigurator().apply(motionMagicConfigs);
 
     m_TurretCANcoder.getConfigurator().apply(kTurretCANcoderMagnetSensorConfigs);
-    
+    m_Turret.setPosition(m_TurretCANcoder.getAbsolutePosition().getValueAsDouble());
 
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
     magazineConfig.Slot0.kS = kMagazinekS;
@@ -147,6 +147,9 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putData(this);
+
+
+    m_Turret.setPosition(m_TurretCANcoder.getPositionSinceBoot().getValueAsDouble());
 
     targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
