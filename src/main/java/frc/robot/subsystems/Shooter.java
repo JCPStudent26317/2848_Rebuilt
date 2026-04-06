@@ -49,6 +49,12 @@ public class Shooter extends SubsystemBase {
 
   private double distanceTrim = 0;
   private double angularTrim = 0;
+
+  private double lastTurretEncoder = 0;
+  private boolean wrappedForward = false;
+  private boolean wrappedBackward = false;
+
+  private final double turretStartPosition;
   
   private enum flywheelStates {
     IDLE,
@@ -121,9 +127,14 @@ public class Shooter extends SubsystemBase {
     m_Turret.getConfigurator().apply(turretSwitchConfigs);
     
     m_Turret.getConfigurator().apply(motionMagicConfigs);
+    turretStartPosition = m_TurretCANcoder.getAbsolutePosition().getValueAsDouble();
+
+  
 
     m_TurretCANcoder.getConfigurator().apply(kTurretCANcoderMagnetSensorConfigs);
-    m_Turret.setPosition(m_TurretCANcoder.getAbsolutePosition().getValueAsDouble());
+    //m_Turret.setPosition(m_TurretCANcoder.getAbsolutePosition().getValueAsDouble());
+
+    
 
     TalonFXConfiguration magazineConfig = new TalonFXConfiguration();
     magazineConfig.Slot0.kS = kMagazinekS;
@@ -142,18 +153,24 @@ public class Shooter extends SubsystemBase {
     magazineSensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
     magazineSensorConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
     m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
+
+    lastTurretEncoder = m_Turret.getPosition().getValueAsDouble();
   }
+
 
   @Override
   public void periodic() {
+   
     SmartDashboard.putData(this);
 
 
-    m_Turret.setPosition(m_TurretCANcoder.getPositionSinceBoot().getValueAsDouble());
+    //m_Turret.setPosition(m_TurretCANcoder.getPositionSinceBoot().getValueAsDouble()-turretStartPosition);
 
     targetTheta = (RobotContainer.getDrivetrain().getTargetTheta());
     targetDist = RobotContainer.getDrivetrain().getTargetDist();
 
+
+    
     m_Turret.setControl(turretOut.withPosition(MathUtil.clamp(turretSetpoint,kTurretSwitchReverseLimit,kTurretSwitchForwardLimit)).withFeedForward(getTurretFFCorrection() + getTurretGyroFFCorrection()));
     m_FlywheelLeftLeader.setControl(flyWheelVelocityVoltage.withSlot(0));
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
