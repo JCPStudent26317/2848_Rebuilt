@@ -124,17 +124,17 @@ public class Lights extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
 
-        builder.addDoubleProperty("Raw Game Time", () -> DriverStation.getMatchTime(), null);
+        // builder.addDoubleProperty("Raw Game Time", () -> DriverStation.getMatchTime(), null);
         builder.addIntegerProperty("Remaining Shift Time", () -> RangerHelpers.getRemainingShiftTime(), null);
-        builder.addStringProperty("Active Alliance", () -> {
-            switch(RangerHelpers.getActiveAlliance()) {
-                case RED: return "Red";
-                case BLUE: return "Blue";
-                case BOTH: return "Both";
-                case NONE: return "None";
-                default: return "???";
-            }
-        }, null);
+        // builder.addStringProperty("Active Alliance", () -> {
+        //     switch(RangerHelpers.getActiveAlliance()) {
+        //         case RED: return "Red";
+        //         case BLUE: return "Blue";
+        //         case BOTH: return "Both";
+        //         case NONE: return "None";
+        //         default: return "???";
+        //     }
+        // }, null);
     }
 
 }

@@ -35,8 +35,8 @@ public class Climber extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
 
-        builder.addBooleanProperty("Limit Switch S1Closed", () -> limitSwitch.getS1Closed().getValue(), null); // At bottom when S1 true
-        builder.addBooleanProperty("Limit Switch S2Closed", () -> limitSwitch.getS2Closed().getValue(), null);
+        // builder.addBooleanProperty("Limit Switch S1Closed", () -> limitSwitch.getS1Closed().getValue(), null); // At bottom when S1 true
+        // builder.addBooleanProperty("Limit Switch S2Closed", () -> limitSwitch.getS2Closed().getValue(), null);
     }
 
     @Override

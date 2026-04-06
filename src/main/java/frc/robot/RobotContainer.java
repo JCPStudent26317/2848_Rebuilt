@@ -68,7 +68,7 @@ public class RobotContainer {
     @Getter public static final Intake intake = new Intake();
     public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
-    public static final Climber climber = new Climber();
+    // public static final Climber climber = new Climber();
     public static final Lights lights = new Lights();
 
     private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.15
@@ -90,7 +90,10 @@ public class RobotContainer {
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
         Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
-            hopper.forward().repeatedly()
+            new SequentialCommandGroup(
+                hopper.backward().withDeadline(new WaitCommand(0.667)),
+                hopper.forward().withDeadline(new WaitCommand(5.0))
+            ).repeatedly()
         )
     )
         .beforeStarting(()->drivetrain.setTarget(true));
@@ -217,8 +220,8 @@ public class RobotContainer {
 
         //CLIMBER CONTROLS
 
-        driverJoystick.y().whileTrue(climber.raise());
-        driverJoystick.a().whileTrue(climber.lower());
+        // driverJoystick.y().whileTrue(climber.raise());
+        // driverJoystick.a().whileTrue(climber.lower());
 
         //readyToShoot.onFalse(shooter.stopMagazine().onlyIf(()->!shooter.isReversing()));
 

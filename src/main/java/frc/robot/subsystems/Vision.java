@@ -97,69 +97,69 @@ public void setFilterTagID(boolean val){
     @Override
     public void initSendable(SendableBuilder builder) {
         // Permanent
-        builder.addStringProperty("Best Limelight", this::getBestLimeLight, this::setBestLimeLight);
+        // builder.addStringProperty("Best Limelight", this::getBestLimeLight, this::setBestLimeLight);
 
-        builder.addBooleanProperty("Is Using Mega Tag 2", this::isUseMegaTag2, this::setUseMegaTag2);
-        builder.addBooleanProperty("Robot has tag", this::getRobotHasTag, null);
-        builder.addBooleanProperty("Is Rejecting Update", this::isRejectUpdate, null);
-        builder.addBooleanProperty("Is Applying Filters", this::isApplyFilters, this::setApplyFilters);
-        builder.addBooleanProperty("Is Adding To Pose Estimator", this::isAddToPoseEstimator, this::setAddToPoseEstimator);
+        // builder.addBooleanProperty("Is Using Mega Tag 2", this::isUseMegaTag2, this::setUseMegaTag2);
+        // builder.addBooleanProperty("Robot has tag", this::getRobotHasTag, null);
+        // builder.addBooleanProperty("Is Rejecting Update", this::isRejectUpdate, null);
+        // builder.addBooleanProperty("Is Applying Filters", this::isApplyFilters, this::setApplyFilters);
+        // builder.addBooleanProperty("Is Adding To Pose Estimator", this::isAddToPoseEstimator, this::setAddToPoseEstimator);
 
-        builder.addBooleanProperty("Use Old Std Dev", this::isUseOldStdDev, this::setUseOldStdDev);
+        // builder.addBooleanProperty("Use Old Std Dev", this::isUseOldStdDev, this::setUseOldStdDev);
 
         
         // Debugging/Testing
-        builder.addDoubleProperty("Translational Standard Deviation", this::getTranslationStdDev, this::setTranslationStdDev);
-        builder.addDoubleProperty("Rotational Standard Deviation", this::getRotationStdDev, this::setRotationStdDev);
+        // builder.addDoubleProperty("Translational Standard Deviation", this::getTranslationStdDev, this::setTranslationStdDev);
+        // builder.addDoubleProperty("Rotational Standard Deviation", this::getRotationStdDev, this::setRotationStdDev);
 
-        builder.addBooleanProperty("Filter climb tags",this::getFilterTagID,this::setFilterTagID);
+        // builder.addBooleanProperty("Filter climb tags",this::getFilterTagID,this::setFilterTagID);
 
-        builder.addDoubleProperty(
-            "Vision Pose Estimate Avg Tag Area",
-            () -> (visionPoseEstimate != null ? visionPoseEstimate.avgTagArea : 0.0),
-            null
-        );
-        builder.addDoubleProperty(
-            "Vision Pose Estimate Ambiguity",
-            () -> (visionPoseEstimate != null ? visionPoseEstimate.rawFiducials[0].ambiguity : 0.0),
-            null
-        );
-        builder.addDoubleProperty(
-            "Vision Pose Estimate Tag Count",
-            () -> (visionPoseEstimate != null ? visionPoseEstimate.tagCount : 0.0),
-            null
-        );
-        builder.addDoubleProperty(
-            "Vision Pose Estimate Avg Tag Distance",
-            () -> (visionPoseEstimate != null ? visionPoseEstimate.avgTagDist : 0.0),
-            null
-        );
-        builder.addDoubleProperty(
-            "Vision Pose Estimate Skew Degrees",
-            this::getTargetSkewDegrees,
-            null
-        );
+        // builder.addDoubleProperty(
+        //     "Vision Pose Estimate Avg Tag Area",
+        //     () -> (visionPoseEstimate != null ? visionPoseEstimate.avgTagArea : 0.0),
+        //     null
+        // );
+        // builder.addDoubleProperty(
+        //     "Vision Pose Estimate Ambiguity",
+        //     () -> (visionPoseEstimate != null ? visionPoseEstimate.rawFiducials[0].ambiguity : 0.0),
+        //     null
+        // );
+        // builder.addDoubleProperty(
+        //     "Vision Pose Estimate Tag Count",
+        //     () -> (visionPoseEstimate != null ? visionPoseEstimate.tagCount : 0.0),
+        //     null
+        // );
+        // builder.addDoubleProperty(
+        //     "Vision Pose Estimate Avg Tag Distance",
+        //     () -> (visionPoseEstimate != null ? visionPoseEstimate.avgTagDist : 0.0),
+        //     null
+        // );
+        // builder.addDoubleProperty(
+        //     "Vision Pose Estimate Skew Degrees",
+        //     this::getTargetSkewDegrees,
+        //     null
+        // );
 
-        builder.addBooleanProperty("LimeLight Right Has Tag", () -> cameraHasTag("limelight-right"), null);
-        builder.addBooleanProperty("LimeLight Left Has Tag", () -> cameraHasTag("limelight-left"), null);
+        // builder.addBooleanProperty("LimeLight Right Has Tag", () -> cameraHasTag("limelight-right"), null);
+        // builder.addBooleanProperty("LimeLight Left Has Tag", () -> cameraHasTag("limelight-left"), null);
 
-        builder.addDoubleProperty("Vision MegaTag1 X Pose Estimate",
-        () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
-                ? visionPoseEstimateMT1.pose.getX()
-                : 0.0,
-        null);
+        // builder.addDoubleProperty("Vision MegaTag1 X Pose Estimate",
+        // () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
+        //         ? visionPoseEstimateMT1.pose.getX()
+        //         : 0.0,
+        // null);
 
-        builder.addDoubleProperty("Vision MegaTag1 Y Pose Estimate",
-                () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
-                        ? visionPoseEstimateMT1.pose.getY()
-                        : 0.0,
-                null);
+        // builder.addDoubleProperty("Vision MegaTag1 Y Pose Estimate",
+        //         () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
+        //                 ? visionPoseEstimateMT1.pose.getY()
+        //                 : 0.0,
+        //         null);
         
-        builder.addDoubleProperty("Vision MegaTag1 Rotation Pose Estimate",
-        () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
-                ? visionPoseEstimateMT1.pose.getRotation().getDegrees()
-                : 0.0,
-        null);
+        // builder.addDoubleProperty("Vision MegaTag1 Rotation Pose Estimate",
+        // () -> (visionPoseEstimateMT1 != null && visionPoseEstimateMT1.pose != null)
+        //         ? visionPoseEstimateMT1.pose.getRotation().getDegrees()
+        //         : 0.0,
+        // null);
     }
 
 
