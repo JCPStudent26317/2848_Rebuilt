@@ -238,26 +238,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return true;
     }
 
-
-
-    public Command setTarget(boolean forceHub){
-        return Commands.runOnce(()->{
-            Pose2d pos = this.getState().Pose;
-        if(aimAtHub() || forceHub){
-            targetPos = hubPos;
-        } else if(redAlliance && pos.getY()>kFieldWidth/2){
-            targetPos = Constants.ShooterConstants.redOutpostCornerPose;
-        } else if(redAlliance && pos.getY()<=kFieldWidth/2){
-            targetPos = Constants.ShooterConstants.redDepotCornerPose;
-        } else{
-            if(pos.getY()>kFieldWidth/2){
-                targetPos = Constants.ShooterConstants.blueDepotCornerPose;
-            } else{
-                targetPos = Constants.ShooterConstants.blueOutpostCornerPose;
-            }
+    public Translation2d getFeedPos(){
+        Translation2d pos = this.getState().Pose.getTranslation();
+        if(redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
+            return Constants.ShooterConstants.redOutpostCornerPose;
+        } else if (redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
+            return Constants.ShooterConstants.redDepotCornerPose;
+        } else if (!redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
+            return Constants.ShooterConstants.blueDepotCornerPose;
+        } else if (!redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
+            return Constants.ShooterConstants.blueOutpostCornerPose;
         }
-        });
-        
+        return Constants.ShooterConstants.redDepotCornerPose;
+    }
+
+
+
+    public void setTarget(){
+        Translation2d pos = this.getState().Pose.getTranslation();
+        if (redAlliance && Constants.drivePoints.redAllianceZone.contains(pos)){
+            targetPos = hubPos;
+        } else if (!redAlliance && Constants.drivePoints.blueAllianceZone.contains(pos)){
+            targetPos = hubPos;
+        } else if (Constants.drivePoints.neutralZone.contains(pos)){
+            targetPos = getFeedPos();
+        }
     }
 
     /**
@@ -420,6 +425,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        setTarget();
 
         
         /*

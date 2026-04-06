@@ -84,8 +84,8 @@ public class RobotContainer {
 
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
 
-    private final Command startShoot = shooter.shoot()
-    .alongWith(drivetrain.setTarget(false)).repeatedly();
+    private final Command startShoot = shooter.shoot();
+    
         
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
@@ -95,11 +95,9 @@ public class RobotContainer {
                 hopper.forward().withDeadline(new WaitCommand(5.0))
             ).repeatedly()
         )
-    )
-        .beforeStarting(()->drivetrain.setTarget(true));
+    );
 
-    @Getter private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
-    .andThen(shooter.idleFlywheel())
+    @Getter private final Command stopShoot = shooter.idleFlywheel()
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
 
@@ -215,7 +213,7 @@ public class RobotContainer {
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightBumper().onFalse(stopShoot);
-        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
+        //driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
 
 
         //CLIMBER CONTROLS
