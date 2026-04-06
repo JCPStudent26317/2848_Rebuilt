@@ -78,7 +78,7 @@ public class RobotContainer {
 
     private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
-    private final Trigger magazineJam = new Trigger(()->shooter.isJammed());
+    // private final Trigger magazineJam = new Trigger(()->shooter.isJammed());
 
     private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
@@ -256,12 +256,12 @@ public class RobotContainer {
         keypad.button(11).onTrue(intake.jiggle())
         .onFalse(intake.deploy());
 
-        magazineJam.whileTrue(hopper.backward()
-        .andThen(shooter.reverseMagazine())
-        .andThen(Commands.waitSeconds(.5))
-        .andThen((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot()))).repeatedly())
-        .onFalse((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot())))
-        .onFalse((shooter.stopMagazine().andThen(hopper.stop()).onlyIf(()->!shooter.readyToShoot())));
+        // magazineJam.whileTrue(hopper.backward()
+        // .andThen(shooter.reverseMagazine())
+        // .andThen(Commands.waitSeconds(.5))
+        // .andThen((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot()))).repeatedly())
+        // .onFalse((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot())))
+        // .onFalse((shooter.stopMagazine().andThen(hopper.stop()).onlyIf(()->!shooter.readyToShoot())));
         
     }
 
