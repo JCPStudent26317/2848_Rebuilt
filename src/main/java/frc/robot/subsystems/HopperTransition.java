@@ -108,7 +108,7 @@ public class HopperTransition extends SubsystemBase {
     public Command forwardWithAutoUnjam(BooleanSupplier isJammed) {
         return new ConditionalCommand(
             new SequentialCommandGroup(
-                backward().withDeadline(new WaitCommand(0.667)),
+                backward().withDeadline(new WaitCommand(0.4)),
                 forward().withDeadline(new WaitCommand(2.5))
             ), 
             forward(),
