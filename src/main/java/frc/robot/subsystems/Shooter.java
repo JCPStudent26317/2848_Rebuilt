@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
 
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
-  private final Debouncer magazineSensorDebouncer = new Debouncer(0.25, DebounceType.kFalling);
+  private final Debouncer magazineSensorDebouncer = new Debouncer(0.75, DebounceType.kFalling);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
@@ -142,7 +142,7 @@ public class Shooter extends SubsystemBase {
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
 
-    magazineSensorConfig.ProximityParams.ProximityThreshold =.085;
+    magazineSensorConfig.ProximityParams.ProximityThreshold =.13;
     magazineSensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
     magazineSensorConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
     m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
@@ -247,12 +247,12 @@ public class Shooter extends SubsystemBase {
     // builder.addBooleanProperty("CANrange detection (w/o debouncer)",
     //   () -> m_MagazineSensor.getIsDetected().getValue(),
     //   null);
-    // builder.addDoubleProperty("CANrange signal strength",
-    //   () -> m_MagazineSensor.getSignalStrength().getValue(),
-    //   null);
-    // builder.addDoubleProperty("CANrange distance measurement",
-    //   () -> m_MagazineSensor.getDistance().getValueAsDouble(),
-    //   null);
+    builder.addDoubleProperty("CANrange signal strength",
+      () -> m_MagazineSensor.getSignalStrength().getValue(),
+      null);
+    builder.addDoubleProperty("CANrange distance measurement",
+      () -> m_MagazineSensor.getDistance().getValueAsDouble(),
+      null);
     builder.addBooleanProperty("Is shooting (CANrange)",
       () -> isShootingByCANrange(),
       null);
