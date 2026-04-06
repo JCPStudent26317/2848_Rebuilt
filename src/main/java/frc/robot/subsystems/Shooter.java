@@ -29,6 +29,7 @@ public class Shooter extends SubsystemBase {
 
 
   @Getter @Setter private boolean shooting = false;
+  private boolean shootingDebounced = false;
 
   @Getter private boolean reversing = false;
   
@@ -37,7 +38,9 @@ public class Shooter extends SubsystemBase {
 
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
-  private final Debouncer magazineSensorDebouncer = new Debouncer(0.75, DebounceType.kFalling);
+
+  private final Debouncer shootingDebouncer = new Debouncer(0.8, DebounceType.kRising);
+  private final Debouncer magazineSensorDebouncer = new Debouncer(0.8, DebounceType.kFalling);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
@@ -161,6 +164,7 @@ public class Shooter extends SubsystemBase {
     
     setTurretAngle(targetTheta,shooting);
 
+    shootingDebounced = shootingDebouncer.calculate(shooting);
     isShootingByCANrange = magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue());
     // isShootingByCurrent = currentDebouncer.calculate(Math.abs(m_Magazine.getStatorCurrent().getValueAsDouble()) > kMagazineJamThreshold);
   }
@@ -408,4 +412,8 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   // public boolean isShootingByCurrent(){
   //   return isShootingByCurrent;
   // }
+
+  public boolean isJammed() {
+    return shootingDebounced && !isShootingByCANrange;
+  }
 }

@@ -78,8 +78,6 @@ public class RobotContainer {
 
     private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
-    // private final Trigger magazineJam = new Trigger(()->shooter.isJammed());
-
     private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
