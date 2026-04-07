@@ -363,7 +363,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   /** Run magazine */
   public Command runMagazine() {
     reversing = false;
-    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 75, this);
+    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 95, this);
   }
 
   /** Stop magazine */
@@ -374,7 +374,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
 
   public Command reverseMagazine(){
     reversing = true;
-    return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -75);
+    return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -95);
   }
   
 /**
