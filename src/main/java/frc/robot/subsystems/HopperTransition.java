@@ -4,8 +4,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import lombok.Getter;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -17,6 +21,8 @@ import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.RangerHelpers.setupTalonFx;
+
+import java.util.function.BooleanSupplier;
 
 public class HopperTransition extends SubsystemBase {
     private final TalonFX m_SidewaysBelt = new TalonFX(kSidewaysBeltMotorID);
@@ -96,26 +102,18 @@ public class HopperTransition extends SubsystemBase {
         return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
     }
 
-    public Command noJamRun(){
-        return new SequentialCommandGroup(
-            this.forward(),
-            Commands.waitSeconds(.5),
-            this.onlyStopSideways(),
-            Commands.waitSeconds(1),
-            this.onlyBackwardSideways(),
-            Commands.waitSeconds(.5),
-            this.onlyForwardSideways()
-        ).repeatedly();
-    }
-    
-    public Command jiggle(){
-        return new SequentialCommandGroup(
-        forward()
-        ,Commands.waitSeconds(.5)
-        ,backward()
-        ,Commands.waitSeconds(.25)
-        ).repeatedly().andThen(forward());
-
+    /**
+     * Note that this command runs repeatedly, while the other commands to set the hopper are instantaneous
+     */
+    public Command forwardWithAutoUnjam(BooleanSupplier isJammed) {
+        return new ConditionalCommand(
+            new SequentialCommandGroup(
+                backward().withDeadline(new WaitCommand(0.4)),
+                forward().withDeadline(new WaitCommand(2.5))
+            ), 
+            forward(),
+            isJammed).repeatedly()
+            .finallyDo(() -> setMotorsOutput(0.0, 0.0));
     }
 
 }
