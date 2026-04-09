@@ -56,6 +56,10 @@ public class HopperTransition extends SubsystemBase {
         // builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
     }
 
+    public boolean sanityCheck(){
+        return m_ForwardBelt.isConnected() && m_SidewaysBelt.isConnected();
+    }
+
     public Command holdState() {
         return Commands.idle(this);
     }    

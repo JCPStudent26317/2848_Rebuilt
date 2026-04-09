@@ -217,39 +217,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
 
-
-    public boolean aimAtHub(){
-        if (aimOverride){
-            return true;
-        }
-
-        if (redAlliance && this.getState().Pose.getX()<10.77){
-            return false;
-        } else if (redAlliance && this.getState().Pose.getX()>10.77){
-            return true;
-        } else if (!redAlliance && this.getState().Pose.getX()>5.73){
-            return false;
-        } else if(!redAlliance && this.getState().Pose.getX()<5.73){
-            return true;
-        }
-
-
-
-        return true;
-    }
-
-    public Translation2d getFeedPos(){
-        Translation2d pos = this.getState().Pose.getTranslation();
-        if(redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
-            return Constants.ShooterConstants.redOutpostCornerPose;
-        } else if (redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
-            return Constants.ShooterConstants.redDepotCornerPose;
-        } else if (!redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
-            return Constants.ShooterConstants.blueDepotCornerPose;
-        } else if (!redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
-            return Constants.ShooterConstants.blueOutpostCornerPose;
-        }
-        return Constants.ShooterConstants.redDepotCornerPose;
+    public Translation2d getFeedPos(Translation2d pos){
+        boolean shooting = RobotContainer.getShooter().isShooting();
+        //Translation2d pos = this.getState().Pose.getTranslation();
+        if(shooting){
+            if(redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
+                return Constants.ShooterConstants.redOutpostCornerPose;
+            } else if (redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
+                return Constants.ShooterConstants.redDepotCornerPose;
+            } else if (!redAlliance && pos.getY()>Constants.VisionConstants.kFieldWidth/2){
+                return Constants.ShooterConstants.blueDepotCornerPose;
+            } else if (!redAlliance && pos.getY()<Constants.VisionConstants.kFieldWidth/2){
+                return Constants.ShooterConstants.blueOutpostCornerPose;
+            }
+         }
+        return hubPos;
     }
 
 
@@ -261,7 +243,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } else if (!redAlliance && Constants.drivePoints.blueAllianceZone.contains(pos)){
             targetPos = hubPos;
         } else if (Constants.drivePoints.neutralZone.contains(pos)){
-            targetPos = getFeedPos();
+            targetPos = getFeedPos(pos);
         }
     }
 
@@ -448,7 +430,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         
-
         m_field.setRobotPose(this.getState().Pose);
         SmartDashboard.putData("Field",m_field);
         SmartDashboard.putNumber("hub theta",getTargetTheta());

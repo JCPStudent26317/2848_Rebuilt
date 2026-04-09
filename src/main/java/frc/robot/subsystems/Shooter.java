@@ -188,6 +188,14 @@ public class Shooter extends SubsystemBase {
     return m_Turret.getVelocity().getValueAsDouble();
   }
 
+  public boolean sanityCheck(){
+    return m_Turret.isConnected() 
+    && m_FlywheelLeftLeader.isConnected() 
+    && m_FlywheelRightFollower.isConnected()
+    && m_Magazine.isConnected()
+    && m_TurretCANcoder.isConnected();
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
