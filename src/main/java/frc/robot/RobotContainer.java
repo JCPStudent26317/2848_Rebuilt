@@ -125,8 +125,10 @@ public class RobotContainer {
             new PathPlannerAuto("NeutralWithinLine (Right Side)", true));            
         autoChooser.addOption("NeutralDiagonal (Left Side)",
             new PathPlannerAuto("NeutralDiagonal (Right Side)", true));
-        autoChooser.addOption("DoubleNeutral (Left Side)",
-            new PathPlannerAuto("DoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchDoubleNeutral (Left Side)",
+            new PathPlannerAuto("TrenchDoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchBumpDoubleNeutral (Left Side)",
+            new PathPlannerAuto("TrenchBumpDoubleNeutral (Right Side)", true));            
         
         intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);

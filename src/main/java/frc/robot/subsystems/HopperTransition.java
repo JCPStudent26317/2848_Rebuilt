@@ -146,7 +146,7 @@ public class HopperTransition extends SubsystemBase {
             ), 
             forward(),
             isJammed).repeatedly()
-            .finallyDo(() -> setMotorsOutput(0.0, 0.0)));
+            .finallyDo(() -> {setMotorsOutput(0.0, 0.0); unjamming = false;}));
     }
 
 }

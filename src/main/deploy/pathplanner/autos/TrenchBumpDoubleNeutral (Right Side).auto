@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchNeutralHalfSweepPastLine-Bump"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Start Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BumpTrenchNeutralHalfSweepInterior-Bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Start Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
