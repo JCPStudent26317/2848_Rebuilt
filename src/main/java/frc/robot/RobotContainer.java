@@ -149,7 +149,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        distanceTrigger.and(()->DriverStation.isTeleop()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
+        distanceTrigger.and(()->DriverStation.isTeleop() && DriverStation.isEnabled()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
         distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,

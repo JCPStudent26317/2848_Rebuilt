@@ -173,7 +173,7 @@ public class Shooter extends SubsystemBase {
   private double getTurretFFCorrection(){
     double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
-    return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-4,4);
+    return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-2,2);
   }
   /**
    * Gets the feedforward correction for the turret due to the angular momentum of the flywheels
@@ -271,8 +271,8 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return 2.5 * MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX(),-.5,10)
-      + targetDist * 2.1 //1.88 Needs to be tuned //2
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.5,-2,10)
+      + targetDist * 2.15 //1.88 Needs to be tuned //2
       +5.35;//5.35
 }
 /**

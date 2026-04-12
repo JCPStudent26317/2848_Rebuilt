@@ -390,30 +390,50 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
  * gets the polar velocities around a point
  * @return translation2d of radial, tangential
  */
-    public Translation2d getPolarVelocity(){
-        Translation2d r = targetPos.minus(this.getState().Pose.getTranslation());
-        double dist = getTargetDist();
+public Translation2d getPolarVelocity() {
 
-        // Unit radial vector
-        double rx = r.getX() / dist;
-        double ry = r.getY() / dist;
+    var robotPose = this.getState().Pose;
 
-        // Unit tangential vector (90° CCW rotation)
-        double tx = ry;
-        double ty = -rx;
+    // Rotate turret offset into field frame FIRST
+    Translation2d turretOffsetField =
+        Constants.VisionConstants.kRobotToTurretTranslation
+            .rotateBy(robotPose.getRotation());
 
-        // Robot velocity components
-        double vx = getFieldOrientedSpeeds().vxMetersPerSecond;
-        double vy = getFieldOrientedSpeeds().vyMetersPerSecond;
+    // Correct turret position
+    Translation2d turretPos =
+        robotPose.getTranslation().plus(turretOffsetField);
 
-        // Dot products → projections
-        double vRadial = vx * rx + vy * ry;
-        double vTangential = vx * tx + vy * ty;
+    // Vector from turret → target
+    Translation2d r = targetPos.minus(turretPos);
 
-        // Return as Translation2d: x = radial, y = tangential
-        return new Translation2d(vRadial, vTangential);
+    double dist = r.getNorm();
 
-    }
+    // Unit radial
+    double rx = r.getX() / dist;
+    double ry = r.getY() / dist;
+
+    // ✅ Correct tangential (90° CCW)
+    double tx = -ry;
+    double ty = rx;
+
+    // Field-relative chassis speeds
+    var speeds = getFieldOrientedSpeeds();
+
+    double vx = speeds.vxMetersPerSecond;
+    double vy = speeds.vyMetersPerSecond;
+    double omega = speeds.omegaRadiansPerSecond;
+
+    // Velocity at turret (adds ω × r)
+    double vx_turret = vx - omega * turretOffsetField.getY();
+    double vy_turret = vy + omega * turretOffsetField.getX();
+
+    // Projections
+    double vRadial = vx_turret * rx + vy_turret * ry;
+    double vTangential = vx_turret * tx + vy_turret * ty;
+
+    return new Translation2d(vRadial, -vTangential);
+}
+
 
 
 
@@ -471,9 +491,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public boolean outOfRange(){
-        if (redAlliance && this.getState().Pose.getX()>16.51-4.6 && (getTargetDist()>4.7 || getTargetDist()<1.5)){
+        if (redAlliance && this.getState().Pose.getX()>16.51-4.6 && ( getTargetDist()<1.5)){
             return true;
-        } else if (!redAlliance && this.getState().Pose.getX()<4.6 && (getTargetDist() >4.7 || getTargetDist()<1.5)){
+        } else if (!redAlliance && this.getState().Pose.getX()<4.6 && (getTargetDist()<1.5)){
             return true;
         }
 
