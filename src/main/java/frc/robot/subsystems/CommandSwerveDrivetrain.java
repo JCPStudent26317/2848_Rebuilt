@@ -242,8 +242,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             targetPos = hubPos;
         } else if (!redAlliance && Constants.drivePoints.blueAllianceZone.contains(pos)){
             targetPos = hubPos;
-        } else if (Constants.drivePoints.neutralZone.contains(pos)){
+        } else if (Constants.drivePoints.neutralZone.contains(pos) && RobotContainer.getShooter().isShooting()){
             targetPos = getFeedPos(pos);
+        } else if (Constants.drivePoints.neutralZone.contains(pos) && !RobotContainer.getShooter().isShooting()){
+            targetPos = hubPos;
         }
     }
 
