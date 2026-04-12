@@ -159,7 +159,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive left with negative X (left)
-                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate)
+                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate / (driverJoystick.rightBumper().getAsBoolean() ? 3.5 : 1.0))
                      // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
