@@ -66,6 +66,10 @@ public class HopperTransition extends SubsystemBase {
         builder.addBooleanProperty("Is unjamming", () -> unjamming, null);
     }
 
+    public boolean sanityCheck(){
+        return m_ForwardBelt.isConnected() && m_SidewaysBelt.isConnected();
+    }
+
     public Command holdState() {
         return Commands.idle(this);
     }    

@@ -120,6 +120,10 @@ public class Lights extends SubsystemBase {
         
     }
 
+    public boolean sanityCheck(){
+        return candle.isConnected();
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.VisionConstants.kFieldLength;
+
 import java.util.HashMap;
 import java.util.Map;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -66,7 +69,7 @@ public final class Constants {
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(0.17)
+        .withMagnetOffset(.17)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
@@ -169,6 +172,9 @@ public final class Constants {
     public static final Pose2d blueOutpostClimb = new Pose2d(1.11,3.13,new Rotation2d(Math.toRadians(90)));
     public static final Pose2d blueOutpostClimbLineup = new Pose2d(1.11,2.33,new Rotation2d(Math.toRadians(90)));
 
+    public static final Rectangle2d blueAllianceZone = new Rectangle2d(new Translation2d(0,8.04), new Translation2d(5.17,0));
+    public static final Rectangle2d redAllianceZone = new Rectangle2d(new Translation2d(11.33,8.04), new Translation2d(16.51,0));
+    public static final Rectangle2d neutralZone = new Rectangle2d(new Translation2d(5.17,8.04), new Translation2d(11.33,0));
   }
 
   /**Constant values for the Vision subsystem.*/

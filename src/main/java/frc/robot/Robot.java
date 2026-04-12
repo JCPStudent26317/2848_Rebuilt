@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -60,6 +61,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if(!m_robotContainer.getShooter().sanityCheck()){
+      DriverStation.reportError("Something in the shooter is disconnected / Check Phoenix Tuner",false);
+    }
+    if(!m_robotContainer.getIntake().sanityCheck()){
+      DriverStation.reportError("Something in the intake is disconnected / Check Phoenix Tuner",false);
+    }
+    if(!m_robotContainer.getLights().sanityCheck()){
+      DriverStation.reportError("Something in the lights is disconnected / Check Phoenix Tuner",false);
+    }
+    if(!m_robotContainer.getHopper().sanityCheck()){
+      DriverStation.reportError("Something in the hopper is disconnected / Check Phoenix Tuner",false);
+    }
     String newAutoName = m_robotContainer.getAutonomousCommand().getName();
     String autoName = "";
         if (autoName != newAutoName) {

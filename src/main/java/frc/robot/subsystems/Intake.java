@@ -96,6 +96,13 @@ public class Intake extends SubsystemBase {
     public void changeStartPoint(double val){
         setPivot(val);
     }
+
+    public boolean sanityCheck(){
+        return m_Pivot.isConnected()
+        && m_RollersL.isConnected()
+        && m_RollersR.isConnected()
+        && m_IntakeCANcoder.isConnected();
+    }
     
     @Override
     public void initSendable(SendableBuilder builder) {

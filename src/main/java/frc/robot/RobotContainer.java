@@ -66,10 +66,10 @@ public class RobotContainer {
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     @Getter public static final Vision vision = new Vision();
     @Getter public static final Intake intake = new Intake();
-    public static final HopperTransition hopper = new HopperTransition();
+    @Getter public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
     // public static final Climber climber = new Climber();
-    public static final Lights lights = new Lights();
+    @Getter public static final Lights lights = new Lights();
 
     private final BooleanSupplier manualDrivebase = () -> Math.hypot(driverJoystick.getLeftX(), driverJoystick.getLeftY()) > 0.15
                                                                 || Math.abs(driverJoystick.getRightX()) > 0.15;
@@ -82,19 +82,17 @@ public class RobotContainer {
 
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
 
-    private final Command startShoot = shooter.shoot()
-    .alongWith(drivetrain.setTarget(false)).repeatedly();
+    private final Command startShoot = shooter.shoot();
+    
         
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
         Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
             hopper.forwardWithAutoUnjam(() -> shooter.isJammed())
         )
-    )
-        .beforeStarting(()->drivetrain.setTarget(true));
+    );
 
-    @Getter private final Command stopShoot = new InstantCommand(()->drivetrain.setTarget(true))
-    .andThen(shooter.idleFlywheel())
+    @Getter private final Command stopShoot = shooter.idleFlywheel()
     .andThen(shooter.stopMagazine())
     .andThen(hopper.stop());
 
@@ -213,7 +211,7 @@ public class RobotContainer {
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightBumper().onFalse(stopShoot);
-        driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
+        //driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setTarget(true)));
 
 
         //CLIMBER CONTROLS
