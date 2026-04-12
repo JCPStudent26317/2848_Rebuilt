@@ -69,7 +69,7 @@ public final class Constants {
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(1-0.067)
+        .withMagnetOffset(.17)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
@@ -101,7 +101,7 @@ public final class Constants {
     public static final double kFlywheelIdleSpeed = 0; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(.494)
+        .withMagnetOffset(.414)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 
