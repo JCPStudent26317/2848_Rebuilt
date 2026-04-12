@@ -66,7 +66,7 @@ public final class Constants {
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(1-0.067)
+        .withMagnetOffset(0.17)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
@@ -91,14 +91,14 @@ public final class Constants {
 
     public static final double kTurretOffset = -.033;
 
-    public static final double kFlywheelRPMMult = 1; //multiplier on flywheel speed to account for slipping between flywheel and fuel
+    public static final double kFlywheelRPMMult = 0.75; //multiplier on flywheel speed to account for slipping between flywheel and fuel
 
     public static final double kFlywheelRadius = .05; //meters
 
     public static final double kFlywheelIdleSpeed = 0; // rps
 
     public static final MagnetSensorConfigs kTurretCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(.494)
+        .withMagnetOffset(.414)
         .withAbsoluteSensorDiscontinuityPoint(.5)
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
 

@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
 
   private final Debouncer shootingDebouncer = new Debouncer(0.667, DebounceType.kRising);
-  private final Debouncer magazineSensorDebouncer = new Debouncer(1.0, DebounceType.kFalling);
+  private final Debouncer magazineSensorDebouncer = new Debouncer(1.5, DebounceType.kFalling);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
@@ -272,7 +272,7 @@ public class Shooter extends SubsystemBase {
  */
 private double getExitVelo(){
       return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() *3,-.5,10)
-      + targetDist * 1.88//2
+      + targetDist * 4 //1.88 Needs to be tuned //2
       +5.35;//5.35
 }
 /**
@@ -288,7 +288,7 @@ public double getTurretTangentOffset(){
  * @return
  */
 private double getVeloRPS(double velo){
-  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,110); // Max increased from 90
+  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,90); // Max increased from 90
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
