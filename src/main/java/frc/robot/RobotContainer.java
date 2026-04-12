@@ -78,8 +78,6 @@ public class RobotContainer {
 
     private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
-    private final Trigger magazineJam = new Trigger(()->shooter.isJammed());
-
     private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
 
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
@@ -90,10 +88,7 @@ public class RobotContainer {
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
         Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
-            new SequentialCommandGroup(
-                hopper.backward().withDeadline(new WaitCommand(0.667)),
-                hopper.forward().withDeadline(new WaitCommand(5.0))
-            ).repeatedly()
+            hopper.forwardWithAutoUnjam(() -> shooter.isJammed())
         )
     );
 
@@ -128,8 +123,10 @@ public class RobotContainer {
             new PathPlannerAuto("NeutralWithinLine (Right Side)", true));            
         autoChooser.addOption("NeutralDiagonal (Left Side)",
             new PathPlannerAuto("NeutralDiagonal (Right Side)", true));
-        autoChooser.addOption("DoubleNeutral (Left Side)",
-            new PathPlannerAuto("DoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchDoubleNeutral (Left Side)",
+            new PathPlannerAuto("TrenchDoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchBumpDoubleNeutral (Left Side)",
+            new PathPlannerAuto("TrenchBumpDoubleNeutral (Right Side)", true));            
         
         intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
         intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
@@ -150,7 +147,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        distanceTrigger.and(()->DriverStation.isTeleop()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
+        distanceTrigger.and(()->DriverStation.isTeleop() && DriverStation.isEnabled()).onTrue(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble, 0.95)));
         distanceTrigger.onFalse(Commands.runOnce(()->driverJoystick.setRumble(RumbleType.kBothRumble,0)));
 
         // Note that X is defined as forward according to WPILib convention,
@@ -160,7 +157,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive left with negative X (left)
-                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate)
+                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate / (driverJoystick.rightBumper().getAsBoolean() ? 3.5 : 1.0))
                      // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
@@ -171,7 +168,8 @@ public class RobotContainer {
         // driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(5)));
         // driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
-        driverJoystick.rightBumper().onTrue(hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly());
+        driverJoystick.rightBumper().onTrue(hopper.forwardWithAutoUnjam(() -> shooter.isJammed()).onlyIf(()->shooter.readyToShoot()).repeatedly());
+        driverJoystick.rightBumper().onFalse(hopper.stop());
 
         driverJoystick.rightBumper().onTrue(Commands.runOnce(()->shooter.setShooting(true)));
         driverJoystick.rightBumper().onFalse(Commands.runOnce(()->shooter.setShooting(false)));
@@ -254,12 +252,12 @@ public class RobotContainer {
         keypad.button(11).onTrue(intake.jiggle())
         .onFalse(intake.deploy());
 
-        magazineJam.whileTrue(hopper.backward()
-        .andThen(shooter.reverseMagazine())
-        .andThen(Commands.waitSeconds(.5))
-        .andThen((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot()))).repeatedly())
-        .onFalse((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot())))
-        .onFalse((shooter.stopMagazine().andThen(hopper.stop()).onlyIf(()->!shooter.readyToShoot())));
+        // magazineJam.whileTrue(hopper.backward()
+        // .andThen(shooter.reverseMagazine())
+        // .andThen(Commands.waitSeconds(.5))
+        // .andThen((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot()))).repeatedly())
+        // .onFalse((shooter.runMagazine().andThen(hopper.forward()).onlyIf(()->shooter.readyToShoot())))
+        // .onFalse((shooter.stopMagazine().andThen(hopper.stop()).onlyIf(()->!shooter.readyToShoot())));
         
     }
 

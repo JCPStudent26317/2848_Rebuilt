@@ -94,7 +94,7 @@ public final class Constants {
 
     public static final double kTurretOffset = -.033;
 
-    public static final double kFlywheelRPMMult = 1; //multiplier on flywheel speed to account for slipping between flywheel and fuel
+    public static final double kFlywheelRPMMult = 0.75; //multiplier on flywheel speed to account for slipping between flywheel and fuel
 
     public static final double kFlywheelRadius = .05; //meters
 
@@ -115,9 +115,9 @@ public final class Constants {
     public static final double kTurretkS = 0.0;
     public static final double kTurretkV = .12;
     public static final double kTurretkA = 0;
-    public static final double kTurretkP = 30;//30;
-    public static final double kTurretkI = 3;//1;
-    public static final double kTurretkD = 0.00; 
+    public static final double kTurretkP = 40;//30;
+    public static final double kTurretkI = 10;//3;
+    public static final double kTurretkD = 0; 
 
     public static final double kMagazinekS = 0.0;
     public static final double kMagazinekV = 0.0;
@@ -127,7 +127,7 @@ public final class Constants {
     public static final double kMagazinekD = 0.0;
 
     public static final double kTurretCorrectionkV = .28;//.28;
-    public static final double kTurretCorrectionkS =.01;
+    public static final double kTurretCorrectionkS =.05;
 
     public static final double kTurretGyroCorrection = .013;
     

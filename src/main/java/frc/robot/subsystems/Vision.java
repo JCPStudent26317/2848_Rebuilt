@@ -97,7 +97,7 @@ public void setFilterTagID(boolean val){
     @Override
     public void initSendable(SendableBuilder builder) {
         // Permanent
-        // builder.addStringProperty("Best Limelight", this::getBestLimeLight, this::setBestLimeLight);
+        builder.addStringProperty("Best Limelight", this::getBestLimeLight, this::setBestLimeLight);
 
         // builder.addBooleanProperty("Is Using Mega Tag 2", this::isUseMegaTag2, this::setUseMegaTag2);
         // builder.addBooleanProperty("Robot has tag", this::getRobotHasTag, null);

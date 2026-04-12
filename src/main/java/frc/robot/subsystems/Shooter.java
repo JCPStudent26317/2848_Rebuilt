@@ -29,6 +29,7 @@ public class Shooter extends SubsystemBase {
 
 
   @Getter @Setter private boolean shooting = false;
+  private boolean shootingDebounced = false;
 
   @Getter private boolean reversing = false;
   
@@ -37,7 +38,10 @@ public class Shooter extends SubsystemBase {
 
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
-  private final Debouncer magazineSensorDebouncer = new Debouncer(0.25, DebounceType.kFalling);
+
+  private final Debouncer shootingDebouncer = new Debouncer(0.667, DebounceType.kRising);
+  private final Debouncer magazineSensorDebouncer = new Debouncer(1.5, DebounceType.kFalling);
+  // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
 
@@ -49,6 +53,9 @@ public class Shooter extends SubsystemBase {
 
   private double distanceTrim = 0;
   private double angularTrim = 0;
+
+  private boolean isShootingByCANrange = false;
+  // private boolean isShootingByCurrent = false;  
   
   private enum flywheelStates {
     IDLE,
@@ -138,7 +145,7 @@ public class Shooter extends SubsystemBase {
     magazineConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     retryConfigApply(() -> m_Magazine.getConfigurator().apply(magazineConfig));
 
-    magazineSensorConfig.ProximityParams.ProximityThreshold =.085;
+    magazineSensorConfig.ProximityParams.ProximityThreshold =.13;
     magazineSensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
     magazineSensorConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
     m_MagazineSensor.getConfigurator().apply(magazineSensorConfig);
@@ -156,13 +163,17 @@ public class Shooter extends SubsystemBase {
     m_Magazine.setControl(magazineVelocityVoltage.withSlot(0));
     
     setTurretAngle(targetTheta,shooting);
+
+    shootingDebounced = shootingDebouncer.calculate(shooting);
+    isShootingByCANrange = magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue());
+    // isShootingByCurrent = currentDebouncer.calculate(Math.abs(m_Magazine.getStatorCurrent().getValueAsDouble()) > kMagazineJamThreshold);
   }
   
   private double lastTargetTheta = 0;
   private double getTurretFFCorrection(){
     double omegaFF = MathUtil.angleModulus(targetTheta - lastTargetTheta) / .02;
     lastTargetTheta = targetTheta;
-    return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-4,4);
+    return MathUtil.clamp(kTurretCorrectionkV * omegaFF + kTurretCorrectionkS * Math.signum(omegaFF),-2,2);
   }
   /**
    * Gets the feedforward correction for the turret due to the angular momentum of the flywheels
@@ -172,14 +183,6 @@ public class Shooter extends SubsystemBase {
     return MathUtil.clamp(kTurretGyroCorrection * getTurretVelocity() * getFlywheelRPS(),-4,4);
   }
 
-  /**
-   * reads magazine current to detect a jam
-   * @return if its jammed or not
-   */
-
-  public boolean isJammed(){
-    return m_Magazine.getStatorCurrent().getValueAsDouble() > kMagazineJamThreshold;
-  }
 /**
  * gets turret rps
  * @return turret rps
@@ -200,70 +203,73 @@ public class Shooter extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
-    // builder.addDoubleProperty("tangent offset",
-    // this::getTurretTangentOffset,
-    // null);
+    builder.addDoubleProperty("tangent offset",
+    this::getTurretTangentOffset,
+    null);
 
-    // builder.addDoubleProperty("Feedforward correct",
-    // this::getTurretFFCorrection,
-    // null
-    // );
-    // builder.addDoubleProperty("Flywheel rps",
-    //   this::getFlywheelRPS,
-    //   null
-    // );
+    builder.addDoubleProperty("Feedforward correct",
+    this::getTurretFFCorrection,
+    null
+    );
+    builder.addDoubleProperty("Flywheel rps",
+      this::getFlywheelRPS,
+      null
+    );
     builder.addDoubleProperty("distance rps",
     ()->getVeloRPS(getExitVelo()),
     null);
-    // builder.addDoubleProperty("Commanded flywheel rps",
-    //   ()->flyWheelVelocityVoltage.Velocity
-    //   ,null);
-    // builder.addDoubleProperty("turret angle",
-    //   this::getTurretAngle,
-    //   null);
-    // builder.addDoubleProperty("Turret Encoder Output",
-    //   ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
-    //   null);
+    builder.addDoubleProperty("Commanded flywheel rps",
+      ()->flyWheelVelocityVoltage.Velocity
+      ,null);
+    builder.addDoubleProperty("turret angle",
+      this::getTurretAngle,
+      null);
+    builder.addDoubleProperty("Turret Encoder Output",
+      ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
+      null);
     builder.addDoubleProperty("turret error",
       ()->m_Turret.getClosedLoopError().getValueAsDouble(),
       null);
-    // builder.addDoubleProperty("turret setpoint",
-    //   ()->turretSetpoint,
-    //   null);
-    // builder.addDoubleProperty("Shooter hub theta",
-    //   ()-> targetTheta,
-    //   null);
-    // builder.addDoubleProperty("Distance",()->targetDist,
-    // null);
-    // builder.addDoubleProperty("flywheel direct output",
-    // ()->m_FlywheelLeftLeader.get(),
-    // null);
-    // builder.addDoubleProperty("flywheel error", 
-    // ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
-    //  null);
+    builder.addDoubleProperty("turret setpoint",
+      ()->turretSetpoint,
+      null);
+    builder.addDoubleProperty("Shooter hub theta",
+      ()-> targetTheta,
+      null);
+    builder.addDoubleProperty("Distance",()->targetDist,
+    null);
+    builder.addDoubleProperty("flywheel direct output",
+    ()->m_FlywheelLeftLeader.get(),
+    null);
+    builder.addDoubleProperty("flywheel error", 
+    ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
+     null);
      builder.addBooleanProperty("ready to shoot",
      this::readyToShoot,
      null);
-    //  builder.addDoubleProperty("magazine output",
-    //  ()->m_Magazine.get(),
-    //  null);
-    // builder.addDoubleProperty("magazine rps",
-    // this::getMagazineRPS, null);
-    // builder.addDoubleProperty("magazine current",
-    //  ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
-    //   null);
+     builder.addDoubleProperty("magazine output",
+     ()->m_Magazine.get(),
+     null);
+    builder.addDoubleProperty("magazine rps",
+    this::getMagazineRPS, null);
+    builder.addDoubleProperty("magazine current",
+     ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
+      null);
 
     // builder.addBooleanProperty("CANrange detection (w/o debouncer)",
     //   () -> m_MagazineSensor.getIsDetected().getValue(),
     //   null);
-    // builder.addDoubleProperty("CANrange signal strength",
-    //   () -> m_MagazineSensor.getSignalStrength().getValue(),
-    //   null);
-    // builder.addDoubleProperty("CANrange distance measurement",
-    //   ()-> m_MagazineSensor.getDistance().getValueAsDouble(),
-    //   null);
-    // builder.addBooleanProperty("CANrange detection",
-    //   ()-> magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue()),
+    builder.addDoubleProperty("CANrange signal strength",
+      () -> m_MagazineSensor.getSignalStrength().getValue(),
+      null);
+    builder.addDoubleProperty("CANrange distance measurement",
+      () -> m_MagazineSensor.getDistance().getValueAsDouble(),
+      null);
+    builder.addBooleanProperty("Is shooting (CANrange)",
+      () -> isShootingByCANrange(),
+      null);
+    // builder.addBooleanProperty("Is shooting (Magazine current)",
+    //   () -> isShootingByCurrent(),
     //   null);
 
   } 
@@ -273,8 +279,8 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() *3,-.5,10)
-      + targetDist * 1.88//2
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.5,-2,10)
+      + targetDist * 2.15 //1.88 Needs to be tuned //2
       +5.35;//5.35
 }
 /**
@@ -290,7 +296,7 @@ public double getTurretTangentOffset(){
  * @return
  */
 private double getVeloRPS(double velo){
-  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,90);
+  return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,90); // Max increased from 90
 }
 /**
  * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
@@ -365,7 +371,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
   /** Run magazine */
   public Command runMagazine() {
     reversing = false;
-    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 75, this);
+    return Commands.runOnce(() -> magazineVelocityVoltage.Velocity = 95, this);
   }
 
   /** Stop magazine */
@@ -376,7 +382,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
 
   public Command reverseMagazine(){
     reversing = true;
-    return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -75);
+    return Commands.runOnce(()-> magazineVelocityVoltage.Velocity = -95);
   }
   
 /**
@@ -396,5 +402,26 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
     return m_TurretCANcoder.getAbsolutePosition().isNear(turretSetpoint,kTurretPositionTolerance) &&
     m_FlywheelLeftLeader.getVelocity().isNear(flyWheelVelocityVoltage.Velocity ,kFlywheelRPSTolerance)
     && m_FlywheelLeftLeader.getVelocity().getValueAsDouble()>20;
+  }
+
+  /**
+   * Returns if the shooter is shooting based on the CANrange. If the shooter is on and this is false, there is a jam.
+   * 
+   * @return true when fuel is detected by the CANrange.
+   */
+  public boolean isShootingByCANrange() {
+    return isShootingByCANrange;
+  }
+
+  /**
+   * Returns if the shooter is shooting based on the magazine current. If the shooter is on and this is false, there is a jam.
+   * @return if its jammed or not
+   */
+  // public boolean isShootingByCurrent(){
+  //   return isShootingByCurrent;
+  // }
+
+  public boolean isJammed() {
+    return shootingDebounced && !isShootingByCANrange;
   }
 }

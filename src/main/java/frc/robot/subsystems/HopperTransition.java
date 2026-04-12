@@ -4,8 +4,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import lombok.Getter;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -18,6 +22,8 @@ import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.RangerHelpers.setupTalonFx;
 
+import java.util.function.BooleanSupplier;
+
 public class HopperTransition extends SubsystemBase {
     private final TalonFX m_SidewaysBelt = new TalonFX(kSidewaysBeltMotorID);
     private final TalonFXConfiguration sidewaysBeltMotorConfig = new TalonFXConfiguration();
@@ -29,6 +35,8 @@ public class HopperTransition extends SubsystemBase {
 
     private double forwardBeltSpeed = kForwardBeltSpeed;
     private double sidewaysBeltSpeed = kSidewaysBeltSpeed;
+
+    private boolean unjamming = false;
 
     public HopperTransition() {
         // Apply things to the configurations here
@@ -54,6 +62,8 @@ public class HopperTransition extends SubsystemBase {
 
         // builder.addDoubleProperty("Sideways Belt Speed", () -> sidewaysBeltSpeed, (next) -> sidewaysBeltSpeed = next);
         // builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
+
+        builder.addBooleanProperty("Is unjamming", () -> unjamming, null);
     }
 
     public boolean sanityCheck(){
@@ -100,26 +110,47 @@ public class HopperTransition extends SubsystemBase {
         return Commands.runOnce(() -> setMotorsOutput(0.0, 0.0), this);
     }
 
-    public Command noJamRun(){
+    /**
+     * Runs the forwards belt forwards and sideways belt + star backwards, ends after specific number of seconds
+     */
+    public Command unjamSideways(double seconds) {
         return new SequentialCommandGroup(
-            this.forward(),
-            Commands.waitSeconds(.5),
-            this.onlyStopSideways(),
-            Commands.waitSeconds(1),
-            this.onlyBackwardSideways(),
-            Commands.waitSeconds(.5),
-            this.onlyForwardSideways()
-        ).repeatedly();
+            Commands.runOnce(() -> unjamming = true),
+            forward(),
+            onlyBackwardSideways().withDeadline(new WaitCommand(seconds)),
+            Commands.runOnce(() -> unjamming = false)
+        );
     }
-    
-    public Command jiggle(){
-        return new SequentialCommandGroup(
-        forward()
-        ,Commands.waitSeconds(.5)
-        ,backward()
-        ,Commands.waitSeconds(.25)
-        ).repeatedly().andThen(forward());
 
+    /**
+     * Runs both belts backwards, ends after specific number of seconds
+     */
+    public Command unjamAll(double seconds) {
+        return new SequentialCommandGroup(
+            Commands.runOnce(() -> unjamming = true),
+            backward().withDeadline(new WaitCommand(seconds)),
+            Commands.runOnce(() -> unjamming = false)
+        );
+    }
+
+    /**
+     * Note that this command runs repeatedly, while the other commands to set the hopper are instantaneous
+     */
+    public Command forwardWithAutoUnjam(BooleanSupplier isJammed) {
+        return unjamSideways(0.333)
+        .andThen(new ConditionalCommand(
+            new SequentialCommandGroup(
+                unjamSideways(0.4),
+                new ConditionalCommand(
+                    new SequentialCommandGroup(
+                        unjamAll(0.4),
+                        forward().withDeadline(new WaitCommand(2.5))
+                        ),
+                    forward(), isJammed)
+            ), 
+            forward(),
+            isJammed).repeatedly()
+            .finallyDo(() -> {setMotorsOutput(0.0, 0.0); unjamming = false;}));
     }
 
 }
