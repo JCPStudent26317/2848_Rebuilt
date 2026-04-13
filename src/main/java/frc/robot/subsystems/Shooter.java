@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.RangerHelpers.*;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 
 import com.ctre.phoenix6.configs.*;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
+import frc.robot.fuelPerSecond;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,6 +44,8 @@ public class Shooter extends SubsystemBase {
 
   private final Debouncer shootingDebouncer = new Debouncer(0.667, DebounceType.kRising);
   private final Debouncer magazineSensorDebouncer = new Debouncer(1.5, DebounceType.kFalling);
+
+  private final Debouncer FPSDebouncer = new Debouncer(.05);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
@@ -74,6 +79,8 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage flyWheelVelocityVoltage = new VelocityVoltage(10);
   private final VelocityVoltage magazineVelocityVoltage = new VelocityVoltage(0);
   private final MotionMagicVoltage turretOut = new MotionMagicVoltage(0);
+
+  private fuelPerSecond FPSTracker = new fuelPerSecond();
 
   /** Shooter Subsystem. */
   public Shooter() {
@@ -166,6 +173,8 @@ public class Shooter extends SubsystemBase {
 
     shootingDebounced = shootingDebouncer.calculate(shooting);
     isShootingByCANrange = magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue());
+
+    FPSTracker.update(shooting,FPSDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue()));
     // isShootingByCurrent = currentDebouncer.calculate(Math.abs(m_Magazine.getStatorCurrent().getValueAsDouble()) > kMagazineJamThreshold);
   }
   
@@ -255,6 +264,9 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("magazine current",
      ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
       null);
+    builder.addDoubleProperty("Fuel Per Second",
+    ()->FPSTracker.getRate(),
+    null);
 
     // builder.addBooleanProperty("CANrange detection (w/o debouncer)",
     //   () -> m_MagazineSensor.getIsDetected().getValue(),
