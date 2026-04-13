@@ -264,6 +264,8 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("magazine current",
      ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
       null);
+
+      
     builder.addDoubleProperty("Fuel Per Second",
     ()->FPSTracker.getRate(),
     null);

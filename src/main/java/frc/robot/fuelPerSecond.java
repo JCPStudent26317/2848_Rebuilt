@@ -10,26 +10,21 @@ public class fuelPerSecond {
 
     private final Queue<Double> timestamps = new LinkedList<>();
 
-    private double currentRate = 0.0;
+    private double currentRate = 0;
 
-    /**
-     * Call this every robot loop (periodic)
-     * Handles sensor state, edge detection, and rate calculation
-     */
-    public void update(boolean enabled, boolean sensorTriggered) {
+    
+    public void update(boolean shooting, boolean detected) {
         double now = Timer.getFPGATimestamp();
 
-        // Detect rising edge of enable (false -> true)
-        if (enabled && !lastEnabled) {
+        
+        if (shooting && !lastEnabled) {
             timestamps.clear();
             currentRate = 0;
         }
 
-        // Only process sensor while enabled
-        if (enabled) {
+        if (shooting) {
 
-            // Count gamepiece on sensor trigger (edge-triggered externally)
-            if (sensorTriggered) {
+            if (detected) {
                 timestamps.add(now);
             }
 
@@ -42,14 +37,11 @@ public class fuelPerSecond {
             currentRate = timestamps.size();
         }
 
-        // If disabled → freeze value (do nothing)
+        
 
-        lastEnabled = enabled;
+        lastEnabled = shooting;
     }
 
-    /**
-     * Pure getter — safe to call anywhere
-     */
     public double getRate() {
         return currentRate;
     }
