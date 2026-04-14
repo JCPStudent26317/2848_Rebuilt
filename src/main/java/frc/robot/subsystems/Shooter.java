@@ -280,7 +280,7 @@ public class Shooter extends SubsystemBase {
  */
 private double getExitVelo(){
       return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.5,-2,10)
-      + targetDist * 2.1 //1.88 Needs to be tuned //2
+      + targetDist * 1.95 //1.88 Needs to be tuned //2
       +5.425;//5.35
 }
 /**
