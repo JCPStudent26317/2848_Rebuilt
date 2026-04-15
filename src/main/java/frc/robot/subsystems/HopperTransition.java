@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,8 +39,9 @@ public class HopperTransition extends SubsystemBase {
     private double sidewaysBeltSpeed = kSidewaysBeltSpeed;
 
     private boolean unjamming = false;
-
     
+    private Debouncer currentJamDebouncer = new Debouncer(0.5, DebounceType.kRising);
+    private boolean isJammedByCurrent = false;
 
     public HopperTransition() {
         // Apply things to the configurations here
@@ -55,6 +58,8 @@ public class HopperTransition extends SubsystemBase {
         m_SidewaysBelt.setControl(m_SidewaysBeltOut);
         m_ForwardBelt.setControl(m_ForwardBeltOut);
         
+        isJammedByCurrent = currentJamDebouncer.calculate(m_ForwardBelt.getStatorCurrent().getValueAsDouble() > 75);
+
         SmartDashboard.putData(this);
     }
 
@@ -156,5 +161,13 @@ public class HopperTransition extends SubsystemBase {
             isJammed).repeatedly()
             .finallyDo(() -> {setMotorsOutput(0.0, 0.0); unjamming = false;}));
     }
+
+  /**
+   * Returns if the shooter is jammed based on the forward motor current.
+   * @return if its jammed or not
+   */
+  public boolean isJammedByCurrent(){
+    return isJammedByCurrent;
+  }    
 
 }
