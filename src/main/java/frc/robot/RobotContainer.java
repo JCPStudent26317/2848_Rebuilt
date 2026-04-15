@@ -88,7 +88,7 @@ public class RobotContainer {
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
         Commands.waitUntil(()->shooter.readyToShoot()).andThen(            
-            hopper.forwardWithAutoUnjam(() -> shooter.isJammed())
+            hopper.forwardWithAutoUnjam(() -> hopper.isJammedByCurrent() || shooter.isJammed())
         )
     );
 
@@ -170,7 +170,7 @@ public class RobotContainer {
         // driverJoystick.rightBumper().onTrue(Commands.runOnce(()->drivetrain.setSlowDownFactor(5)));
         // driverJoystick.rightBumper().onFalse(Commands.runOnce(()->drivetrain.setSlowDownFactor(1)));
 
-        driverJoystick.rightBumper().onTrue(hopper.forwardWithAutoUnjam(() -> shooter.isJammed()).onlyIf(()->shooter.readyToShoot()).repeatedly());
+        driverJoystick.rightBumper().onTrue(hopper.forwardWithAutoUnjam(() -> hopper.isJammedByCurrent() || shooter.isJammed()).onlyIf(()->shooter.readyToShoot()).repeatedly());
         driverJoystick.rightBumper().onFalse(hopper.stop());
 
         driverJoystick.rightBumper().onTrue(Commands.runOnce(()->shooter.setShooting(true)));

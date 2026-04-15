@@ -40,7 +40,7 @@ public class HopperTransition extends SubsystemBase {
 
     private boolean unjamming = false;
     
-    private Debouncer currentJamDebouncer = new Debouncer(0.5, DebounceType.kRising);
+    private Debouncer currentJamDebouncer = new Debouncer(0.6, DebounceType.kRising);
     private boolean isJammedByCurrent = false;
 
     public HopperTransition() {
@@ -73,6 +73,7 @@ public class HopperTransition extends SubsystemBase {
         builder.addBooleanProperty("Is unjamming", () -> unjamming, null);
 
         builder.addDoubleProperty("Forwards Belt Motor Current", () -> m_ForwardBelt.getStatorCurrent().getValueAsDouble(), null);
+        builder.addBooleanProperty("Is jammed (Forward motor current)", () -> isJammedByCurrent, null);
     }
 
     public boolean sanityCheck(){
