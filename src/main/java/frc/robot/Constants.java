@@ -58,9 +58,9 @@ public final class Constants {
     public static final double kPivotkI = 0;
     public static final double kPivotkD = 0;
 
-    public static final double kPivotMMCruiseVelocity = 7;
+    public static final double kPivotMMCruiseVelocity = 7;//7
     public static final double kPivotMMAcceleration = 20;//14;
-    public static final double kPivotMMJerk = 140;
+    public static final double kPivotMMJerk = 140;//140
     
     public static final double kDeploySetpoint = 0.473486328125;
     public static final double kLowRetractSetpoint = 0.55;
@@ -139,8 +139,8 @@ public final class Constants {
     public static final double kTurretMMAcceleration = 28;//28;
     public static final double kTurretMMJerk = 280;//280;
 
-    public static final double kTurretSwitchForwardLimit = 0.42;
-    public static final double kTurretSwitchReverseLimit = -0.42;
+    public static final double kTurretSwitchForwardLimit = 0.48;
+    public static final double kTurretSwitchReverseLimit = -0.45;
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
