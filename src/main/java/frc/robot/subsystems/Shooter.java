@@ -413,14 +413,6 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
     return isShootingByCANrange;
   }
 
-  /**
-   * Returns if the shooter is shooting based on the magazine current. If the shooter is on and this is false, there is a jam.
-   * @return if its jammed or not
-   */
-  // public boolean isShootingByCurrent(){
-  //   return isShootingByCurrent;
-  // }
-
   public boolean isJammed() {
     return shootingDebounced && !isShootingByCANrange;
   }
