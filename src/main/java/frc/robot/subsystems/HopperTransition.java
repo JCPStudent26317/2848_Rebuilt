@@ -38,6 +38,8 @@ public class HopperTransition extends SubsystemBase {
 
     private boolean unjamming = false;
 
+    
+
     public HopperTransition() {
         // Apply things to the configurations here
 
@@ -64,6 +66,8 @@ public class HopperTransition extends SubsystemBase {
         // builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
 
         builder.addBooleanProperty("Is unjamming", () -> unjamming, null);
+
+        builder.addDoubleProperty("Forwards Belt Motor Current", () -> m_ForwardBelt.getStatorCurrent().getValueAsDouble(), null);
     }
 
     public boolean sanityCheck(){
