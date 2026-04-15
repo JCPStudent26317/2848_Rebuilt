@@ -125,6 +125,8 @@ public class RobotContainer {
             new PathPlannerAuto("NeutralDiagonal (Right Side)", true));
         autoChooser.addOption("TrenchDoubleNeutral (Left Side)",
             new PathPlannerAuto("TrenchDoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchBumpSingleNeutral (Left Side)",
+            new PathPlannerAuto("TrenchBumpSingleNeutral (Right Side)", true));            
         autoChooser.addOption("TrenchBumpDoubleNeutral (Left Side)",
             new PathPlannerAuto("TrenchBumpDoubleNeutral (Right Side)", true));            
         

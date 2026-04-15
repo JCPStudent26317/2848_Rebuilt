@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchNeutralHalfSweepPastLine"
+            "pathName": "TrenchNeutralHalfSweepPastLine-Bump"
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -33,7 +27,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 3.5
+                        "waitTime": 5.5
                       }
                     },
                     {
@@ -46,30 +40,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake Deploy"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchNeutralHalfSweepInterior-FromOffset"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Start Shoot"
           }
         }
       ]

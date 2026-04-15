@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchNeutralHalfSweepPastLine-Bump"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BumpTrenchNeutralHalfSweepInterior-Bump"
+            "pathName": "HubToDepot-Shooting"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Start Shoot"
+            "name": "Intake Jiggle"
           }
         }
       ]

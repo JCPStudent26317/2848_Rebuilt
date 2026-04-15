@@ -140,11 +140,11 @@ public class HopperTransition extends SubsystemBase {
         return unjamSideways(0.333)
         .andThen(new ConditionalCommand(
             new SequentialCommandGroup(
-                unjamSideways(0.4),
+                unjamSideways(0.333),
                 new ConditionalCommand(
                     new SequentialCommandGroup(
-                        unjamAll(0.4),
-                        forward().withDeadline(new WaitCommand(2.5))
+                        unjamAll(0.333),
+                        forward().withDeadline(new WaitCommand(2))
                         ),
                     forward(), isJammed)
             ), 

@@ -39,8 +39,8 @@ public class Shooter extends SubsystemBase {
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
 
-  private final Debouncer shootingDebouncer = new Debouncer(0.667, DebounceType.kRising);
-  private final Debouncer magazineSensorDebouncer = new Debouncer(1.5, DebounceType.kFalling);
+  private final Debouncer shootingDebouncer = new Debouncer(0.8, DebounceType.kRising);
+  private final Debouncer magazineSensorDebouncer = new Debouncer(0.667, DebounceType.kFalling);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
