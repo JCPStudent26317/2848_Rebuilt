@@ -455,11 +455,11 @@ public Translation2d getPolarVelocity() {
         
         m_field.setRobotPose(this.getState().Pose);
         SmartDashboard.putData("Field",m_field);
-        SmartDashboard.putNumber("hub theta",getTargetTheta());
-        SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
-        SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
-        SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
-        SmartDashboard.putNumber("gyro rotation",this.getPigeon2().getYaw().getValueAsDouble());
+        // SmartDashboard.putNumber("hub theta",getTargetTheta());
+        // SmartDashboard.putNumber("tangential velocity",getPolarVelocity().getY());
+        // SmartDashboard.putNumber("radial velocity",getPolarVelocity().getX());
+        // SmartDashboard.putNumber("field velocity",getTranslationVelocityMag());
+        // SmartDashboard.putNumber("gyro rotation",this.getPigeon2().getYaw().getValueAsDouble());
         // Print whether the pathplanner auto should be flipped
         // SmartDashboard.putBoolean("Flipped PathPlanner", DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
     }

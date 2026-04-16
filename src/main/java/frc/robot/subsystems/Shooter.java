@@ -203,71 +203,71 @@ public class Shooter extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
-    builder.addDoubleProperty("tangent offset",
-    this::getTurretTangentOffset,
-    null);
+    // builder.addDoubleProperty("tangent offset",
+    // this::getTurretTangentOffset,
+    // null);
 
-    builder.addDoubleProperty("Feedforward correct",
-    this::getTurretFFCorrection,
-    null
-    );
-    builder.addDoubleProperty("Flywheel rps",
-      this::getFlywheelRPS,
-      null
-    );
+    // builder.addDoubleProperty("Feedforward correct",
+    // this::getTurretFFCorrection,
+    // null
+    // );
+    // builder.addDoubleProperty("Flywheel rps",
+    //   this::getFlywheelRPS,
+    //   null
+    // );
     builder.addDoubleProperty("distance rps",
     ()->getVeloRPS(getExitVelo()),
     null);
-    builder.addDoubleProperty("Commanded flywheel rps",
-      ()->flyWheelVelocityVoltage.Velocity
-      ,null);
+    // builder.addDoubleProperty("Commanded flywheel rps",
+    //   ()->flyWheelVelocityVoltage.Velocity
+    //   ,null);
     builder.addDoubleProperty("turret angle",
       this::getTurretAngle,
       null);
-    builder.addDoubleProperty("Turret Encoder Output",
-      ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
-      null);
+    // builder.addDoubleProperty("Turret Encoder Output",
+    //   ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
+    //   null);
     builder.addDoubleProperty("turret error",
       ()->m_Turret.getClosedLoopError().getValueAsDouble(),
       null);
-    builder.addDoubleProperty("turret setpoint",
-      ()->turretSetpoint,
-      null);
-    builder.addDoubleProperty("Shooter hub theta",
-      ()-> targetTheta,
-      null);
-    builder.addDoubleProperty("Distance",()->targetDist,
-    null);
-    builder.addDoubleProperty("flywheel direct output",
-    ()->m_FlywheelLeftLeader.get(),
-    null);
-    builder.addDoubleProperty("flywheel error", 
-    ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
-     null);
+    // builder.addDoubleProperty("turret setpoint",
+    //   ()->turretSetpoint,
+    //   null);
+    // builder.addDoubleProperty("Shooter hub theta",
+    //   ()-> targetTheta,
+    //   null);
+    // builder.addDoubleProperty("Distance",()->targetDist,
+    // null);
+    // builder.addDoubleProperty("flywheel direct output",
+    // ()->m_FlywheelLeftLeader.get(),
+    // null);
+    // builder.addDoubleProperty("flywheel error", 
+    // ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
+    //  null);
      builder.addBooleanProperty("ready to shoot",
      this::readyToShoot,
      null);
-     builder.addDoubleProperty("magazine output",
-     ()->m_Magazine.get(),
-     null);
-    builder.addDoubleProperty("magazine rps",
-    this::getMagazineRPS, null);
-    builder.addDoubleProperty("magazine current",
-     ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
-      null);
+    //  builder.addDoubleProperty("magazine output",
+    //  ()->m_Magazine.get(),
+    //  null);
+    // builder.addDoubleProperty("magazine rps",
+    // this::getMagazineRPS, null);
+    // builder.addDoubleProperty("magazine current",
+    //  ()->m_Magazine.getStatorCurrent().getValueAsDouble(),
+    //   null);
 
     // builder.addBooleanProperty("CANrange detection (w/o debouncer)",
     //   () -> m_MagazineSensor.getIsDetected().getValue(),
     //   null);
-    builder.addDoubleProperty("CANrange signal strength",
-      () -> m_MagazineSensor.getSignalStrength().getValue(),
-      null);
-    builder.addDoubleProperty("CANrange distance measurement",
-      () -> m_MagazineSensor.getDistance().getValueAsDouble(),
-      null);
-    builder.addBooleanProperty("Is shooting (CANrange)",
-      () -> isShootingByCANrange(),
-      null);
+    // builder.addDoubleProperty("CANrange signal strength",
+    //   () -> m_MagazineSensor.getSignalStrength().getValue(),
+    //   null);
+    // builder.addDoubleProperty("CANrange distance measurement",
+    //   () -> m_MagazineSensor.getDistance().getValueAsDouble(),
+    //   null);
+    // builder.addBooleanProperty("Is shooting (CANrange)",
+    //   () -> isShootingByCANrange(),
+    //   null);
     // builder.addBooleanProperty("Is shooting (Magazine current)",
     //   () -> isShootingByCurrent(),
     //   null);
