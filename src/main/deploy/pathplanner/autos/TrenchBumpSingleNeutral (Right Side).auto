@@ -11,19 +11,32 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 5.5
+                  "name": "Start Shoot"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Intake Jiggle"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 5.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Jiggle"
+                      }
+                    }
+                  ]
                 }
               }
             ]

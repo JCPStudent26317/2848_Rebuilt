@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Start Shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BumpTrenchNeutralHalfSweepInterior-Bump"

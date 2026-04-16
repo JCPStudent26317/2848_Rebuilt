@@ -139,17 +139,6 @@
           "name": "Intake Stop Rollers"
         }
       }
-    },
-    {
-      "name": "Start Shoot",
-      "waypointRelativePos": 3.63,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Start Shoot"
-        }
-      }
     }
   ],
   "globalConstraints": {
