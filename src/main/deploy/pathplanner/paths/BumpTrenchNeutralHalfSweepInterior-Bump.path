@@ -144,6 +144,28 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "Intake Jiggle",
+      "waypointRelativePos": 0.3241053342336051,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Jiggle"
+        }
+      }
+    },
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.8102633355840894,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    },
+    {
       "name": "Stop Shoot",
       "waypointRelativePos": 0.85,
       "endWaypointRelativePos": null,
@@ -151,17 +173,6 @@
         "type": "named",
         "data": {
           "name": "Stop Shoot"
-        }
-      }
-    },
-    {
-      "name": "Intake Deploy",
-      "waypointRelativePos": 1.305210918114136,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Deploy"
         }
       }
     },
