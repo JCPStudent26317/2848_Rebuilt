@@ -11,15 +11,15 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "DepotToShootingPosition"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Run Rollers"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -31,27 +31,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "DepotOscillate"
+                        "name": "Intake Jiggle"
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "DepotOscillate"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "DepotOscillate"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "DepotOscillate"
+                        "name": "Intake Stop Rollers"
                       }
                     }
                   ]

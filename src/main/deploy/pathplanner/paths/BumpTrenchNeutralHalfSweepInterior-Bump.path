@@ -110,7 +110,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1791044776119374,
+      "waypointRelativePos": 0.7219917012448076,
       "rotationDegrees": 90.0
     },
     {
@@ -129,7 +129,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.14,
+      "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 0.8750844024307909,
       "constraints": {
         "maxVelocity": 0.45,
@@ -144,13 +144,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Start Shoot",
-      "waypointRelativePos": 0.2,
+      "name": "Intake Jiggle",
+      "waypointRelativePos": 0.3241053342336051,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Start Shoot"
+          "name": "Intake Jiggle"
+        }
+      }
+    },
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.8102633355840894,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
         }
       }
     },
@@ -162,17 +173,6 @@
         "type": "named",
         "data": {
           "name": "Stop Shoot"
-        }
-      }
-    },
-    {
-      "name": "Intake Deploy",
-      "waypointRelativePos": 1.305210918114136,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Deploy"
         }
       }
     },

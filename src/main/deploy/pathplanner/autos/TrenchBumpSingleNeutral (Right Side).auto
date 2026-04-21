@@ -11,15 +11,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Start Shoot"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
