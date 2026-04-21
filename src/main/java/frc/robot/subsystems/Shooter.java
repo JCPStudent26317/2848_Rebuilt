@@ -203,6 +203,12 @@ public class Shooter extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
+    builder.addDoubleProperty("Distance trim", 
+    ()->distanceTrim, null);
+    builder.addDoubleProperty("Angular trim",
+    ()->angularTrim
+    ,null);
+
     // builder.addDoubleProperty("tangent offset",
     // this::getTurretTangentOffset,
     // null);
@@ -281,7 +287,7 @@ public class Shooter extends SubsystemBase {
 private double getExitVelo(){
       return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.5,-2,10)
       + targetDist * 1.95 //1.88 Needs to be tuned //2
-      +5.425;//5.35
+      +5.33;//5.425;//5.35
 }
 /**
  * gets the angle needed to add to the turret setpoint to account for tangential velocity around the target
@@ -299,9 +305,12 @@ private double getVeloRPS(double velo){
   return MathUtil.clamp((velo)/(Math.PI*kFlywheelRadius) * kFlywheelRPMMult,-80,90); // Max increased from 90
 }
 /**
- * gets the current turret angle, 0 rad is straight forwards towards the intake [-pi,pi]
+ * gets the current 
+ *  angle, 0 rad is straight forwards towards the intake [-pi,pi]
  * @return current turret angle, radians
  */
+
+
 public double getTurretAngle(){
     
     double rawAngle = m_Turret.getPosition().getValueAsDouble() * 2 * Math.PI;
@@ -358,7 +367,7 @@ public void setTurretAngle(double angle,boolean tangentAdjust){
     return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = kFlywheelIdleSpeed, this);
   }
   public Command runFlywheel(){
-    return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = getVeloRPS(getExitVelo())+distanceTrim, this);
+    return Commands.runOnce(() -> flyWheelVelocityVoltage.Velocity = getVeloRPS(getExitVelo()+distanceTrim), this);
   }
 
   /** Sets the flywheel and hood angle to their shot velocity and shot position. */

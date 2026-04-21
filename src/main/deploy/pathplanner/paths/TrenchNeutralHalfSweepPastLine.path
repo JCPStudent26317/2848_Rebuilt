@@ -80,12 +80,28 @@
     },
     {
       "anchor": {
-        "x": 3.2,
+        "x": 3.767346647646219,
         "y": 0.55
       },
       "prevControl": {
-        "x": 3.4982329989329912,
-        "y": 0.55
+        "x": 4.3474013911594085,
+        "y": 0.5220131954350926
+      },
+      "nextControl": {
+        "x": 3.18729190413303,
+        "y": 0.5779868045649076
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.120413694721825,
+        "y": 1.4925534950071324
+      },
+      "prevControl": {
+        "x": 3.120413694721825,
+        "y": 0.9925534950071324
       },
       "nextControl": null,
       "isLocked": false,
@@ -110,7 +126,7 @@
       "rotationDegrees": -135.0
     },
     {
-      "waypointRelativePos": 4.319502074688797,
+      "waypointRelativePos": 4.247334754797459,
       "rotationDegrees": 90.0
     }
   ],
@@ -155,7 +171,7 @@
     },
     {
       "name": "Intake Stop Rollers",
-      "waypointRelativePos": 4.243176178660035,
+      "waypointRelativePos": 4.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

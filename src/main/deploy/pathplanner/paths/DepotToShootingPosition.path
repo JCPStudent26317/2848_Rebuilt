@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.54922891566265,
-        "y": 4.045927710843373
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 3.04922891566265,
-        "y": 4.911953114627813
-      },
-      "isLocked": false,
-      "linkedName": "HubStart"
-    },
-    {
-      "anchor": {
         "x": 0.7,
         "y": 5.969329529243937
       },
-      "prevControl": {
-        "x": 1.6999999999999988,
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7,
         "y": 5.969329529243937
+      },
+      "isLocked": false,
+      "linkedName": "Depot"
+    },
+    {
+      "anchor": {
+        "x": 2.270686746987952,
+        "y": 4.045927710843373
+      },
+      "prevControl": {
+        "x": 2.270686746987952,
+        "y": 5.045927710843373
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "HubShootingPosition"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.4969615124915568,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.34841323430114457,
       "constraints": {
         "maxVelocity": 4.0,
         "maxAcceleration": 3.0,
@@ -45,30 +45,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Intake Deploy",
-      "waypointRelativePos": 0.0324105334233653,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Deploy"
-        }
-      }
-    },
-    {
-      "name": "Intake Run Rollers",
-      "waypointRelativePos": 0.6,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Run Rollers"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 1.8,
@@ -78,7 +55,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0
   },
   "reversed": false,

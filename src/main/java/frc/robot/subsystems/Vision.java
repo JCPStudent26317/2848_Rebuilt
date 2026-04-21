@@ -96,8 +96,9 @@ public void setFilterTagID(boolean val){
 
     @Override
     public void initSendable(SendableBuilder builder) {
+
+        super.initSendable(builder);
         // Permanent
-        // builder.addStringProperty("Best Limelight", this::getBestLimeLight, this::setBestLimeLight);
 
         // builder.addBooleanProperty("Is Using Mega Tag 2", this::isUseMegaTag2, this::setUseMegaTag2);
         // builder.addBooleanProperty("Robot has tag", this::getRobotHasTag, null);
@@ -163,6 +164,9 @@ public void setFilterTagID(boolean val){
     }
 
 
+    private double lastPoseEstimateTime =0;
+    private boolean odoUpdated = false;
+
     @Override
     public void periodic(){
         chooseLL();
@@ -178,9 +182,13 @@ public void setFilterTagID(boolean val){
                     RobotContainer.getDrivetrain().addVisionMeasurement(visionPoseEstimate.pose, 
                     Timer.getFPGATimestamp(), 
                     visionStandardDeviation);
-                    SmartDashboard.putNumber("Last Pose Estimator Update",Timer.getFPGATimestamp());
+                    lastPoseEstimateTime = Timer.getFPGATimestamp();
                 }
         }
+
+        
+
+        
 
             for(String camera :cameraList){
                 if(filterTagID){
@@ -194,6 +202,9 @@ public void setFilterTagID(boolean val){
 
         SmartDashboard.putData(this);
     }
+    odoUpdated = (Timer.getFPGATimestamp()-lastPoseEstimateTime)<3;
+    SmartDashboard.putBoolean("Odometry Good", odoUpdated);
+    SmartDashboard.putNumber("Last Pose Estimator Update",lastPoseEstimateTime);
 }
 
     /**
