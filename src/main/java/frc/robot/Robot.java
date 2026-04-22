@@ -117,7 +117,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.getIntake().changeStartPoint(m_robotContainer.getIntakeStartPoint());
+    m_robotContainer.getIntake().gotoStartPoint();
 
     CommandScheduler.getInstance().schedule(m_robotContainer.getStopShoot());
     //m_robotContainer.getDrivetrain().getM_field().getObject("path").close();

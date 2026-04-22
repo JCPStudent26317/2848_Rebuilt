@@ -93,8 +93,12 @@ public class Intake extends SubsystemBase {
         m_Pivot.setControl(pivotOut);
     }
 
-    public void changeStartPoint(double val){
-        setPivot(val);
+    public void gotoStartPoint(){
+        if(m_IntakeCANcoder.getPosition().getValueAsDouble() > 0.7) {
+            setPivot(kStowSetpoint);
+        } else {
+            setPivot(kDeploySetpoint);
+        }
     }
 
     public boolean sanityCheck(){
