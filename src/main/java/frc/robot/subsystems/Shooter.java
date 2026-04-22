@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotContainer;
+import frc.robot.fuelPerSecond;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,11 +37,14 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_Turret;
   private final CANcoder m_TurretCANcoder;
 
+  private fuelPerSecond fps = new fuelPerSecond();
+
   private final CANrange m_MagazineSensor = new CANrange(kCANRangeID);
   private final CANrangeConfiguration magazineSensorConfig = new CANrangeConfiguration();
 
   private final Debouncer shootingDebouncer = new Debouncer(3, DebounceType.kRising);
   private final Debouncer magazineSensorDebouncer = new Debouncer(3, DebounceType.kFalling);
+  private final Debouncer fuelPerSecondDebouncer = new Debouncer(.01);
   // private final Debouncer currentDebouncer = new Debouncer(0.167, DebounceType.kBoth);
 
   private final TalonFX m_Magazine;
@@ -166,6 +170,8 @@ public class Shooter extends SubsystemBase {
 
     shootingDebounced = shootingDebouncer.calculate(shooting);
     isShootingByCANrange = magazineSensorDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue());
+
+    fps.update(shooting,fuelPerSecondDebouncer.calculate(m_MagazineSensor.getIsDetected().getValue()));
     // isShootingByCurrent = currentDebouncer.calculate(Math.abs(m_Magazine.getStatorCurrent().getValueAsDouble()) > kMagazineJamThreshold);
   }
   
@@ -230,6 +236,14 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty("turret angle",
       this::getTurretAngle,
       null);
+
+    builder.addDoubleProperty("Fuel Per Second",
+    ()->fps.getRate(),
+    null);
+
+    builder.addDoubleProperty("average rate",
+    ()->fps.getAverage(),
+     null);
     // builder.addDoubleProperty("Turret Encoder Output",
     //   ()->m_TurretCANcoder.getAbsolutePosition().getValueAsDouble(),
     //   null);
