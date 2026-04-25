@@ -59,10 +59,10 @@ public final class Constants {
     public static final double kPivotkD = 0;
 
     public static final double kPivotMMCruiseVelocity = 7;//7
-    public static final double kPivotMMAcceleration = 20;//14;
+    public static final double kPivotMMAcceleration = 24;//14;
     public static final double kPivotMMJerk = 140;//140
     
-    public static final double kDeploySetpoint = 0.473486328125;
+    public static final double kDeploySetpoint = 0.465;
     public static final double kLowRetractSetpoint = 0.55;
     public static final double kHighRetractSetpoint = 0.65;
     public static final double kStowSetpoint = 0.86;
