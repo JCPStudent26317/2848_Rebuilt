@@ -45,6 +45,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int kLRollersMotorID = 15;
     public static final int kRRollersMotorID = 16;
+    public static final int kR2RollersMotorID = 31;
     public static final int kIntakePivotID = 17;
     public static final int kIntakePivotCANcoderID = 18;
     public static final double kRollersMotorSpeed = 1.0;

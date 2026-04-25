@@ -60,5 +60,5 @@
   "java.dependency.enableDependencyCheckup": false,
   "java.checkstyle.configuration": "/C:/Program Files/RangerCheckstyle/RangerCheckstyle.xml",
   "java.checkstyle.version": "10.23.1",
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx6G -Xms100m -Xlog:disable"
 }

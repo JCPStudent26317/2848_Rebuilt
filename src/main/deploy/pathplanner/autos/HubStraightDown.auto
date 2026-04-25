@@ -7,17 +7,29 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchNeutralHalfSweepPastLine-Bump"
+            "pathName": "HubStraightDown"
           }
         },
         {
-          "type": "deadline",
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OutpostDownToShootingPosition"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 3.0
+                  "name": "Start Shoot"
                 }
               },
               {
@@ -27,7 +39,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.5
+                        "waitTime": 2.0
                       }
                     },
                     {
@@ -40,24 +52,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake Deploy"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BumpTrenchNeutralInteriorSweep"
           }
         }
       ]

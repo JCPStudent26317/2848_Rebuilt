@@ -1,0 +1,109 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.54922891566265,
+        "y": 4.045927710843373
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9910271041369465,
+        "y": 4.830727532097005
+      },
+      "isLocked": false,
+      "linkedName": "HubStart"
+    },
+    {
+      "anchor": {
+        "x": 0.4679885877318113,
+        "y": 6.952667617689015
+      },
+      "prevControl": {
+        "x": 0.48092724679029925,
+        "y": 9.009914407988589
+      },
+      "nextControl": {
+        "x": 0.4592182917079533,
+        "y": 5.558190549895629
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.4679885877318113,
+        "y": 0.6644793152639101
+      },
+      "prevControl": {
+        "x": 0.46798858773181135,
+        "y": 1.8831883638528022
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "OutpostFacingDown"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5543710021321973,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 0.05,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    },
+    {
+      "name": "Intake Run Rollers",
+      "waypointRelativePos": 0.7616475354490159,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Run Rollers"
+        }
+      }
+    },
+    {
+      "name": "Intake Stop Rollers",
+      "waypointRelativePos": 1.8636056718433314,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Stop Rollers"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 1.8,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 480.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
