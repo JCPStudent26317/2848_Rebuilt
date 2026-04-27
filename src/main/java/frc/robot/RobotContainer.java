@@ -78,8 +78,6 @@ public class RobotContainer {
 
     private final Trigger distanceTrigger = new Trigger(()->drivetrain.outOfRange());
 
-    //private final SendableChooser<Double> intakeChooser = new SendableChooser<>();;
-
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
 
     private final Command startShoot = shooter.shoot();
@@ -129,17 +127,12 @@ public class RobotContainer {
             new PathPlannerAuto("TrenchBumpSingleNeutral (Right Side)", true));            
         autoChooser.addOption("TrenchBumpDoubleNeutral (Left Side)",
             new PathPlannerAuto("TrenchBumpDoubleNeutral (Right Side)", true));            
+        autoChooser.addOption("TrenchBumpDoubleNeutral-SoM (Left Side)",
+            new PathPlannerAuto("TrenchBumpDoubleNeutral-SoM (Right Side)", true));
+        autoChooser.addOption("SupportTrenchCenter (Left Side)",
+            new PathPlannerAuto("SupportTrenchCenter (Right Side)", true));
         
-        // intakeChooser.setDefaultOption("Deployed",Constants.IntakeConstants.kDeploySetpoint);
-        // intakeChooser.addOption("Stowed",Constants.IntakeConstants.kStowSetpoint);
-
-
-        // SmartDashboard.putData("Intake Position Chooser",intakeChooser);
-
-
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        
 
         configureBindings();
 
@@ -271,7 +264,4 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-//   public double getIntakeStartPoint(){
-//     return intakeChooser.getSelected();
-//   }
 }

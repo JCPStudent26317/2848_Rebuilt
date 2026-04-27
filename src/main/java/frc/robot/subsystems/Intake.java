@@ -35,6 +35,9 @@ public class Intake extends SubsystemBase {
     private final TalonFX m_RollersR = new TalonFX(kRRollersMotorID);
     private final TalonFXConfiguration rRollersMotorConfig = new TalonFXConfiguration();
 
+    private final TalonFX m_RollersR2 = new TalonFX(kR2RollersMotorID);
+    private final TalonFXConfiguration r2RollersMotorConfig = new TalonFXConfiguration();
+
     private final TalonFX m_Pivot = new TalonFX(kIntakePivotID);
     private final TalonFXConfiguration pivotMotorConfig = new TalonFXConfiguration();
 
@@ -77,9 +80,11 @@ public class Intake extends SubsystemBase {
 
         setupTalonFx(m_RollersL, lRollersMotorConfig);
         setupTalonFx(m_RollersR, rRollersMotorConfig);
+        setupTalonFx(m_RollersR2, r2RollersMotorConfig);
         setupTalonFx(m_Pivot, pivotMotorConfig);
     
         m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
+        m_RollersR2.setControl(new Follower(m_RollersL.getDeviceID(),MotorAlignmentValue.Aligned));
 
         m_IntakeCANcoder.setPosition(m_IntakeCANcoder.getAbsolutePosition().getValue());
     } 
@@ -105,6 +110,7 @@ public class Intake extends SubsystemBase {
         return m_Pivot.isConnected()
         && m_RollersL.isConnected()
         && m_RollersR.isConnected()
+        && m_RollersR2.isConnected()
         && m_IntakeCANcoder.isConnected();
     }
     
