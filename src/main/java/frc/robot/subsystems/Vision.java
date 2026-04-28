@@ -51,11 +51,17 @@ public class Vision extends SubsystemBase {
     @Getter private double adjustedSkewAngle = 0.0;
     @Getter boolean rejectUpdate = false;
 
+    private double lastTwoTagUpdate = 0;
+
     @Getter @Setter private boolean applyFilters;
     @Getter @Setter private boolean addToPoseEstimator;
     @Getter @Setter private boolean useOldStdDev = true;
 
+    private boolean allowOneTag = false;
+
     private boolean filterTagID = false;
+
+    private int lastReadingTagCount = 0;
 
 
 
@@ -183,6 +189,9 @@ public void setFilterTagID(boolean val){
                     Timer.getFPGATimestamp(), 
                     visionStandardDeviation);
                     lastPoseEstimateTime = Timer.getFPGATimestamp();
+                    if(lastReadingTagCount > 1){
+                        lastTwoTagUpdate = lastPoseEstimateTime;
+                    }
                 }
         }
 
@@ -205,6 +214,11 @@ public void setFilterTagID(boolean val){
     odoUpdated = (Timer.getFPGATimestamp()-lastPoseEstimateTime)<3;
     SmartDashboard.putBoolean("Odometry Good", odoUpdated);
     SmartDashboard.putNumber("Last Pose Estimator Update",lastPoseEstimateTime);
+
+    SmartDashboard.putNumber("Last Two Tag Reading",lastTwoTagUpdate);
+    SmartDashboard.putBoolean("Accept one tag",allowOneTag);
+    
+    allowOneTag = Timer.getFPGATimestamp() - lastTwoTagUpdate >.75;
 }
 
     /**
@@ -300,8 +314,9 @@ public void setFilterTagID(boolean val){
                 rejectUpdate = true;
             }
             // Reject update if there are no visible tags (Redundant?)
-            else if (visionPoseEstimate.tagCount <2) {
+            else if ((visionPoseEstimate.tagCount < (allowOneTag ? 1 : 2))) {
                 rejectUpdate = true;
+                
             }
             // Reject update if the translational error magnitude is larger than the threshold
             // else if (Math.hypot(poseError.getX(), poseError.getY()) > kMaxTranslationalErrorMagnitude){
@@ -320,6 +335,7 @@ public void setFilterTagID(boolean val){
                         visionPoseEstimate.pose.getX() > kFieldLength || visionPoseEstimate.pose.getY() > kFieldWidth){
                 rejectUpdate = true;
             }
+            lastReadingTagCount = visionPoseEstimate.tagCount;
         }
 
         // Update Pose Estimate if not rejected and is applying filters

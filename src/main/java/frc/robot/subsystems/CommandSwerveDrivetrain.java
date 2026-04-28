@@ -88,7 +88,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Translation2d targetPos = new Translation2d();
     private Translation2d hubPos = new Translation2d();
 
-    private boolean redAlliance = false;
+    @Getter private boolean redAlliance = false;
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();

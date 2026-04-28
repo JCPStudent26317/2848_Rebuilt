@@ -84,7 +84,7 @@ public class Intake extends SubsystemBase {
         setupTalonFx(m_Pivot, pivotMotorConfig);
     
         m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
-        m_RollersR2.setControl(new Follower(m_RollersL.getDeviceID(),MotorAlignmentValue.Aligned));
+        m_RollersR2.setControl(new Follower(m_RollersL.getDeviceID(),MotorAlignmentValue.Opposed));
 
         m_IntakeCANcoder.setPosition(m_IntakeCANcoder.getAbsolutePosition().getValue());
     } 
@@ -127,7 +127,7 @@ public class Intake extends SubsystemBase {
 
         // builder.addDoubleProperty("CANcoder Absolute Position",() ->  m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble(), null);
         // builder.addDoubleProperty("CANcoder Non-absolute Position", () -> m_IntakeCANcoder.getPosition().getValueAsDouble(), null);        
-        // builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
+         builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
         // builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
         // builder.addDoubleProperty("intake L", ()->m_RollersL.get(), null);
         // builder.addDoubleProperty("intake R", ()->m_RollersR.get(), null);

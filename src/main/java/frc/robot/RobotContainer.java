@@ -202,7 +202,7 @@ public class RobotContainer {
 
         //SHOOTER CONTROLS
 
-        driverJoystick.rightBumper().onTrue(startShoot);
+        driverJoystick.rightBumper().onTrue(startShootAuto);
         //.alongWith(intake.jiggle().onlyIf(()->!driverJoystick.leftBumper().getAsBoolean()).repeatedly()));
 
         driverJoystick.rightBumper().onFalse(stopShoot);
@@ -235,11 +235,15 @@ public class RobotContainer {
         keypad.button(7).onTrue(hopper.forward())
         .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()));
         keypad.button(8).onTrue(hopper.stop());
-        keypad.button(9).or(driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold)).onTrue(hopper.backward().andThen(shooter.reverseMagazine()))
+        keypad.button(9).or(driverJoystick.y()).onTrue(hopper.backward().andThen(shooter.reverseMagazine()))
         .onFalse(hopper.forward().onlyIf(()->driverJoystick.rightBumper().getAsBoolean()))
         .onFalse(hopper.stop().onlyIf(()->!driverJoystick.rightBumper().getAsBoolean()))
         .onFalse(shooter.stopMagazine().onlyIf(()->!shooter.readyToShoot() || !driverJoystick.rightBumper().getAsBoolean()))
         .onFalse(shooter.runMagazine().onlyIf(()->shooter.readyToShoot() && driverJoystick.rightBumper().getAsBoolean()));
+
+
+        driverJoystick.rightTrigger(Constants.OperatorConstants.kTriggerThreshhold).onTrue(intake.outtake().andThen(hopper.intakeOut()))
+        .onFalse(intake.stop().andThen(hopper.stop()));
 
 
         keypad.button(10).or(driverJoystick.a()).whileTrue(drivetrain.applyRequest(()->brake));

@@ -215,6 +215,8 @@ public class Shooter extends SubsystemBase {
     ()->angularTrim
     ,null);
 
+    builder.addDoubleProperty("Shooter actual setpoint", ()->flyWheelVelocityVoltage.Velocity,null);
+
     // builder.addDoubleProperty("tangent offset",
     // this::getTurretTangentOffset,
     // null);
@@ -299,9 +301,9 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.5,-2,10)
-      + targetDist * 1.95 //1.88 Needs to be tuned //2
-      +5.33;//5.425;//5.35
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2,-2,10)
+      + targetDist * 2 //1.88 Needs to be tuned //2
+      +5.4;//5.425;//5.35
 }
 /**
  * gets the angle needed to add to the turret setpoint to account for tangential velocity around the target

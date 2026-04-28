@@ -40,7 +40,7 @@ public class HopperTransition extends SubsystemBase {
 
     private boolean unjamming = false;
     
-    private Debouncer currentJamDebouncer = new Debouncer(0.6, DebounceType.kRising);
+    private Debouncer currentJamDebouncer = new Debouncer(0.35, DebounceType.kRising);
     private boolean isJammedByCurrent = false;
 
     public HopperTransition() {
@@ -58,7 +58,7 @@ public class HopperTransition extends SubsystemBase {
         m_SidewaysBelt.setControl(m_SidewaysBeltOut);
         m_ForwardBelt.setControl(m_ForwardBeltOut);
         
-        isJammedByCurrent = currentJamDebouncer.calculate(m_ForwardBelt.getStatorCurrent().getValueAsDouble() > 75);
+        isJammedByCurrent = currentJamDebouncer.calculate(m_ForwardBelt.getStatorCurrent().getValueAsDouble() > 75 || m_SidewaysBelt.getStatorCurrent().getValueAsDouble() > 90) ;
 
         SmartDashboard.putData(this);
     }
@@ -71,6 +71,9 @@ public class HopperTransition extends SubsystemBase {
         // builder.addDoubleProperty("Forwards Belt Speed", () -> forwardBeltSpeed, (next) -> forwardBeltSpeed = next);
 
         builder.addBooleanProperty("Is unjamming", () -> unjamming, null);
+
+        builder.addDoubleProperty("forward belt current", ()-> m_ForwardBelt.getStatorCurrent().getValueAsDouble(),null);
+        builder.addDoubleProperty("sideways belt current", ()-> m_SidewaysBelt.getStatorCurrent().getValueAsDouble(),null);
 
         // builder.addDoubleProperty("Forwards Belt Motor Current", () -> m_ForwardBelt.getStatorCurrent().getValueAsDouble(), null);
         // builder.addBooleanProperty("Is jammed (Forward motor current)", () -> isJammedByCurrent, null);
@@ -114,6 +117,10 @@ public class HopperTransition extends SubsystemBase {
     }
     public Command onlyBackwardSideways(){
         return Commands.runOnce(()-> setMotorsOutput(sidewaysBeltSpeed * -1,m_ForwardBeltOut.Output));
+    }
+
+    public Command intakeOut(){
+        return Commands.runOnce(()->setMotorsOutput(sidewaysBeltSpeed * -1, -1 * forwardBeltSpeed));
     }
 
     public Command stop() {

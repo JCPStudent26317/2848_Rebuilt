@@ -66,11 +66,11 @@ public final class Constants {
     public static final double kDeploySetpoint = 0.465;
     public static final double kLowRetractSetpoint = 0.55;
     public static final double kHighRetractSetpoint = 0.65;
-    public static final double kStowSetpoint = 0.86;
+    public static final double kStowSetpoint = 0.82;
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(.17)
+        .withMagnetOffset(.3905)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }

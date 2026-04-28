@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 3.133975903614458,
-        "y": 2.537903614457831
+        "x": 3.09453637660485,
+        "y": 2.3465049928673327
       },
       "prevControl": {
-        "x": 3.432208902547449,
-        "y": 2.537903614457831
+        "x": 3.392769375537841,
+        "y": 2.3465049928673327
       },
       "nextControl": null,
       "isLocked": false,
@@ -139,22 +139,11 @@
           "name": "Intake Stop Rollers"
         }
       }
-    },
-    {
-      "name": "Start Shoot",
-      "waypointRelativePos": 3.85,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Start Shoot"
-        }
-      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 1.8,
+    "maxAcceleration": 2.4,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
