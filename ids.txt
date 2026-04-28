@@ -50,6 +50,7 @@ Shooter (+magazine, to be integrated into shooter subsystem)
 28 Kraken Flywheel L
 29 Kraken Flywheel R
 30 CANrange (beam break)
+31 Kraken Flywheel R2
 
 Climber
 33 Kraken Climber
