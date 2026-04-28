@@ -58,7 +58,8 @@ public class HopperTransition extends SubsystemBase {
         m_SidewaysBelt.setControl(m_SidewaysBeltOut);
         m_ForwardBelt.setControl(m_ForwardBeltOut);
         
-        isJammedByCurrent = currentJamDebouncer.calculate(m_ForwardBelt.getStatorCurrent().getValueAsDouble() > 75 || m_SidewaysBelt.getStatorCurrent().getValueAsDouble() > 90) ;
+        isJammedByCurrent = currentJamDebouncer.calculate(m_ForwardBelt.getStatorCurrent().getValueAsDouble() > 75 
+            || m_SidewaysBelt.getStatorCurrent().getValueAsDouble() > 90) ;
 
         SmartDashboard.putData(this);
     }
