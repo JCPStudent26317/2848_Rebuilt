@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -147,7 +148,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed), this);
+        return Commands.runOnce(() -> setRollersOutput(DriverStation.isAutonomous() ? kRollersMotorSpeed : .75), this);
     }
 
     public Command outtake() {

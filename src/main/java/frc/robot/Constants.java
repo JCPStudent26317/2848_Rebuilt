@@ -140,8 +140,8 @@ public final class Constants {
     public static final double kTurretMMAcceleration = 28;//28;
     public static final double kTurretMMJerk = 280;//280;
 
-    public static final double kTurretSwitchForwardLimit = 0.48;
-    public static final double kTurretSwitchReverseLimit = -0.45;
+    public static final double kTurretSwitchForwardLimit = 0.5;
+    public static final double kTurretSwitchReverseLimit = -0.5;
 
     public static final double kFlywheelRPSTolerance = 5;
     public static final double kTurretPositionTolerance = .025;
