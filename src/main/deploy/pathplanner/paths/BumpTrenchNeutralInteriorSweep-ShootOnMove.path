@@ -175,7 +175,7 @@
     },
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.8102633355840894,
+      "waypointRelativePos": 0.72,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -197,7 +197,7 @@
     },
     {
       "name": "Intake Run Rollers",
-      "waypointRelativePos": 1.2802160702228331,
+      "waypointRelativePos": 1.15,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
