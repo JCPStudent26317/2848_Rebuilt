@@ -78,6 +78,15 @@ public class Intake extends SubsystemBase {
 
         // Apply things to the configuration here
         lRollersMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        
+        lRollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        lRollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        rRollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        rRollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        r2RollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        r2RollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         setupTalonFx(m_RollersL, lRollersMotorConfig);
         setupTalonFx(m_RollersR, rRollersMotorConfig);
@@ -132,6 +141,10 @@ public class Intake extends SubsystemBase {
         // builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
         // builder.addDoubleProperty("intake L", ()->m_RollersL.get(), null);
         // builder.addDoubleProperty("intake R", ()->m_RollersR.get(), null);
+
+        builder.addDoubleProperty("Intake Rollers L Current",()->m_RollersL.getStatorCurrent().getValueAsDouble(),null);
+        builder.addDoubleProperty("Intake Rollers R Current",()->m_RollersR.getStatorCurrent().getValueAsDouble(),null);
+        builder.addDoubleProperty("Intake Rollers R2 Current",()->m_RollersR2.getStatorCurrent().getValueAsDouble(),null);
     }
 
     public Command holdState() {
