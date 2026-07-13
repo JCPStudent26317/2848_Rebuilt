@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -45,7 +46,7 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-
+    private SendableChooser<Double> speedChooser = new SendableChooser<>();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -109,9 +110,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("Start Shoot",startShootAuto);
         NamedCommands.registerCommand("Stop Shoot",stopShoot);
         
-
-    
-        
         NamedCommands.registerCommand("Climb Auto Align", drivetrain.autoAlignClimb());
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -134,6 +132,13 @@ public class RobotContainer {
         
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        speedChooser.setDefaultOption("100%", 1.00);
+        speedChooser.addOption("50%", 0.50);
+        speedChooser.addOption("33%", 0.33);
+        speedChooser.addOption("25%", 0.25);
+        
+        SmartDashboard.putData("Speed Chooser", speedChooser);
+
         configureBindings();
 
         // Warmup PathPlanner to avoid Java pauses
@@ -150,9 +155,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive left with negative X (left)
-                    .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate / (driverJoystick.rightBumper().getAsBoolean() ? 3.5 : 1.0))
+                drive.withVelocityX(-driverJoystick.getLeftY() * speedChooser.getSelected() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverJoystick.getLeftX() * speedChooser.getSelected() * MaxSpeed / (driverJoystick.rightBumper().getAsBoolean() ? 2.0 : 1.0)) // Drive left with negative X (left)
+                    .withRotationalRate(-driverJoystick.getRightX() * speedChooser.getSelected() * MaxAngularRate / (driverJoystick.rightBumper().getAsBoolean() ? 3.5 : 1.0))
                      // Drive counterclockwise with negative X (left)
                     //.withCenterOfRotation(new Translation2d(.2,0)) // move the center of rotation forward so that when the expanded hopper is deployed the center of rotation is the new center of the rectangular bot.
             )
