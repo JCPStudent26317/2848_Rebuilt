@@ -186,10 +186,6 @@ public void setFilterTagID(boolean val){
                 }
         }
 
-        
-
-        
-
             for(String camera :cameraList){
                 if(filterTagID){
                 LimelightHelpers.SetFiducialIDFiltersOverride(camera,kTowerAprilTagList);
@@ -331,7 +327,6 @@ public void setFilterTagID(boolean val){
         }
     }
 
-    private double lastForceUpdate = 0;
 
     /**
      * Updated the Translational and Rotational Standard Deviations for the measurement from the best limelight
