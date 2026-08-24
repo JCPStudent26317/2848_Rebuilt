@@ -78,6 +78,7 @@ public class New_Vision extends SubsystemBase{
 
     @Override
     public void periodic(){
+        //update and applies each new reading to each cameras specfic holder
         for (String camera : cameraList) {
             PoseEstHolder currentCam = cameraMap.get(camera);
             PoseEstimate visionPoseEstimate = currentCam.getEst();
@@ -100,7 +101,7 @@ public class New_Vision extends SubsystemBase{
                     } catch(Exception e) {
                         System.out.println(e);
                     }
-                
+                //general sanity checks to filter bad readings
             } else{
                 rejectUpdate = true;
             }
@@ -134,7 +135,7 @@ public class New_Vision extends SubsystemBase{
             }
             currentCam.setValid(!rejectUpdate);
         }
-
+        //detect outliers
         int[][] outliers = detectOutlier(new PoseEstHolder[]{
             cameraMap.get(cameraList[0]),
             cameraMap.get(cameraList[1]),
@@ -147,7 +148,7 @@ public class New_Vision extends SubsystemBase{
                 cameraMap.get(cameraList[i]).setValid(false);
             }
         }
-
+        //apply good readings
         for (String camera : cameraList){
             if(cameraMap.get(camera).isValid()){
                 PoseEstimate est = cameraMap.get(camera).getEst();
