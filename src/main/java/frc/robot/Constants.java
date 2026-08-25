@@ -63,14 +63,14 @@ public final class Constants {
     public static final double kPivotMMAcceleration = 24;//14;
     public static final double kPivotMMJerk = 140;//140
     
-    public static final double kDeploySetpoint = 0.465;
+    public static final double kDeploySetpoint = 0.506;
     public static final double kLowRetractSetpoint = 0.55;
     public static final double kHighRetractSetpoint = 0.65;
     public static final double kStowSetpoint = 0.86;
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(.17)
+        .withMagnetOffset(.426)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
