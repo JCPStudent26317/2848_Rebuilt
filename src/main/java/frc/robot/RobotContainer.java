@@ -64,7 +64,8 @@ public class RobotContainer {
 
 
     @Getter public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    @Getter public static final Vision vision = new Vision();
+    //@Getter public static final Vision vision = new Vision();
+    @Getter public static final New_Vision vision = new New_Vision();
     @Getter public static final Intake intake = new Intake();
     @Getter public static final HopperTransition hopper = new HopperTransition();
     @Getter public static final Shooter shooter = new Shooter();
@@ -222,7 +223,7 @@ public class RobotContainer {
         //left is back right is start
         //DRIVETRAIN RESETS
         driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
-        driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
+        //driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
         //KEYPAD TRIMS
         keypad.button(1).onTrue(Commands.runOnce(()->shooter.resetDistanceTrim()));

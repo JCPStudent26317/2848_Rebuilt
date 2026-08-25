@@ -183,12 +183,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             configureAutoBuilder(); 
     }
 
-    public void visionOdoReset(){
-        PoseEstimate poseEstimate = RobotContainer.getVision().getVisionPoseEstimate();
-        if (poseEstimate != null){
-            this.resetPose(poseEstimate.pose);
-        }
-    }
+    // public void visionOdoReset(){
+    //     PoseEstimate poseEstimate = RobotContainer.getVision().getVisionPoseEstimate();
+    //     if (poseEstimate != null){
+    //         this.resetPose(poseEstimate.pose);
+    //     }
+    // }
 
     public void init(){
 

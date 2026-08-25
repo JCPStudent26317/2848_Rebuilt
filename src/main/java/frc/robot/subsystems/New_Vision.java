@@ -12,26 +12,23 @@ import static frc.robot.Constants.VisionConstants.kMaxAmbiguity;
 import static frc.robot.Constants.VisionConstants.kMaxRotationalRate;
 import static frc.robot.Constants.VisionConstants.kMinimumRotationalStandardDeviation;
 import static frc.robot.Constants.VisionConstants.kMinimumTranslationalStandardDeviation;
+import static frc.robot.Constants.VisionConstants.kRobotToTurretTranslation;
+import static frc.robot.Constants.VisionConstants.kTurretToCameraMagnitude;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants.CropWindowSettings;
 import frc.robot.LimelightHelpers;
-import frc.robot.RangerHelpers;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.VisionConstants.CropWindowSettings;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.PoseEstHolder;
-import frc.robot.LimelightHelpers;
 
 public class New_Vision extends SubsystemBase{
 
@@ -41,17 +38,15 @@ public class New_Vision extends SubsystemBase{
 
     private boolean useOldStdDev = true;
 
-    private HashMap<String,PoseEstHolder> cameraMap = new HashMap<>(Map.of(
-        cameraList[0], new PoseEstHolder(cameraList[0]),
-        cameraList[1], new PoseEstHolder(cameraList[1]),
-        cameraList[2], new PoseEstHolder(cameraList[2]),
-        cameraList[3], new PoseEstHolder(cameraList[3])
-    ));
+    private HashMap<String,PoseEstHolder> cameraMap = new HashMap<>();
 
     public New_Vision(){
         this.cameraList = kCameraList;
         this.register();
         configureCameras();
+        for (String camera : cameraList){
+            cameraMap.put(camera,new PoseEstHolder(camera));
+        }
     }
     
     public void configureCameras(){
@@ -95,9 +90,15 @@ public class New_Vision extends SubsystemBase{
                 int tagCount = (int) botpose[7];
                 cameraMap.get(camera).setTagCount(tagCount);
                     try{
-                    currentCam.setEst(LimelightHelpers.getBotPoseEstimate_wpiBlue(camera));
+                        if(camera.equals("limelight-turret")){
+                    currentCam.setEst(getTurretToRobotPose(LimelightHelpers.getBotPoseEstimate_wpiBlue(camera)));
                     currentCam.setTargetSkewDegrees(LimelightHelpers.getTargetPose_RobotSpace(camera)[4]);
                     currentCam.setAdjustedSkewAngle(1 / Math.cos(Math.toRadians(currentCam.getTargetSkewDegrees())) - 1);
+                        } else{
+                            currentCam.setEst(LimelightHelpers.getBotPoseEstimate_wpiBlue(camera));
+                            currentCam.setTargetSkewDegrees(LimelightHelpers.getTargetPose_RobotSpace(camera)[4]);
+                            currentCam.setAdjustedSkewAngle(1 / Math.cos(Math.toRadians(currentCam.getTargetSkewDegrees())) - 1);
+                        }
                     } catch(Exception e) {
                         System.out.println(e);
                     }
@@ -113,7 +114,7 @@ public class New_Vision extends SubsystemBase{
                 rejectUpdate = true;
             }
             // Reject update if there are no visible tags (Redundant?)
-            else if (visionPoseEstimate.tagCount <2) {
+            else if (visionPoseEstimate.tagCount <1) {
                 rejectUpdate = true;
             }
             // Reject update if the translational error magnitude is larger than the threshold
@@ -143,7 +144,7 @@ public class New_Vision extends SubsystemBase{
             cameraMap.get(cameraList[3])
         });
 
-        for (int i =0; i<4; i++){
+        for (int i =0; i<cameraList.length; i++){
             if(outliers[0][i] == 0 || outliers[1][i] == 0){
                 cameraMap.get(cameraList[i]).setValid(false);
             }
@@ -252,6 +253,16 @@ public class New_Vision extends SubsystemBase{
 
         // Fill out Standard deviation matrix for drivebase
        
+    }
+    public PoseEstimate getTurretToRobotPose(PoseEstimate turretCameraPose){
+        PoseEstimate robotPose = turretCameraPose;
+
+        Translation2d robotToCameraTranslation = kRobotToTurretTranslation.plus(new Translation2d(kTurretToCameraMagnitude, new Rotation2d(RobotContainer.getShooter().getTurretAngle()))); // Robot oriented
+        
+        // Might need a plus pi for the red side
+        robotPose.pose = new Pose2d(turretCameraPose.pose.getTranslation().minus(robotToCameraTranslation.rotateBy(RobotContainer.getDrivetrain().getState().Pose.getRotation())), RobotContainer.getDrivetrain().getState().Pose.getRotation());
+        
+        return robotPose;
     }
 
 }
