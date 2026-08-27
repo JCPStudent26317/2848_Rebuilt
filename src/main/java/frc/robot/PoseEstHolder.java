@@ -29,7 +29,7 @@ public class PoseEstHolder {
     }
 
     public boolean hasTag(){
-        return kMinTagArea < NetworkTableInstance.getDefault().getTable(cameraName).getEntry("botpose").getDoubleArray(new double[11])[10];
+        return est.tagCount >0;
     }
     
 

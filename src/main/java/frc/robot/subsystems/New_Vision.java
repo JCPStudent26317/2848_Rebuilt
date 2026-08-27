@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants.CropWindowSettings;
@@ -69,6 +70,46 @@ public class New_Vision extends SubsystemBase{
     }
 
     //#endregion
+
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        
+        builder.addDoubleProperty(cameraList[0] + "Last update",
+        ()->cameraMap.get(cameraList[0]).getEst().timestampSeconds,
+        null);
+        
+        builder.addDoubleProperty(cameraList[1] + "Last update",
+        ()->cameraMap.get(cameraList[1]).getEst().timestampSeconds,
+        null);
+
+        builder.addDoubleProperty(cameraList[2] + "Last update",
+        ()->cameraMap.get(cameraList[2]).getEst().timestampSeconds,
+        null);
+
+        builder.addDoubleProperty(cameraList[3] + "Last update",
+        ()->cameraMap.get(cameraList[3]).getEst().timestampSeconds,
+        null);
+
+
+        builder.addBooleanProperty(cameraList[0] + "Has Tag",
+        ()->cameraMap.get(cameraList[0]).hasTag(),
+        null);
+        
+        builder.addBooleanProperty(cameraList[1] + "Has Tag",
+        ()->cameraMap.get(cameraList[1]).hasTag(),
+        null);
+
+        builder.addBooleanProperty(cameraList[2] + "Has Tag",
+        ()->cameraMap.get(cameraList[2]).hasTag(),
+        null);
+
+        builder.addBooleanProperty(cameraList[3] + "Has Tag",
+        ()->cameraMap.get(cameraList[3]).hasTag(),
+        null);
+
+
+
+    }
 
 
     @Override
@@ -137,18 +178,18 @@ public class New_Vision extends SubsystemBase{
             currentCam.setValid(!rejectUpdate);
         }
         //detect outliers
-        int[][] outliers = detectOutlier(new PoseEstHolder[]{
-            cameraMap.get(cameraList[0]),
-            cameraMap.get(cameraList[1]),
-            cameraMap.get(cameraList[2]),
-            cameraMap.get(cameraList[3])
-        });
+        // int[][] outliers = detectOutlier(new PoseEstHolder[]{
+        //     cameraMap.get(cameraList[0]),
+        //     cameraMap.get(cameraList[1]),
+        //     cameraMap.get(cameraList[2]),
+        //     cameraMap.get(cameraList[3])
+        // });
 
-        for (int i =0; i<cameraList.length; i++){
-            if(outliers[0][i] == 0 || outliers[1][i] == 0){
-                cameraMap.get(cameraList[i]).setValid(false);
-            }
-        }
+        // for (int i =0; i<cameraList.length; i++){
+        //     if(outliers[0][i] == 0 || outliers[1][i] == 0){
+        //         cameraMap.get(cameraList[i]).setValid(false);
+        //     }
+        // }
         //apply good readings
         for (String camera : cameraList){
             if(cameraMap.get(camera).isValid()){
