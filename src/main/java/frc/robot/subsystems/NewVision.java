@@ -31,7 +31,7 @@ import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.PoseEstHolder;
 
-public class New_Vision extends SubsystemBase{
+public class NewVision extends SubsystemBase{
 
 
     //#region init
@@ -41,7 +41,8 @@ public class New_Vision extends SubsystemBase{
 
     private HashMap<String,PoseEstHolder> cameraMap = new HashMap<>();
 
-    public New_Vision(){
+    public NewVision(){
+        System.out.println("VISION CREATED");
         this.cameraList = kCameraList;
         this.register();
         configureCameras();
@@ -69,10 +70,13 @@ public class New_Vision extends SubsystemBase{
         LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
     }
 
-    //#endregion
 
+    //#endregion
+    @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+
+        builder.addStringArrayProperty("cameraList", ()->cameraList, null);
         
         builder.addDoubleProperty(cameraList[0] + "Last update",
         ()->cameraMap.get(cameraList[0]).getEst().timestampSeconds,
@@ -109,20 +113,22 @@ public class New_Vision extends SubsystemBase{
 
 
         builder.addBooleanProperty(cameraList[0] + "Is Valid",
-        ()->cameraMap.get(cameraList[0].IsValid()),
+        ()->cameraMap.get(cameraList[0]).isValid(),
         null);
 
         builder.addBooleanProperty(cameraList[1] + "Is Valid",
-        ()->cameraMap.get(cameraList[1].IsValid()),
+        ()->cameraMap.get(cameraList[1]).isValid(),
         null);
 
         builder.addBooleanProperty(cameraList[2] + "Is Valid",
-        ()->cameraMap.get(cameraList[2].IsValid()),
+        ()->cameraMap.get(cameraList[2]).isValid(),
         null);
 
         builder.addBooleanProperty(cameraList[3] + "Is Valid",
-        ()->cameraMap.get(cameraList[3].IsValid()),
+        ()->cameraMap.get(cameraList[3]).isValid(),
         null);
+
+        
 
     }
 
@@ -130,6 +136,7 @@ public class New_Vision extends SubsystemBase{
     @Override
     public void periodic(){
         //update and applies each new reading to each cameras specfic holder
+         SmartDashboard.putData(this);
         for (String camera : cameraList) {
             PoseEstHolder currentCam = cameraMap.get(camera);
             PoseEstimate visionPoseEstimate = currentCam.getEst();

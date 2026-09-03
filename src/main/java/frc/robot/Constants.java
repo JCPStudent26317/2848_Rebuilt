@@ -237,11 +237,11 @@ public final class Constants {
 
     // Filters
     public static final boolean kApplyFilters = true;
-    public static final double kMinTagArea = 0.25;
+    public static final double kMinTagArea = 0.1; //.25
     public static final double kMaxRotationalRate = 360; // deg/s
     public static final double kMaxTranslationalErrorMagnitude = 1; //m
     public static final double kMaxRotationalErrorMagnitude = 0.25; //rad
-    public static final double kMaxAmbiguity = 0.3;
+    public static final double kMaxAmbiguity = 0.6;
     // Can also be grabbed from WPI AprilTag class
     public static final double kFieldWidth = 8.042656;
     public static final double kFieldLength = 16.513048;
