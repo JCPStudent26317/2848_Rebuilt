@@ -108,6 +108,21 @@ public class New_Vision extends SubsystemBase{
         null);
 
 
+        builder.addBooleanProperty(cameraList[0] + "Is Valid",
+        ()->cameraMap.get(cameraList[0].IsValid()),
+        null);
+
+        builder.addBooleanProperty(cameraList[1] + "Is Valid",
+        ()->cameraMap.get(cameraList[1].IsValid()),
+        null);
+
+        builder.addBooleanProperty(cameraList[2] + "Is Valid",
+        ()->cameraMap.get(cameraList[2].IsValid()),
+        null);
+
+        builder.addBooleanProperty(cameraList[3] + "Is Valid",
+        ()->cameraMap.get(cameraList[3].IsValid()),
+        null);
 
     }
 
