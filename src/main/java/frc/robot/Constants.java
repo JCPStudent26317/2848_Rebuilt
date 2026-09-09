@@ -217,7 +217,7 @@ public final class Constants {
     public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kTowerAprilTagList = new int[]{15,16,31,32};
-    public static final float kDownscaleFactor = 1.5f;
+    public static final float kDownscaleFactor = 1.0f;
     // crop settings
     public static final Map<String, CropWindowSettings> cameraCropWindowMap;
 

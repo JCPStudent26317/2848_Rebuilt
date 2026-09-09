@@ -128,6 +128,23 @@ public class NewVision extends SubsystemBase{
         ()->cameraMap.get(cameraList[3]).isValid(),
         null);
 
+
+        builder.addDoubleArrayProperty(cameraList[0] + "Stdevs ", 
+        ()->cameraMap.get(cameraList[0]).getStdevs().getData(),
+         null);
+
+         builder.addDoubleArrayProperty(cameraList[1] + "Stdevs ", 
+        ()->cameraMap.get(cameraList[1]).getStdevs().getData(),
+         null);
+
+         builder.addDoubleArrayProperty(cameraList[2] + "Stdevs ", 
+        ()->cameraMap.get(cameraList[2]).getStdevs().getData(),
+         null);
+
+         builder.addDoubleArrayProperty(cameraList[3] + "Stdevs ", 
+        ()->cameraMap.get(cameraList[3]).getStdevs().getData(),
+         null);
+
         
 
     }
