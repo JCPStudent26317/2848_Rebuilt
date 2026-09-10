@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -77,6 +78,15 @@ public class Intake extends SubsystemBase {
 
         // Apply things to the configuration here
         lRollersMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        
+        lRollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        lRollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        rRollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        rRollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        r2RollersMotorConfig.CurrentLimits.StatorCurrentLimit = 25;
+        r2RollersMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         setupTalonFx(m_RollersL, lRollersMotorConfig);
         setupTalonFx(m_RollersR, rRollersMotorConfig);
@@ -84,7 +94,7 @@ public class Intake extends SubsystemBase {
         setupTalonFx(m_Pivot, pivotMotorConfig);
     
         m_RollersR.setControl(new Follower(m_RollersL.getDeviceID(), MotorAlignmentValue.Opposed));
-        m_RollersR2.setControl(new Follower(m_RollersL.getDeviceID(),MotorAlignmentValue.Aligned));
+        m_RollersR2.setControl(new Follower(m_RollersL.getDeviceID(),MotorAlignmentValue.Opposed));
 
         m_IntakeCANcoder.setPosition(m_IntakeCANcoder.getAbsolutePosition().getValue());
     } 
@@ -127,10 +137,14 @@ public class Intake extends SubsystemBase {
 
         // builder.addDoubleProperty("CANcoder Absolute Position",() ->  m_IntakeCANcoder.getAbsolutePosition().getValueAsDouble(), null);
         // builder.addDoubleProperty("CANcoder Non-absolute Position", () -> m_IntakeCANcoder.getPosition().getValueAsDouble(), null);        
-        // builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
+         builder.addDoubleProperty("Pivot Motor Encoder Position",m_Pivot.getPosition()::getValueAsDouble, null);
         // builder.addDoubleProperty("Setpoint", () -> pivotSetpoint, null);
         // builder.addDoubleProperty("intake L", ()->m_RollersL.get(), null);
         // builder.addDoubleProperty("intake R", ()->m_RollersR.get(), null);
+
+        builder.addDoubleProperty("Intake Rollers L Current",()->m_RollersL.getStatorCurrent().getValueAsDouble(),null);
+        builder.addDoubleProperty("Intake Rollers R Current",()->m_RollersR.getStatorCurrent().getValueAsDouble(),null);
+        builder.addDoubleProperty("Intake Rollers R2 Current",()->m_RollersR2.getStatorCurrent().getValueAsDouble(),null);
     }
 
     public Command holdState() {
@@ -147,7 +161,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.runOnce(() -> setRollersOutput(kRollersMotorSpeed), this);
+        return Commands.runOnce(() -> setRollersOutput(DriverStation.isAutonomous() ? kRollersMotorSpeed : .75), this);
     }
 
     public Command outtake() {
