@@ -237,7 +237,7 @@ public final class Constants {
 
     // Filters
     public static final boolean kApplyFilters = true;
-    public static final double kMinTagArea = 0.1; //.25
+    public static final double kMinTagArea = 0.17; //.25
     public static final double kMaxRotationalRate = 360; // deg/s
     public static final double kMaxTranslationalErrorMagnitude = 1; //m
     public static final double kMaxRotationalErrorMagnitude = 0.25; //rad
