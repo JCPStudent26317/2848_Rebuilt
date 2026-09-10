@@ -99,6 +99,8 @@ public void setFilterTagID(boolean val){
         LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
     }
 
+    
+
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -194,10 +196,6 @@ public void setFilterTagID(boolean val){
                     }
                 }
         }
-
-        
-
-        
 
             for(String camera :cameraList){
                 if(filterTagID){
@@ -347,7 +345,6 @@ public void setFilterTagID(boolean val){
         }
     }
 
-    private double lastForceUpdate = 0;
 
     /**
      * Updated the Translational and Rotational Standard Deviations for the measurement from the best limelight

@@ -63,14 +63,14 @@ public final class Constants {
     public static final double kPivotMMAcceleration = 24;//14;
     public static final double kPivotMMJerk = 140;//140
     
-    public static final double kDeploySetpoint = 0.465;
+    public static final double kDeploySetpoint = 0.506;
     public static final double kLowRetractSetpoint = 0.55;
     public static final double kHighRetractSetpoint = 0.65;
     public static final double kStowSetpoint = 0.82;
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
-        .withMagnetOffset(.3905)
+        .withMagnetOffset(.426)
         .withAbsoluteSensorDiscontinuityPoint(1)
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
   }
@@ -217,7 +217,7 @@ public final class Constants {
     public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kTowerAprilTagList = new int[]{15,16,31,32};
-    public static final float kDownscaleFactor = 4.0f;
+    public static final float kDownscaleFactor = 1.0f;
     // crop settings
     public static final Map<String, CropWindowSettings> cameraCropWindowMap;
 
@@ -237,7 +237,7 @@ public final class Constants {
 
     // Filters
     public static final boolean kApplyFilters = true;
-    public static final double kMinTagArea = 0.25;
+    public static final double kMinTagArea = 0.17; //.25
     public static final double kMaxRotationalRate = 360; // deg/s
     public static final double kMaxTranslationalErrorMagnitude = 1; //m
     public static final double kMaxRotationalErrorMagnitude = 0.25; //rad
