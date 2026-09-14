@@ -186,6 +186,8 @@ public class NewVision extends SubsystemBase{
             } else{
                 rejectUpdate = true;
             }
+            visionPoseEstimate = currentCam.getEst();
+
             if (visionPoseEstimate == null || visionPoseEstimate.rawFiducials.length ==0) {
                 rejectUpdate = true;
             }

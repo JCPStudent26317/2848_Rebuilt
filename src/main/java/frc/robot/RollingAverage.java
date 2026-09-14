@@ -3,6 +3,8 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import edu.wpi.first.wpilibj.Timer;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -18,7 +20,7 @@ public class RollingAverage {
     public void update(double[] data){
         times.add(new Double[]{data[0],data[1]});
 
-        while(times.size()>0 && times.get(0)[0]>rollingTime){
+        while(times.size()>0 && Timer.getFPGATimestamp() - times.get(0)[0]>rollingTime){
             times.remove(0);
         }
         double temp = 0;
