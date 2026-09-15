@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,8 @@ public class PoseEstHolder {
     @Setter @Getter private double adjustedSkewAngle = 0;
     @Getter private final String cameraName;
     @Setter @Getter boolean valid = false;
+    @Getter RollingAverage fpsRoller = new RollingAverage(1);
+    @Getter RollingAverage ambiguityRoller = new RollingAverage(1);
 
 
     public PoseEstHolder(String name){
@@ -30,6 +33,12 @@ public class PoseEstHolder {
 
     public boolean hasTag(){
         return kMinTagArea < NetworkTableInstance.getDefault().getTable(cameraName).getEntry("botpose").getDoubleArray(new double[11])[10];
+    }
+
+    public void update(){
+        double now = Timer.getFPGATimestamp();
+        fpsRoller.update(new double[]{now, NetworkTableInstance.getDefault().getTable(cameraName).getEntry("hw").getDoubleArray(new double[4])[3]});
+        ambiguityRoller.update(new double[]{now,this.est.rawFiducials[0].ambiguity});
     }
     
 

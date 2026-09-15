@@ -16,7 +16,10 @@ public class RollingAverage {
     public RollingAverage(double rollingTime){
         this.rollingTime = rollingTime;
     }
-
+/**
+ * Rolling average update; use Timer.getFPGATimestamp() or it won't work index 0 is timestamp 
+ * @param data
+ */
     public void update(double[] data){
         times.add(new Double[]{data[0],data[1]});
 

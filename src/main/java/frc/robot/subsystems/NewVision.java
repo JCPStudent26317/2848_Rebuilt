@@ -78,71 +78,105 @@ public class NewVision extends SubsystemBase{
 
         builder.addStringArrayProperty("cameraList", ()->cameraList, null);
         
-        builder.addDoubleProperty(cameraList[0] + "Last update",
+        builder.addDoubleProperty(cameraList[0] + " Last update",
         ()->cameraMap.get(cameraList[0]).getEst().timestampSeconds,
         null);
         
-        builder.addDoubleProperty(cameraList[1] + "Last update",
+        builder.addDoubleProperty(cameraList[1] + " Last update",
         ()->cameraMap.get(cameraList[1]).getEst().timestampSeconds,
         null);
 
-        builder.addDoubleProperty(cameraList[2] + "Last update",
+        builder.addDoubleProperty(cameraList[2] + " Last update",
         ()->cameraMap.get(cameraList[2]).getEst().timestampSeconds,
         null);
 
-        builder.addDoubleProperty(cameraList[3] + "Last update",
+        builder.addDoubleProperty(cameraList[3] + " Last update",
         ()->cameraMap.get(cameraList[3]).getEst().timestampSeconds,
         null);
 
 
-        builder.addBooleanProperty(cameraList[0] + "Has Tag",
+        builder.addBooleanProperty(cameraList[0] + " Has Tag",
         ()->cameraMap.get(cameraList[0]).hasTag(),
         null);
         
-        builder.addBooleanProperty(cameraList[1] + "Has Tag",
+        builder.addBooleanProperty(cameraList[1] + " Has Tag",
         ()->cameraMap.get(cameraList[1]).hasTag(),
         null);
 
-        builder.addBooleanProperty(cameraList[2] + "Has Tag",
+        builder.addBooleanProperty(cameraList[2] + " Has Tag",
         ()->cameraMap.get(cameraList[2]).hasTag(),
         null);
 
-        builder.addBooleanProperty(cameraList[3] + "Has Tag",
+        builder.addBooleanProperty(cameraList[3] + " Has Tag",
         ()->cameraMap.get(cameraList[3]).hasTag(),
         null);
 
 
-        builder.addBooleanProperty(cameraList[0] + "Is Valid",
+        builder.addBooleanProperty(cameraList[0] + " Is Valid",
         ()->cameraMap.get(cameraList[0]).isValid(),
         null);
 
-        builder.addBooleanProperty(cameraList[1] + "Is Valid",
+        builder.addBooleanProperty(cameraList[1] + " Is Valid",
         ()->cameraMap.get(cameraList[1]).isValid(),
         null);
 
-        builder.addBooleanProperty(cameraList[2] + "Is Valid",
+        builder.addBooleanProperty(cameraList[2] + " Is Valid",
         ()->cameraMap.get(cameraList[2]).isValid(),
         null);
 
-        builder.addBooleanProperty(cameraList[3] + "Is Valid",
+        builder.addBooleanProperty(cameraList[3] + " Is Valid",
         ()->cameraMap.get(cameraList[3]).isValid(),
         null);
 
 
-        builder.addDoubleArrayProperty(cameraList[0] + "Stdevs ", 
+        builder.addDoubleArrayProperty(cameraList[0] + " Stdevs ", 
         ()->cameraMap.get(cameraList[0]).getStdevs().getData(),
          null);
 
-         builder.addDoubleArrayProperty(cameraList[1] + "Stdevs ", 
+         builder.addDoubleArrayProperty(cameraList[1] + " Stdevs ", 
         ()->cameraMap.get(cameraList[1]).getStdevs().getData(),
          null);
 
-         builder.addDoubleArrayProperty(cameraList[2] + "Stdevs ", 
+         builder.addDoubleArrayProperty(cameraList[2] + " Stdevs ", 
         ()->cameraMap.get(cameraList[2]).getStdevs().getData(),
          null);
 
-         builder.addDoubleArrayProperty(cameraList[3] + "Stdevs ", 
+         builder.addDoubleArrayProperty(cameraList[3] + " Stdevs ", 
         ()->cameraMap.get(cameraList[3]).getStdevs().getData(),
+         null);
+
+
+         builder.addDoubleProperty(cameraList[0] + " Average FPS",
+         ()->cameraMap.get(cameraList[0]).getFpsRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[1] + " Average FPS",
+         ()->cameraMap.get(cameraList[1]).getFpsRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[2] + " Average FPS",
+         ()->cameraMap.get(cameraList[2]).getFpsRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[3] + " Average FPS",
+         ()->cameraMap.get(cameraList[3]).getFpsRoller().getAverage(),
+         null);
+
+
+         builder.addDoubleProperty(cameraList[0] + " Average Ambiguity",
+         ()->cameraMap.get(cameraList[0]).getAmbiguityRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[1] + " Average Ambiguity",
+         ()->cameraMap.get(cameraList[1]).getAmbiguityRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[2] + " Average Ambiguity",
+         ()->cameraMap.get(cameraList[2]).getAmbiguityRoller().getAverage(),
+         null);
+
+         builder.addDoubleProperty(cameraList[3] + " Average Ambiguity",
+         ()->cameraMap.get(cameraList[3]).getAmbiguityRoller().getAverage(),
          null);
 
         
@@ -159,6 +193,7 @@ public class NewVision extends SubsystemBase{
             PoseEstimate visionPoseEstimate = currentCam.getEst();
             boolean hasTag = currentCam.hasTag();
             boolean rejectUpdate = false;
+            cameraMap.get(camera).update();
             if (hasTag){
                 double[] botpose = NetworkTableInstance.getDefault()
                     .getTable(camera)
