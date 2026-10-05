@@ -38,7 +38,10 @@ public class PoseEstHolder {
     public void update(){
         double now = Timer.getFPGATimestamp();
         fpsRoller.update(new double[]{now, NetworkTableInstance.getDefault().getTable(cameraName).getEntry("hw").getDoubleArray(new double[4])[3]});
-        ambiguityRoller.update(new double[]{now,this.est.rawFiducials[0].ambiguity});
+        if (est != null && est.rawFiducials != null && est.rawFiducials.length > 0) {
+        ambiguityRoller.update(new double[]{now, est.rawFiducials[0].ambiguity});
+        }
+        
     }
     
 

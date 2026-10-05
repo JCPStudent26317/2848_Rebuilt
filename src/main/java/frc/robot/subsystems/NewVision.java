@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.VisionConstants.cameraCropWindowMap;
 import static frc.robot.Constants.VisionConstants.kAddSkewDataDistanceThreshold;
 import static frc.robot.Constants.VisionConstants.kAllAprilTagList;
+import static frc.robot.Constants.VisionConstants.kAllAprilTagNoTowerList;
 import static frc.robot.Constants.VisionConstants.kCameraList;
 import static frc.robot.Constants.VisionConstants.kDownscaleFactor;
 import static frc.robot.Constants.VisionConstants.kFieldLength;
@@ -23,11 +24,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants.CropWindowSettings;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
+import lombok.Getter;
+import lombok.Setter;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.PoseEstHolder;
 
@@ -57,7 +61,7 @@ public class NewVision extends SubsystemBase{
         }
     }
     private void configureCamera(String camera){
-        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
+        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagNoTowerList); // Only track these tag IDs
         //TODO: try new downscales for more range?
         LimelightHelpers.SetFiducialDownscalingOverride(camera, kDownscaleFactor); // Increases the framerate
 
@@ -68,6 +72,12 @@ public class NewVision extends SubsystemBase{
         // Apply window crop settings to increase framerate
         CropWindowSettings cropWindow = cameraCropWindowMap.get(camera);
         LimelightHelpers.setCropWindow(camera, cropWindow.getCropXMin(), cropWindow.getCropXMax(), cropWindow.getCropYMin(), cropWindow.getCropYMax());
+    }
+
+    private void configureFidicuals(int[] tags){
+        for(String camera : cameraList){
+        LimelightHelpers.SetFiducialIDFiltersOverride(camera, tags);
+        }
     }
 
 
