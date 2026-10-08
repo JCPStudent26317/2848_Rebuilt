@@ -61,7 +61,7 @@ public class NewVision extends SubsystemBase{
         }
     }
     private void configureCamera(String camera){
-        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagNoTowerList); // Only track these tag IDs
+        LimelightHelpers.SetFiducialIDFiltersOverride(camera, kAllAprilTagList); // Only track these tag IDs
         //TODO: try new downscales for more range?
         LimelightHelpers.SetFiducialDownscalingOverride(camera, kDownscaleFactor); // Increases the framerate
 

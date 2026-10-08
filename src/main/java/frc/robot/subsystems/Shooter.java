@@ -301,7 +301,7 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2,-2,10)
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.2,-.5,10)
       + targetDist * 2 //1.88 Needs to be tuned //2
       +5.4;//5.425;//5.35
 }

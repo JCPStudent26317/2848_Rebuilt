@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -46,6 +47,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.CrashAvoider;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.generated.TunerConstants;
@@ -87,6 +89,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private Translation2d targetPos = new Translation2d();
     private Translation2d hubPos = new Translation2d();
+
+    private CrashAvoider avoid = new CrashAvoider();
 
     @Getter private boolean redAlliance = false;
 
@@ -324,6 +328,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             //     .withVelocityY(req.VelocityY /slowDownFactor)
             //     .withRotationalRate(req.RotationalRate / slowDownFactor * 2);
             // }
+
+            if(request instanceof SwerveRequest.FieldCentric req){
+            request = avoid.update(req,this.getState().Pose,getFieldOrientedSpeeds(), RobotContainer.getIntake().isIntakeDown());
+            if(avoid.isClampX() || avoid.isClampY()){
+            request = req.withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.Velocity);
+            } else{
+            request = req.withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+            }
+            }
+
 
             this.setControl(request);}});
     }

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import lombok.Getter;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 
@@ -46,6 +47,8 @@ public class Intake extends SubsystemBase {
 
     private double pivotSetpoint = kStowSetpoint;
     private MotionMagicVoltage pivotOut = new MotionMagicVoltage(pivotSetpoint);
+
+    @Getter private boolean intakeDown = false;
 
     // Pivot motor would use PID, maybe feedforward with arm angle
 
@@ -111,8 +114,10 @@ public class Intake extends SubsystemBase {
     public void gotoStartPoint(){
         if(m_IntakeCANcoder.getPosition().getValueAsDouble() > 0.7) {
             setPivot(kStowSetpoint);
+            intakeDown = false;
         } else {
             setPivot(kDeploySetpoint);
+            intakeDown = true;
         }
     }
 
@@ -173,7 +178,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command deploy() {
-        return Commands.runOnce(() -> setPivot(kDeploySetpoint), this);
+        return Commands.runOnce(() -> {setPivot(kDeploySetpoint); intakeDown = true;}, this);
     }
 
     public Command lowRetract() {
@@ -185,7 +190,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command stow() {
-        return Commands.runOnce(() -> setPivot(kStowSetpoint), this);
+        return Commands.runOnce(() -> {setPivot(kStowSetpoint); intakeDown = false;}, this);
     }
 
     public Command jiggle() {
