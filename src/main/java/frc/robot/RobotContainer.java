@@ -226,7 +226,7 @@ public class RobotContainer {
 
         //left is back right is start
         //DRIVETRAIN RESETS
-        driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
+        driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.setAvoidStuff(!drivetrain.isAvoidStuff())));
         //driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
         //KEYPAD TRIMS

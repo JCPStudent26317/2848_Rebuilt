@@ -94,6 +94,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Getter private boolean redAlliance = false;
 
+    @Setter @Getter private boolean avoidStuff = true;
+
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
@@ -331,7 +333,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             if(request instanceof SwerveRequest.FieldCentric req){
             request = avoid.update(req,this.getState().Pose,getFieldOrientedSpeeds(), RobotContainer.getIntake().isIntakeDown());
-            if(avoid.isClampX() || avoid.isClampY()){
+            if((avoid.isClampX() || avoid.isClampY()) && avoidStuff){
             request = req.withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.Velocity);
             } else{
             request = req.withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
