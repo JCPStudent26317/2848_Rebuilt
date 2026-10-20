@@ -66,7 +66,7 @@ public final class Constants {
     public static final double kDeploySetpoint = 0.506;
     public static final double kLowRetractSetpoint = 0.55;
     public static final double kHighRetractSetpoint = 0.65;
-    public static final double kStowSetpoint = 0.82;
+    public static final double kStowSetpoint = 0.84;
 
 
      public static final MagnetSensorConfigs kIntakeCANcoderMagnetSensorConfigs = new MagnetSensorConfigs()
@@ -117,7 +117,7 @@ public final class Constants {
     public static final double kTurretkV = .12;
     public static final double kTurretkA = 0;
     public static final double kTurretkP = 40;//30;
-    public static final double kTurretkI = 10;//3;
+    public static final double kTurretkI = 15;//3;
     public static final double kTurretkD = 0; 
 
     public static final double kMagazinekS = 0.0;
@@ -130,7 +130,7 @@ public final class Constants {
     public static final double kTurretCorrectionkV = .28;//.28;
     public static final double kTurretCorrectionkS =.05;
 
-    public static final double kTurretGyroCorrection = .013;
+    public static final double kTurretGyroCorrection = .08;//.013
     
     public static final double kFlywheelPeakVoltage = 16;
     public static final double kTurretPeakVoltage = 16;
@@ -215,7 +215,7 @@ public final class Constants {
     // Camera settings
     public static final int[] kRedAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     public static final int[] kBlueAprilTagList = new int[]{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
-    public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+    public static final int[] kAllAprilTagList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     public static final int[] kAllAprilTagNoTowerList = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
     public static final int[] kTowerAprilTagList = new int[]{15,16,31,32};
     public static final float kDownscaleFactor = 1.0f;

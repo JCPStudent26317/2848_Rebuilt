@@ -83,7 +83,6 @@ public class RobotContainer {
     private final Trigger readyToShoot = new Trigger(()->shooter.readyToShoot());
 
     private final Command startShoot = shooter.shoot();
-    
         
     //hopper.forward().onlyIf(()->shooter.readyToShoot()).repeatedly()
     private final Command startShootAuto = shooter.shoot().alongWith(
@@ -227,7 +226,7 @@ public class RobotContainer {
 
         //left is back right is start
         //DRIVETRAIN RESETS
-        driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.seedFieldCentric()));
+        driverJoystick.back().onTrue(new InstantCommand(()->drivetrain.setAvoidStuff(!drivetrain.isAvoidStuff())));
         //driverJoystick.start().onTrue(new InstantCommand(()->drivetrain.visionOdoReset()));
 
         //KEYPAD TRIMS

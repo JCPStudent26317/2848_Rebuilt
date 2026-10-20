@@ -260,12 +260,12 @@ public class Shooter extends SubsystemBase {
     //   null);
     // builder.addDoubleProperty("Distance",()->targetDist,
     // null);
-    // builder.addDoubleProperty("flywheel direct output",
-    // ()->m_FlywheelLeftLeader.get(),
-    // null);
-    // builder.addDoubleProperty("flywheel error", 
-    // ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
-    //  null);
+     builder.addDoubleProperty("flywheel direct output",
+     ()->m_FlywheelLeftLeader.get(),
+     null);
+     builder.addDoubleProperty("flywheel error", 
+     ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
+      null);
      builder.addBooleanProperty("ready to shoot",
      this::readyToShoot,
      null);
@@ -301,7 +301,7 @@ public class Shooter extends SubsystemBase {
  * @return velocity in m/s
  */
 private double getExitVelo(){
-      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2,-2,10)
+      return MathUtil.clamp(-RobotContainer.getDrivetrain().getPolarVelocity().getX() * 2.2,-.5,10)
       + targetDist * 2 //1.88 Needs to be tuned //2
       +5.4;//5.425;//5.35
 }
