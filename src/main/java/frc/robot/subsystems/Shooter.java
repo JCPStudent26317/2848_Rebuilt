@@ -260,12 +260,12 @@ public class Shooter extends SubsystemBase {
     //   null);
     // builder.addDoubleProperty("Distance",()->targetDist,
     // null);
-    // builder.addDoubleProperty("flywheel direct output",
-    // ()->m_FlywheelLeftLeader.get(),
-    // null);
-    // builder.addDoubleProperty("flywheel error", 
-    // ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
-    //  null);
+     builder.addDoubleProperty("flywheel direct output",
+     ()->m_FlywheelLeftLeader.get(),
+     null);
+     builder.addDoubleProperty("flywheel error", 
+     ()->m_FlywheelLeftLeader.getClosedLoopError().getValueAsDouble(),
+      null);
      builder.addBooleanProperty("ready to shoot",
      this::readyToShoot,
      null);
